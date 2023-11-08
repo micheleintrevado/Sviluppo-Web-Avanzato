@@ -1,0 +1,190 @@
+openapi: 3.0.2
+info:
+  title: "AuleWeb Services"
+  description: |-
+    Questo sistema è volto alla gestione delle aule presenti in un qualsiasi Ateneo.
+    //DA ESTENDERE
+  contact:
+    email: sviluppoWebAvanzato@student.univaq.it
+  version: 1.0.0
+
+servers:
+  - url: 'http://localhost:8080/AuleWeb' # DA MODIFICARE A CODICE FINITO
+
+tags:
+  - name: Autenticazione
+  - name: Aule
+
+paths:
+  '/rest/auth/login':
+    post:
+      summary: Autenticazione Amministratore
+      description: Verifica le credenziali di un amministratore che tenta di autenticarsi nel sistema
+      operationId: doLogin
+      tags:
+        - Autenticazione
+      requestBody:
+        content:
+          application/x-www-form-urlencoded: # vedere nel codice se usare json o form
+            schema:
+              $ref: '#/components/schemas/Credenziali'
+        required: true
+      responses:
+        '200':
+          description: Successful authentication
+          content:
+            text/plain:
+              schema:
+                type: string
+                pattern: 'Bearer [a-z0-9A-Z-]+'
+           
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        
+        '500':
+          $ref: '#/components/responses/GeneralError'
+
+  '/rest/auth/logout':
+    delete:
+      summary: Deautenticazione Amministratore
+      description: Consente il logout dell'amministratore
+      operationId: doLogout
+      tags:
+        - Autenticazione
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: successfull logout
+        
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        
+        '500':
+          $ref: '#/components/responses/GeneralError'
+  
+  '/rest/aule':
+    post:
+      operationId: addAula
+      tags:
+        - Aule
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Aula'
+      responses:
+        '201':
+          description: created
+          headers:
+            location:
+              schema:
+                type: string
+                format: uri
+          content:
+            application/json:
+              schema:
+                type: string
+                format: uri
+        
+        '500':
+          $ref: '#/components/responses/GeneralError'
+  
+  'rest/aule/{aula}': # rivedere bene con codice
+    post:
+      operationId: assignGruppo
+      tags:
+        - Aule
+      parameters: 
+        $ref: '#/components/parameters/nomeAula'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Aula'
+      responses:
+        '201':
+          description: created
+          headers:
+            location:
+              schema:
+                type: string
+                format: uri
+          content:
+            application/json:
+              schema:
+                type: string
+                format: uri
+
+
+components:
+  schemas:
+    Credenziali:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+          format: password
+    
+    Aula:
+      type: object
+      properties:
+        nome:
+          type: string
+        luogo:
+          type: string
+        edificio:
+          type: string
+        piano:
+          type: string
+        capienza:
+          type: integer
+          format: int32
+          default: 0
+        emailResponsabile:
+          type: string
+        preseElettriche:
+          type: integer
+          format: int32
+          default: 0
+        preseRete:
+          type: integer
+          format: int32
+          default: 0
+        note:
+          type: string
+  
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: internalToken
+      
+  parameters:
+    nomeAula:
+      name: nome
+      in: path
+      required: true
+      schema:
+        type: string
+  
+  responses:
+    GeneralError:
+      description: errore generale
+      content:
+        text/plain:
+          schema:
+            type: string
+            example: "Messaggio di errore"
+    
+    UnauthorizedError:
+      description: bearer token mancante o non valido
+    NotFound:
+      description: elemento non trovato
+      content: 
+        text/plain:
+          schema:
+            type: string
+            example: "Elemento insesistente"
