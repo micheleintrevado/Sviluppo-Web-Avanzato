@@ -1,6 +1,6 @@
-openapi: 3.0.2
+openapi: 3.0.1
 info:
-  title: "AuleWeb Servicesssssssssssss"
+  title: "AuleWeb Services"
   description: |-
     Questo sistema è volto alla gestione delle aule presenti in un qualsiasi Ateneo.
     //DA ESTENDERE
@@ -63,6 +63,56 @@ paths:
         '500':
           $ref: '#/components/responses/GeneralError'
   
+  '/rest/aule/csv':
+    get:
+      operationId: exportAuleCsv
+      tags: 
+        - Aule
+      responses:
+        '200':
+          description: esportazione aule in CSV
+          content:
+            text/csv:
+              schema:
+                type: string
+                format: binary
+        '500':
+          $ref: '#/components/responses/GeneralError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    
+    post:
+      operationId: importAuleCsv
+      tags: 
+        - Aule
+      requestBody:
+        required: true # vedere se bisogna mettere required anche agli altri requestbody delle altre post!!!
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      
+      responses:
+        '201':
+          description: created
+          headers:
+            location:
+              schema:
+                type: string
+                format: uri
+          content:
+            application/json: # vedere se effettivamente è un json!!!
+              schema:
+                type: string
+                format: uri
+        '500':
+          $ref: '#/components/responses/GeneralError'
+  
+  
   '/rest/aule':
     post:
       operationId: addAula
@@ -90,18 +140,21 @@ paths:
         '500':
           $ref: '#/components/responses/GeneralError'
   
-  'rest/aule/{aula}': # rivedere bene con codice
+  '/rest/aule/{nome}': # rivedere bene con codice
     post:
       operationId: assignGruppo
       tags:
         - Aule
       parameters: 
-        $ref: '#/components/parameters/nomeAula'
+        - $ref: '#/components/parameters/nomeAula'
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Aula'
+              type: object
+              properties:
+                nome: 
+                  type: string
       responses:
         '201':
           description: created
@@ -115,10 +168,190 @@ paths:
               schema:
                 type: string
                 format: uri
+        '500':
+          $ref: '#/components/responses/GeneralError'
+          
+    get:
+      operationId: getInfoAula
+      tags:
+        - Aule
+      parameters: 
+        - $ref: '#/components/parameters/nomeAula'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Aula'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/GeneralError'
+  
+  '/rest/aule/{nome}/attrezzature':  
+    get:
+      operationId: getFattureAnno
+      tags: 
+        - Aule
+      parameters:
+        - $ref: '#/components/parameters/nomeAula'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Attrezzature'
+        
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/GeneralError'
+    
+  '/rest/eventi':
+    post:
+      tags: 
+        - Eventi
+      operationId: addEvento
+      requestBody: 
+        content: 
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Evento'
+      responses:
+        '201':
+          description: created
+          headers:
+            location:
+              schema:
+                type: string
+                format: uri
+          content:
+            application/json:
+              schema:
+                type: string
+                format: uri
+        
+        '500':
+          $ref: '#/components/responses/GeneralError'
+          
+  '/rest/eventi/{evento}':
+    put:
+      operationId: updateEvento
+      tags:
+        - Eventi
+      parameters:
+        - $ref: '#/components/parameters/idEvento'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Evento'
+      responses:
+        # capire se bisogna mettere pure 201 come possibile risposta!!!
+        '204':
+          description: no content
+        '500':
+          $ref: '#/components/responses/GeneralError'
+        '404':
+          $ref: '#/components/responses/NotFound'      
+    
+    get:
+      operationId: getEvento
+      tags:
+        - Eventi
+      parameters:
+        - $ref: '#/components/parameters/idEvento'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Evento'
+        '500':
+          $ref: '#/components/responses/GeneralError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+          
+  '/rest/eventi/aule/{nome}/settimana/{settimana}': # vedere come filtrare la settimana. In base alla i-esima settimana???
+  # nella URL ci va pure eventi?
+    get:
+      operationId: getEventiAulaSettimana
+      tags:
+        - Eventi
+        - Aule
+      parameters:
+        - $ref: '#/components/parameters/nomeAula'
+        - $ref: '#/components/parameters/numeroSettimana'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Eventi'
+        '500':
+          $ref: '#/components/responses/GeneralError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  
+  # Lista degli eventi attuali e quelli delle prossime tre ore.
+  '/rest/eventi/DAVEDERE': # NON HO IDEA DI CHE CAZZ DI URL METTERE
+    get:
+      operationId: getEventiProssimi
+      tags:
+        - Eventi
+      parameters:
+        - $ref: '#/components/parameters/nomeAula' # da vedere in base all'URL
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Eventi'
+        '500':
+          $ref: '#/components/responses/GeneralError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  
 
 
 components:
   schemas:
+
+    Eventi:
+      type: array
+      items:
+        $ref: '#/components/schemas/Evento'
+        
+    Evento:
+      type: object
+      properties:
+        orario_inizio:
+          type: string
+          format: date-time
+        orario_fine:
+          type: string
+          format: date-time
+        descrizione:
+          type: string
+        nome_organizzatore:
+          type: string
+        email_responsabile:
+          type: string
+          format: email
+        
+    Attrezzature:
+      type: array
+      items:
+        type: object
+        properties:
+          tipo:
+            type: string
+  
     Credenziali:
       type: object
       properties:
@@ -169,6 +402,20 @@ components:
       required: true
       schema:
         type: string
+        
+    idEvento:
+      name: evento
+      in: path
+      required: true
+      schema:
+        type: integer
+        
+    numeroSettimana:
+      name: settimana
+      in: path
+      required: true
+      schema:
+        type: integer
   
   responses:
     GeneralError:
@@ -181,6 +428,7 @@ components:
     
     UnauthorizedError:
       description: bearer token mancante o non valido
+    
     NotFound:
       description: elemento non trovato
       content: 
