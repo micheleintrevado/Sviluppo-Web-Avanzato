@@ -235,9 +235,27 @@ paths:
         
         '500':
           $ref: '#/components/responses/GeneralError'
+    
+    get:
+      operationId: getEventiForRange
+      tags:
+        - Eventi
+      parameters: 
+        - $ref: '#/components/parameters/rangeStart'
+        - $ref: '#/components/parameters/rangeEnd'
+      responses:
+        '200':
+          description: OK
+          content:
+            text/calendar:
+              schema:
+                type: string
+        '404':
+          $ref: '#/components/responses/NotFound'
+      
           
   '/rest/eventi/{evento}':
-    put:
+    patch: # vedere se è PUT
       operationId: updateEvento
       tags:
         - Eventi
@@ -255,7 +273,7 @@ paths:
         '500':
           $ref: '#/components/responses/GeneralError'
         '404':
-          $ref: '#/components/responses/NotFound'      
+          $ref: '#/components/responses/NotFound'
     
     get:
       operationId: getEvento
@@ -275,7 +293,7 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
           
-  '/rest/eventi/aule/{nome}/settimana/{settimana}': # vedere come filtrare la settimana. In base alla i-esima settimana???
+  '/rest/eventi/aule/{nome}': # vedere come filtrare la settimana. In base alla i-esima settimana???
   # nella URL ci va pure eventi?
     get:
       operationId: getEventiAulaSettimana
@@ -298,13 +316,11 @@ paths:
           $ref: '#/components/responses/NotFound'
   
   # Lista degli eventi attuali e quelli delle prossime tre ore.
-  '/rest/eventi/DAVEDERE': # NON HO IDEA DI CHE CAZZ DI URL METTERE
+  '/rest/eventi/eventiProssimi':
     get:
       operationId: getEventiProssimi
       tags:
         - Eventi
-      parameters:
-        - $ref: '#/components/parameters/nomeAula' # da vedere in base all'URL
       responses:
         '200':
           description: OK
@@ -316,7 +332,6 @@ paths:
           $ref: '#/components/responses/GeneralError'
         '404':
           $ref: '#/components/responses/NotFound'
-  
 
 
 components:
@@ -343,7 +358,30 @@ components:
         email_responsabile:
           type: string
           format: email
+        tipologia:
+          type: string
+          enum:
+            - lezione
+            - esame
+            - seminario
+            - parziale
+            - riunione
+            - lauree
+            - altro
+        id_master:
+          type: integer
+          format: int32
+        id_aula:
+          $ref: '#/components/schemas/Aula'
+        id_corso:
+          $ref: '#/components/schemas/Corso'
         
+    Corso:
+      type: object
+      properties:
+        nome:
+          type: string
+    
     Attrezzature:
       type: array
       items:
@@ -412,10 +450,24 @@ components:
         
     numeroSettimana:
       name: settimana
-      in: path
+      in: query
       required: true
       schema:
         type: integer
+    
+    rangeStart:
+      in: query
+      name: rangeStart
+      required: true
+      schema:
+        type: string
+    
+    rangeEnd:
+      in: query
+      name: rangeEnd
+      required: true
+      schema:
+        type: string
   
   responses:
     GeneralError:
