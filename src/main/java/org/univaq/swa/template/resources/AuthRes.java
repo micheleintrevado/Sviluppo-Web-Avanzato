@@ -19,8 +19,8 @@ import org.univaq.swa.template.exceptions.RESTWebApplicationException;
  *
  * @author didattica
  */
-@Path("simple")
-public class SimpleRes {
+@Path("auth")
+public class AuthRes {  
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)

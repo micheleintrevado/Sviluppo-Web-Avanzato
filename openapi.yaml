@@ -9,7 +9,7 @@ info:
   version: 1.0.0
 
 servers:
-  - url: 'http://localhost:8080/AuleWeb' # DA MODIFICARE A CODICE FINITO
+  - url: 'http://localhost:8080/AuleWeb'
 
 tags:
   - name: Autenticazione
@@ -20,7 +20,7 @@ paths:
     post:
       summary: Autenticazione Amministratore
       description: Verifica le credenziali di un amministratore che tenta di autenticarsi nel sistema
-      operationId: doLogin
+      operationId: doLogin #1
       tags:
         - Autenticazione
       requestBody:
@@ -48,7 +48,7 @@ paths:
     delete:
       summary: Deautenticazione Amministratore
       description: Consente il logout dell'amministratore
-      operationId: doLogout
+      operationId: doLogout #1
       tags:
         - Autenticazione
       security:
@@ -65,7 +65,7 @@ paths:
   
   '/rest/aule/csv':
     get:
-      operationId: exportAuleCsv
+      operationId: exportAuleCsv #2
       tags: 
         - Aule
       responses:
@@ -82,7 +82,7 @@ paths:
           $ref: '#/components/responses/NotFound'
     
     post:
-      operationId: importAuleCsv
+      operationId: importAuleCsv #2
       tags: 
         - Aule
       requestBody:
@@ -115,7 +115,7 @@ paths:
   
   '/rest/aule':
     post:
-      operationId: addAula
+      operationId: addAula #3
       tags:
         - Aule
       requestBody:
@@ -142,7 +142,7 @@ paths:
   
   '/rest/aule/{nome}': # rivedere bene con codice
     post:
-      operationId: assignGruppo
+      operationId: assignGruppo #4
       tags:
         - Aule
       parameters: 
@@ -172,7 +172,7 @@ paths:
           $ref: '#/components/responses/GeneralError'
           
     get:
-      operationId: getInfoAula
+      operationId: getInfoAula #5
       tags:
         - Aule
       parameters: 
@@ -191,7 +191,7 @@ paths:
   
   '/rest/aule/{nome}/attrezzature':  
     get:
-      operationId: getFattureAnno
+      operationId: getAttrezzatureAula #6
       tags: 
         - Aule
       parameters:
@@ -213,7 +213,7 @@ paths:
     post:
       tags: 
         - Eventi
-      operationId: addEvento
+      operationId: addEvento #7
       requestBody: 
         content: 
           application/json:
@@ -237,7 +237,7 @@ paths:
           $ref: '#/components/responses/GeneralError'
     
     get:
-      operationId: getEventiForRange
+      operationId: getEventiForRange #12
       tags:
         - Eventi
       parameters: 
@@ -255,8 +255,8 @@ paths:
       
           
   '/rest/eventi/{evento}':
-    patch: # vedere se è PUT
-      operationId: updateEvento
+    patch:
+      operationId: updateEvento #8
       tags:
         - Eventi
       parameters:
@@ -276,7 +276,7 @@ paths:
           $ref: '#/components/responses/NotFound'
     
     get:
-      operationId: getEvento
+      operationId: getInfoEvento #9
       tags:
         - Eventi
       parameters:
@@ -296,7 +296,7 @@ paths:
   '/rest/eventi/aule/{nome}': # vedere come filtrare la settimana. In base alla i-esima settimana???
   # nella URL ci va pure eventi?
     get:
-      operationId: getEventiAulaSettimana
+      operationId: getEventiAulaSettimana #10
       tags:
         - Eventi
         - Aule
@@ -315,12 +315,31 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
   
-  # Lista degli eventi attuali e quelli delle prossime tre ore.
-  '/rest/eventi/eventiProssimi':
+  '/rest/eventi/attuali': # lista degli eventi attuali (non ancora terminati)
     get:
-      operationId: getEventiProssimi
+      operationId: getEventiAttuali #11
+      tags:
+      - Eventi
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Eventi'
+        '500':
+          $ref: '#/components/responses/GeneralError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  # ritorna la lista dei prossimi eventi nelle prossime x ore (se non specificato, quelli delle prossime 3 ore)
+  '/rest/eventi/prossimi':
+    get:
+      operationId: getEventiProssimi #11
       tags:
         - Eventi
+      parameters: 
+        - $ref: '#/components/parameters/oreProssime'
       responses:
         '200':
           description: OK
@@ -372,7 +391,7 @@ components:
           type: integer
           format: int32
         id_aula:
-          $ref: '#/components/schemas/Aula'
+          $ref: '#/components/schemas/Aula' # mettere url da richiamare in GET o il JSON object
         id_corso:
           $ref: '#/components/schemas/Corso'
         
@@ -468,6 +487,14 @@ components:
       required: true
       schema:
         type: string
+
+    oreProssime :
+      in: query
+      name: oreProssime
+      required: false
+      schema:
+        type: integer
+        default: 3
   
   responses:
     GeneralError:
