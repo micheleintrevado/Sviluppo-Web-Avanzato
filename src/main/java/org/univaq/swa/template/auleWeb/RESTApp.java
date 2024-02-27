@@ -52,6 +52,7 @@ public class RESTApp extends Application {
         //esempi di exception mapper, che mappano in Response eccezioni non già derivanti da WebApplicationException
         c.add(AppExceptionMapper.class);
         c.add(JacksonExceptionMapper.class);
+        
 
         classes = Collections.unmodifiableSet(c);
     }
