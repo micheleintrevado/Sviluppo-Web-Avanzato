@@ -3,6 +3,7 @@ package org.univaq.swa.template.resources;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
+import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
@@ -17,16 +18,30 @@ import org.univaq.swa.template.exceptions.RESTWebApplicationException;
 
 /**
  *
- * @author didattica
+ * @author enrico
  */
 @Path("auth")
 public class AuthRes {  
-
+    
+    // 1
+    @POST
+    @Path("login")
+    public Response doLogin(){
+        return Response.ok().build();
+    }
+    
+    // 1
+    @DELETE
+    @Path("logout")
+    public Response doLogout(){
+        return Response.noContent().build();
+    }
+    
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAll(
             @Context UriInfo uriinfo,
-            @QueryParam("p") String parametro) throws RESTWebApplicationException {
+            @QueryParam("pf") String parametro) throws RESTWebApplicationException {
 
         List<String> l = new ArrayList();
         l.add("ciao1");
