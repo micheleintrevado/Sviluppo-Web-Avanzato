@@ -2,13 +2,18 @@ package org.univaq.swa.template.resources;
 
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
-import jakarta.ws.rs.PATCH;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import org.univaq.swa.framework.model.Evento;
 
 /**
  *
@@ -17,11 +22,28 @@ import jakarta.ws.rs.core.Response;
 
 @Path("eventi")
 public class EventiRes {
+    Connection databaseConnection = DriverManager.getConnection(
+            "jdbc:mysql:/a/localhost:3306/auleweb?serverTimezone=Europe/Rome", "auleWebUser", "auleWebPassword");
     
-    @GET
-    @Produces("application/json")
-    public int prova(){
-       return 1;
+    public EventiRes() throws SQLException, ClassNotFoundException {
+
+    }
+    
+    
+    @Path("{nome: [a-zA-Z]+}")
+    public EventoRes getEvento(@PathParam("nome") String nomeEvento) throws SQLException {
+        Evento evento = new Evento();
+        try (PreparedStatement query = databaseConnection.prepareStatement("SELECT * FROM EVENTO WHERE NOME = ?")){
+            query.setString(1, nomeEvento);
+            try (ResultSet result = query.executeQuery()){
+                if(result.next()){
+                    System.out.println(result.toString());
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return new EventoRes(nomeEvento);
     }
     
     // 7
@@ -36,22 +58,6 @@ public class EventiRes {
     @GET
     @Produces("text/calendar")
     public Response getEventiForRange(){
-        return Response.ok().build();
-    }
-    
-    // 8 TODO
-    @PATCH
-    @Path("{evento: [0-9]+}")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response updateEvento(@PathParam("evento") int idEvento){
-        return Response.noContent().build();
-    }
-    
-    // 9 TODO
-    @GET
-    @Path("{evento: [0-9]+}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getInfoEvento(@PathParam("evento") int idEvento){
         return Response.ok().build();
     }
     

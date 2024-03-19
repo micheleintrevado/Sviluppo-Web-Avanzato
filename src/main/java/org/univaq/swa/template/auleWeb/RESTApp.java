@@ -9,8 +9,7 @@ import jakarta.ws.rs.core.Application;
 import org.univaq.swa.framework.jackson.ObjectMapperContextResolver;
 import org.univaq.swa.template.exceptions.AppExceptionMapper;
 import org.univaq.swa.framework.security.CORSFilter;
-import org.univaq.swa.template.resources.AuthRes;
-import org.univaq.swa.framework.security.AuthenticationRes;
+//import org.univaq.swa.template.resources.AuthRes;
 import org.univaq.swa.framework.security.AuthLoggedFilter;
 import org.univaq.swa.template.exceptions.JacksonExceptionMapper;
 import org.univaq.swa.template.resources.AuleRes;
@@ -29,11 +28,9 @@ public class RESTApp extends Application {
         HashSet<Class<?>> c = new HashSet<>();
         //aggiungiamo tutte le *root resurces* (cioè quelle
         //con l'annotazione Path) che vogliamo pubblicare
-        c.add(AuthRes.class);
+        //c.add(AuthRes.class);
         c.add(EventiRes.class);
         c.add(AuleRes.class);
-        
-        c.add(AuthenticationRes.class);
 
         //aggiungiamo il provider Jackson per poter
         //usare i suoi servizi di serializzazione e 

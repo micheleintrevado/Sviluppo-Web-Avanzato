@@ -60,6 +60,7 @@ CREATE TABLE IF NOT EXISTS `Corso` (
 -- fare il check sul corso: va messo solo quando la tipologia è lezione, esame e parziale
 CREATE TABLE IF NOT EXISTS `Evento` (
     `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `nome` VARCHAR(60) not null,
     `orario_inizio` DATETIME NOT NULL,
     `orario_fine` DATETIME NOT NULL,
     `descrizione` TINYTEXT NOT NULL,
@@ -78,8 +79,12 @@ CREATE TABLE IF NOT EXISTS `Evento` (
 );
 
 -- DATI DI PROVA
+drop user 'auleWebUser'@'localhost';
+CREATE USER 'auleWebUser'@'localhost' IDENTIFIED BY 'auleWebPassword';
+GRANT CREATE, ALTER, DROP, INSERT, UPDATE, DELETE, SELECT, REFERENCES, RELOAD on *.* TO 'auleWebUser'@'localhost' WITH GRANT OPTION;
+
 INSERT INTO `auleweb`.`aula` (`id`, `nome`, `luogo`, `edificio`, `piano`, `capienza`, `email_responsabile`, `prese_elettriche`, `prese_rete`, `note`) VALUES ('1', 'AAA', 'aaa', 'AA', 'AA', '1', 'A', '1', '1', 'A');
 INSERT INTO `auleweb`.`corso` (`id`, `nome`) VALUES ('1', 'AI');
 
-INSERT INTO `auleweb`.`evento` (`id`, `orario_inizio`, `orario_fine`, `descrizione`, `nome_organizzatore`, `email_responsabile`, `tipologia`, `id_master`, `id_aula`, `id_corso`) VALUES ('1', '11/11/11 11:00', '11/11/11 12:00', 'AAA', 'AAA', 'AAA', 'lezione', '1', '1', '1');
-INSERT INTO `auleweb`.`evento` (`id`, `orario_inizio`, `orario_fine`, `descrizione`, `nome_organizzatore`, `email_responsabile`, `tipologia`, `id_master`, `id_aula`, `id_corso`) VALUES ('1', '11/11/11 11:00', '11/11/11 12:00', 'AAA', 'AAA', 'AAA', 'seminario', '1', '1', '1');
+INSERT INTO `auleweb`.`evento` (`id`, `nome`, `orario_inizio`, `orario_fine`, `descrizione`, `nome_organizzatore`, `email_responsabile`, `tipologia`, `id_master`, `id_aula`, `id_corso`) VALUES ('1', 'lezioneSwa', '11/11/11 11:00', '11/11/11 12:00', 'AAA', 'AAA', 'AAA', 'lezione', '1', '1', '1');
+INSERT INTO `auleweb`.`evento` (`id`, `nome`, `orario_inizio`, `orario_fine`, `descrizione`, `nome_organizzatore`, `email_responsabile`, `tipologia`, `id_master`, `id_aula`, `id_corso`) VALUES ('2', 'lezioneWe', '12/11/11 11:00', '12/11/11 12:30', 'AAA', 'AAA', 'AAA', 'seminario', '1', '1', null);

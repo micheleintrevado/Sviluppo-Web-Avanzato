@@ -14,43 +14,45 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.univaq.swa.framework.model.Aula;
 
-
 /**
  *
  * @author miche
  */
 
-@Path("aule")
-public class AuleRes {
+public class AulaRes {
     
-    @Path("{nome: [a-zA-Z]+}")
-    public AulaRes getAula(@PathParam("nome") String nomeAula){
-        return new AulaRes(nomeAula);
+    private final Aula a = new Aula();
+
+    public AulaRes(String nome) {
+        // TODO prendere l'aula dal DB e crearla (oggetto java)
+        a.setNome(nome);
     }
     
-    // 3
+    
+    
+    // 4 TODO
     @POST
     @Consumes("application/json")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response addAula(Aula payload){
+    public Response assignGruppo(@PathParam("nome") String nome){
         return Response.ok().build();
     }
     
-    // 2
+    // 5 TODO
     @GET
-    @Path("csv")
-    @Produces("text/csv")
-    public Response exportAuleCsv(){
-        return Response.ok().build();
-    }
-    
-    // 2
-    @POST
-    @Path("csv")
     @Produces(MediaType.APPLICATION_JSON)
-    @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public Response importAuleCsv(){
+    public Response getInfoAula(@PathParam("nome") String nome){
+        /*Aula a = new Aula();
+        a.createDummyAula();
+        System.out.println(a.getNome());*/
         return Response.ok().build();
     }
     
+    // 6 TODO
+    @GET
+    @Path("attrezzature")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAttrezzatureAula(@PathParam("nome") String nome){
+        return Response.ok().build();
+    }
 }
