@@ -23,10 +23,10 @@ import org.univaq.swa.framework.model.Evento;
 @Path("eventi")
 public class EventiRes {
     Connection databaseConnection = DriverManager.getConnection(
-            "jdbc:mysql:/a/localhost:3306/auleweb?serverTimezone=Europe/Rome", "auleWebUser", "auleWebPassword");
+            "jdbc:mysql://localhost:3306/auleweb?serverTimezone=Europe/Rome", "auleWebUser", "auleWebPassword");
     
     public EventiRes() throws SQLException, ClassNotFoundException {
-
+        Class.forName("com.mysql.cj.jdbc.Driver");
     }
     
     
