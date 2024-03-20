@@ -19,11 +19,13 @@ import org.univaq.swa.framework.model.Evento;
  */
 public class EventoRes {
     
-    private final Evento e = new Evento();
+    private final Evento e;
 
-    EventoRes(String nomeEvento) {
-        e.setNome(nomeEvento);
+    // CREARE MAPPA PER STAMPARE OGGETTO EVENTO
+    public EventoRes(Evento ev){
+        this.e = ev;
     }
+    
     // 8 TODO
     @PATCH
     @Consumes(MediaType.APPLICATION_JSON)
