@@ -14,8 +14,10 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
@@ -32,6 +34,7 @@ public class EventiRes {
 
     private static final String DS_NAME = "java:comp/env/jdbc/auleweb";
     private static final String QUERY_SELECT_EVENTO = "SELECT * FROM evento WHERE nome = ?";
+    
 
     private static Connection getPooledConnection() throws NamingException, SQLException {
         InitialContext context = new InitialContext();
@@ -42,20 +45,38 @@ public class EventiRes {
     public EventiRes() throws SQLException, ClassNotFoundException {
         Class.forName("com.mysql.cj.jdbc.Driver");
     }
+    
+    private Evento createEvento(Map <String,Object> evento){
+        Evento e = new Evento();
+        e.setId((int) evento.get("id"));
+        e.setNome((String) evento.get("nome"));
+        e.setOrarioInizio((LocalDateTime) evento.get("orarioInizio"));
+        e.setOrarioFine((LocalDateTime) evento.get("orarioFine"));
+        e.setDescrizione((String) evento.get("descrizione"));
+        e.setNomeOrganizzatore((String) evento.get("nomeOrganizzatore"));
+        e.setEmailResponsabile((String) evento.get("emailResponsabile"));
+        e.setTipologia((Tipologia) evento.get("tipologia"));
+        
+        return e;
+        
+    }
+    
+    
+    
 
     @GET
     @Path("{nome: [a-zA-Z]+}")
-    @Produces(MediaType.TEXT_HTML)
+    @Produces(MediaType.APPLICATION_JSON)
     public EventoRes getEvento(@PathParam("nome") String nomeEvento) throws RESTWebApplicationException {
         try {
-            List<String> l = new ArrayList();
+            //List<S> l = new ArrayList();
             Evento evento = null;
             try ( Connection con = getPooledConnection();  PreparedStatement ps = con.prepareStatement(QUERY_SELECT_EVENTO)) {
                 ps.setString(1, nomeEvento);
                 try ( ResultSet rs = ps.executeQuery()) {
                     if (rs.next()) {
                         evento = obtainEvento(rs);
-                        //l.add(rs.getString("tipologia"));
+                        
                     }
                 }
             }
