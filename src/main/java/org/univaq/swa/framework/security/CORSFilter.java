@@ -32,7 +32,8 @@ public class CORSFilter implements ContainerResponseFilter, ContainerRequestFilt
                 "*,Origin, X-Requested-With, Content-Type, Accept, Authorization, X-Custom-header,X-Requested-With, content-type, access-control-allow-origin, access-control-allow-methods, access-control-allow-headers");
         responseContext.getHeaders().add(
                 "Access-Control-Allow-Methods",
-                "GET, POST, OPTIONS, PUT, DELETE, HEAD");
+                "GET, POST, OPTIONS, PUT, DELETE, HEAD, PATCH");
+                //"GET, POST, PUT, PATCH, DELETE, OPTIONS"
         responseContext.getHeaders().add(
                 "Access-Control-Expose-Headers",
                 "Location,Authorization, *");

@@ -2,6 +2,7 @@ package org.univaq.swa.template.resources;
 
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
+import jakarta.ws.rs.PATCH;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
@@ -9,14 +10,10 @@ import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import java.sql.Connection;
-import java.sql.Date;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -33,7 +30,7 @@ import org.univaq.swa.template.exceptions.RESTWebApplicationException;
 public class EventiRes {
 
     private static final String DS_NAME = "java:comp/env/jdbc/auleweb";
-    private static final String QUERY_SELECT_EVENTO = "SELECT * FROM evento WHERE nome = ?";
+    private static final String QUERY_SELECT_EVENTO = "SELECT * FROM evento WHERE id = ?";
     
 
     private static Connection getPooledConnection() throws NamingException, SQLException {
@@ -61,18 +58,30 @@ public class EventiRes {
         
     }
     
+    @PATCH
+    @Path("{id: [1-9]+}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response updateEvento(@PathParam("id") int idEvento, Map<String, Object> fieldsToUpdate){
+        System.out.println("PATCH DEGLI EVENTI");
+        for(var x : fieldsToUpdate.keySet()){
+            System.out.println(x);
+        }
+        
+        Evento evento = new Evento();
+        evento.setId(idEvento);
+        EventoRes eventoRes = new EventoRes(evento);
+        return eventoRes.updateEvento(idEvento, fieldsToUpdate);
+    }
     
-    
-
     @GET
-    @Path("{nome: [a-zA-Z]+}")
+    @Path("{id: [1-9]+}")
     @Produces(MediaType.APPLICATION_JSON)
-    public EventoRes getEvento(@PathParam("nome") String nomeEvento) throws RESTWebApplicationException {
+    public EventoRes getEvento(@PathParam("id") int idEvento) throws RESTWebApplicationException {
         try {
             //List<S> l = new ArrayList();
             Evento evento = null;
             try ( Connection con = getPooledConnection();  PreparedStatement ps = con.prepareStatement(QUERY_SELECT_EVENTO)) {
-                ps.setString(1, nomeEvento);
+                ps.setInt(1, idEvento);
                 try ( ResultSet rs = ps.executeQuery()) {
                     if (rs.next()) {
                         evento = obtainEvento(rs);
