@@ -12,6 +12,11 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import java.sql.Connection;
+import java.sql.SQLException;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
 import org.univaq.swa.framework.model.Aula;
 
 /**
@@ -21,14 +26,20 @@ import org.univaq.swa.framework.model.Aula;
 
 public class AulaRes {
     
-    private final Aula a = new Aula();
+    private final Aula a;
 
-    public AulaRes(String nome) {
+    public AulaRes(Aula aula) {
         // TODO prendere l'aula dal DB e crearla (oggetto java)
-        a.setNome(nome);
+        this.a = aula;
     }
     
-    
+    private static final String DS_NAME = "java:comp/env/jdbc/auleweb";
+
+    private static Connection getPooledConnection() throws NamingException, SQLException {
+        InitialContext context = new InitialContext();
+        DataSource ds = (DataSource) context.lookup(DS_NAME);
+        return ds.getConnection();
+    }
     
     // 4 TODO
     @POST
@@ -41,11 +52,8 @@ public class AulaRes {
     // 5 TODO
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getInfoAula(@PathParam("nome") String nome){
-        /*Aula a = new Aula();
-        a.createDummyAula();
-        System.out.println(a.getNome());*/
-        return Response.ok().build();
+    public Response getInfoAula(){
+        return Response.ok(a).build();
     }
     
     // 6 TODO
