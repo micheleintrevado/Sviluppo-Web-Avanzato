@@ -10,6 +10,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,6 +18,8 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 import org.univaq.swa.framework.model.Evento;
+import org.univaq.swa.framework.model.Tipologia;
+import org.univaq.swa.template.exceptions.RESTWebApplicationException;
 
 /**
  *
@@ -30,11 +33,12 @@ public class EventoRes {
         this.e = ev;
     }
 
-    private static final String DS_NAME = "java:comp/env/jdbc/auleweb";
+    private static final String DB_NAME = "java:comp/env/jdbc/auleweb";
+    private static final String QUERY_SELECT_EVENTO = "SELECT * FROM evento WHERE id = ?";
 
     private static Connection getPooledConnection() throws NamingException, SQLException {
         InitialContext context = new InitialContext();
-        DataSource ds = (DataSource) context.lookup(DS_NAME);
+        DataSource ds = (DataSource) context.lookup(DB_NAME);
         return ds.getConnection();
     }
 
@@ -81,30 +85,50 @@ public class EventoRes {
     // 9 TODO: vedere perché stampa male il json dell'evento
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getInfoEvento() {
+    public Response getInfoEvento(@PathParam("id") int idEvento) throws RESTWebApplicationException{
         try {
-            System.out.println("SONO IN GET INFO EVENTO <----------------------------------------------------");
-            //Map <String,Object> evento = createEvento(e);
-            return Response.ok(e).build();
-        } catch (Exception ex) {
-            ex.printStackTrace();
+            //List<S> l = new ArrayList();
+            Evento evento = null;
+            try ( Connection con = getPooledConnection();  PreparedStatement ps = con.prepareStatement(QUERY_SELECT_EVENTO)) {
+                ps.setInt(1, idEvento);
+                try ( ResultSet rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        evento = obtainEvento(rs);
+                    }
+                }
+            }
+            return Response.ok(evento).build();
+            // return "<html lang=\"en\"><body><h1>" + l.toString() + "</h1></body></html>";
+            // return Response.ok(l).build();
+        } catch (SQLException e) {
+            //e.printStackTrace();
+            System.out.println("SQL SQL SQL SQL");
+            return null;
+        } catch (NamingException e) {
+            //e.printStackTrace();
+            System.out.println("NAMING NAMING NAMING NAMING");
+            return null;
         }
-        return Response.ok().build();
     }
+    
+    
+    private Evento obtainEvento(ResultSet rs) {
+        try {
+            Evento e = new Evento();
 
-    @POST
-    private Map<String, Object> createEvento(Evento e) {
-        Map<String, Object> evento = new HashMap<String, Object>();
-        evento.put("id", e.getId());
-        evento.put("nome", e.getNome());
-        evento.put("orarioInizio", e.getOrarioInizio());
-        evento.put("orarioFine", e.getOrarioFine());
-        evento.put("descrizione", e.getDescrizione());
-        evento.put("nomeOrganizzatore", e.getNomeOrganizzatore());
-        evento.put("emailResponsabile", e.getEmailResponsabile());
-        evento.put("tipologia", e.getTipologia());
-
-        return evento;
-
+            e.setId(rs.getInt("id"));
+            e.setNome(rs.getString("nome"));
+            e.setOrarioInizio(rs.getTimestamp("orario_inizio").toLocalDateTime());
+            e.setOrarioFine(rs.getTimestamp("orario_fine").toLocalDateTime());
+            e.setDescrizione(rs.getString("descrizione"));
+            e.setNomeOrganizzatore(rs.getString("nome_organizzatore"));
+            e.setEmailResponsabile(rs.getString("email_responsabile"));
+            e.setTipologia(Tipologia.valueOf(rs.getString("tipologia")));
+            return e;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
+    
 }

@@ -140,21 +140,21 @@ paths:
         '500':
           $ref: '#/components/responses/GeneralError'
   
-  '/rest/aule/{nome}': # rivedere bene con codice
+  '/rest/aule/{id}/assignGruppo':
     post:
       operationId: assignGruppo #4
       tags:
         - Aule
       parameters: 
-        - $ref: '#/components/parameters/nomeAula'
+        - $ref: '#/components/parameters/idAula'
       requestBody:
         content:
           application/json:
             schema:
               type: object
               properties:
-                nome: 
-                  type: string
+                id: 
+                  type: integer
       responses:
         '201':
           description: created
@@ -176,7 +176,7 @@ paths:
       tags:
         - Aule
       parameters: 
-        - $ref: '#/components/parameters/nomeAula'
+        - $ref: '#/components/parameters/idAula'
       responses:
         '200':
           description: OK
@@ -195,7 +195,7 @@ paths:
       tags: 
         - Aule
       parameters:
-        - $ref: '#/components/parameters/nomeAula'
+        - $ref: '#/components/parameters/idAula'
       responses:
         '200':
           description: OK
@@ -301,7 +301,7 @@ paths:
         - Eventi
         - Aule
       parameters:
-        - $ref: '#/components/parameters/nomeAula'
+        - $ref: '#/components/parameters/idAula'
         - $ref: '#/components/parameters/numeroSettimana'
       responses:
         '200':
@@ -453,12 +453,12 @@ components:
       bearerFormat: internalToken
       
   parameters:
-    nomeAula:
-      name: nome
+    idAula:
+      name: id
       in: path
       required: true
       schema:
-        type: string
+        type: integer
         
     idEvento:
       name: evento

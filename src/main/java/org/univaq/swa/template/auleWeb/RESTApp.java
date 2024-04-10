@@ -12,8 +12,10 @@ import org.univaq.swa.framework.security.CORSFilter;
 //import org.univaq.swa.template.resources.AuthRes;
 import org.univaq.swa.framework.security.AuthLoggedFilter;
 import org.univaq.swa.template.exceptions.JacksonExceptionMapper;
+import org.univaq.swa.template.resources.AulaRes;
 import org.univaq.swa.template.resources.AuleRes;
 import org.univaq.swa.template.resources.EventiRes;
+import org.univaq.swa.template.resources.EventoRes;
 
 /**
  *
@@ -31,6 +33,8 @@ public class RESTApp extends Application {
         //c.add(AuthRes.class);
         c.add(EventiRes.class);
         c.add(AuleRes.class);
+        c.add(EventoRes.class);
+        c.add(AulaRes.class);
 
         //aggiungiamo il provider Jackson per poter
         //usare i suoi servizi di serializzazione e 
