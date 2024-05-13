@@ -90,8 +90,20 @@ INSERT INTO `auleweb`.`corso` (`id`, `nome`) VALUES ('1', 'AI');
 
 INSERT INTO `auleweb`.`evento` (`id`, `nome`, `orario_inizio`, `orario_fine`, `descrizione`, `nome_organizzatore`, `email_responsabile`, `tipologia`, `id_master`, `id_aula`, `id_corso`) VALUES ('1', 'lezioneSwa', '11/11/11 11:00', '11/11/11 12:00', 'AAA', 'AAA', 'AAA', 'lezione', '1', '1', '1');
 INSERT INTO `auleweb`.`evento` (`id`, `nome`, `orario_inizio`, `orario_fine`, `descrizione`, `nome_organizzatore`, `email_responsabile`, `tipologia`, `id_master`, `id_aula`, `id_corso`) VALUES ('2', 'lezioneWe', '12/11/11 11:00', '12/11/11 12:30', 'AAA', 'AAA', 'AAA', 'seminario', '1', '1', null);
+INSERT INTO `auleweb`.`evento` (`id`, `nome`, `orario_inizio`, `orario_fine`, `descrizione`, `nome_organizzatore`, `email_responsabile`, `tipologia`, `id_master`, `id_aula`, `id_corso`) VALUES ('3', 'TerzaSettPrimo', '2024/01/16 11:00', '2024/01/16 13:00', 'AAA', 'AAA', 'AAA', 'seminario', '1', '1', null);
+INSERT INTO `auleweb`.`evento` (`id`, `nome`, `orario_inizio`, `orario_fine`, `descrizione`, `nome_organizzatore`, `email_responsabile`, `tipologia`, `id_master`, `id_aula`, `id_corso`) VALUES ('4', 'TerzaSettPrimo', '2024/01/18 11:00', '2024/01/18 13:30', 'AAA', 'AAA', 'AAA', 'lezione', '1', '1', null);
+INSERT INTO `auleweb`.`evento` (`id`, `nome`, `orario_inizio`, `orario_fine`, `descrizione`, `nome_organizzatore`, `email_responsabile`, `tipologia`, `id_master`, `id_aula`, `id_corso`) VALUES ('5', 'TerzaSettPrimo', '2024/01/20 11:00', '2024/01/20 12:00', 'AAA', 'AAA', 'AAA', 'seminario', '1', '1', null);
+INSERT INTO `auleweb`.`evento` (`id`, `nome`, `orario_inizio`, `orario_fine`, `descrizione`, `nome_organizzatore`, `email_responsabile`, `tipologia`, `id_master`, `id_aula`, `id_corso`) VALUES ('6', 'TerzaSettPrimo', '2024/02/20 09:00', '2024/02/20 09:30', 'AAA', 'AAA', 'AAA', 'lezione', '1', '1', null);
 
 INSERT INTO `auleweb`.`gruppo` (`id`, `nome`, `descrizione`) VALUES ('1', 'nomeGruppo', 'descrizioneeee');
 INSERT INTO `auleweb`.`gruppo` (`id`, `nome`, `descrizione`) VALUES ('2', 'altro gruppo', 'altra descrizione');
 
 INSERT INTO `auleweb`.`aula_gruppo` (`id`,`id_aula`,`id_gruppo`) VALUES ('1','1','1');
+
+INSERT INTO `auleweb`.`attrezzatura` (`id`,`tipo`) VALUES ('1','proiettore#1');
+INSERT INTO `auleweb`.`attrezzatura` (`id`,`tipo`) VALUES ('2','computer fisso#1');
+INSERT INTO `auleweb`.`attrezzatura` (`id`,`tipo`) VALUES ('3','condizionatore');
+
+INSERT INTO `auleweb`.`aula_attrezzatura` (`id`,`id_aula`,`id_attrezzatura`) VALUES ('1','1','1');
+INSERT INTO `auleweb`.`aula_attrezzatura` (`id`,`id_aula`,`id_attrezzatura`) VALUES ('2','1','2');
+INSERT INTO `auleweb`.`aula_attrezzatura` (`id`,`id_aula`,`id_attrezzatura`) VALUES ('3','2','3');

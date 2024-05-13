@@ -20,11 +20,13 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
+import org.univaq.swa.framework.model.Attrezzatura;
 import org.univaq.swa.framework.model.Evento;
 import org.univaq.swa.framework.model.Tipologia;
 import org.univaq.swa.framework.security.Logged;
@@ -38,6 +40,7 @@ import org.univaq.swa.template.exceptions.RESTWebApplicationException;
 public class EventiRes {
 
     private static final String DB_NAME = "java:comp/env/jdbc/auleweb";
+    private static final String QUERY_SELECT_EVENTI_SETTIMANA = "SELECT * FROM evento WHERE week((DATE(orario_inizio))) = week((CONCAT(YEAR(orario_inizio), '-01-01'))) + ? - 1;";
 
     private static Connection getPooledConnection() throws NamingException, SQLException {
         InitialContext context = new InitialContext();
@@ -68,11 +71,6 @@ public class EventiRes {
     @Path("{id: [1-9]+}")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response updateEvento(@PathParam("id") int idEvento, Map<String, Object> fieldsToUpdate) {
-        /*System.out.println("PATCH DEGLI EVENTI");
-        for(var x : fieldsToUpdate.keySet()){
-            System.out.println(x);
-        }*/
-
         Evento evento = new Evento();
         evento.setId(idEvento);
         EventoRes eventoRes = new EventoRes(evento);
@@ -140,7 +138,7 @@ public class EventiRes {
         return null;
     }
 
-    // 12 TODO --> gestione parametri
+    // 12 TODO --> gestione parametri esportazione in formato iCalendar
     @GET
     @Produces("text/calendar")
     public Response getEventiForRange() {
@@ -149,11 +147,28 @@ public class EventiRes {
 
     // 10 TODO, Cambiare nome
     @GET
-    @Path("aule/{nome: [a-zA-Z]+}")
+    @Path("aule/{nome: [a-zA-Z]+}/{settimana: }")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getEventiAulaSettimana(@PathParam("nome") String nome
     ) {
-        return Response.ok().build();
+        try {
+            ArrayList<Attrezzatura> attrezzature = new ArrayList<Attrezzatura>();
+            try ( Connection con = getPooledConnection();  PreparedStatement ps = con.prepareStatement(QUERY_SELECT_EVENTI_SETTIMANA)) {
+                ps.setInt(1, idAula);
+                try ( ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()){
+                        //attrezzature.add(obtainAttrezzatura(rs));
+                    }
+                }
+            }
+            return Response.ok(attrezzature).build();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return null;
+        } catch (NamingException ex) {
+            ex.printStackTrace();
+            return null;
+        }
     }
 
     // 11

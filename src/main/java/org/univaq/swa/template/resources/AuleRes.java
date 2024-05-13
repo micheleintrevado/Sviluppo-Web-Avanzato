@@ -128,4 +128,15 @@ public class AuleRes {
         return Response.ok().build();
     }
     
+    @GET
+    @Path("{id: [1-9]+}/attrezzature")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAttrezzatureAula(@PathParam("id") int idAula)throws RESTWebApplicationException {
+        Aula aula = new Aula();
+        aula.setId(idAula);
+        AulaRes aulaRes = new AulaRes(aula);
+        
+        return aulaRes.getAttrezzatureAula(idAula);
+    }
+    
 }

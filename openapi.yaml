@@ -19,7 +19,7 @@ paths:
   '/rest/auth/login':
     post:
       summary: Autenticazione Amministratore
-      description: Verifica le credenziali di un amministratore che tenta di autenticarsi nel sistema
+      description: Verifica le credenziali di un amministratore che tenta di autenticarsi nel sistema.
       operationId: doLogin #1
       tags:
         - Autenticazione
@@ -47,7 +47,7 @@ paths:
   '/rest/auth/logout':
     delete:
       summary: Deautenticazione Amministratore
-      description: Consente il logout dell'amministratore
+      description: Consente il logout dell'amministratore.
       operationId: doLogout #1
       tags:
         - Autenticazione
@@ -66,6 +66,7 @@ paths:
   '/rest/aule/csv':
     get:
       operationId: exportAuleCsv #2
+      description: Esportazione CSV configurazione aule.
       tags: 
         - Aule
       responses:
@@ -83,6 +84,7 @@ paths:
     
     post:
       operationId: importAuleCsv #2
+      description: Importazione CSV configurazione aule.
       tags: 
         - Aule
       requestBody:
@@ -116,6 +118,7 @@ paths:
   '/rest/aule':
     post:
       operationId: addAula #3
+      description: Inserimento di una nuova aula.
       tags:
         - Aule
       requestBody:
@@ -143,6 +146,7 @@ paths:
   '/rest/aule/{id}/assignGruppo':
     post:
       operationId: assignGruppo #4
+      description: Assegnazione di un'aula a un gruppo.
       tags:
         - Aule
       parameters: 
@@ -173,6 +177,7 @@ paths:
           
     get:
       operationId: getInfoAula #5
+      description: Lettura delle informazioni di base relative a un'aula.
       tags:
         - Aule
       parameters: 
@@ -189,9 +194,10 @@ paths:
         '500':
           $ref: '#/components/responses/GeneralError'
   
-  '/rest/aule/{nome}/attrezzature':  
+  '/rest/aule/{id}/attrezzature':  
     get:
       operationId: getAttrezzatureAula #6
+      description: Lista delle attrezzature presenti in un'aula.
       tags: 
         - Aule
       parameters:
@@ -214,6 +220,7 @@ paths:
       tags: 
         - Eventi
       operationId: addEvento #7
+      description: Inserimento di un nuovo evento.
       requestBody: 
         content: 
           application/json:
@@ -238,6 +245,7 @@ paths:
     
     get:
       operationId: getEventiForRange #12
+      description: Esportazione di tutti gli eventi relativi a un certo intervallo di tempo in formato iCalendar.
       tags:
         - Eventi
       parameters: 
@@ -257,6 +265,7 @@ paths:
   '/rest/eventi/{evento}':
     patch:
       operationId: updateEvento #8
+      description: Modifica di un evento.
       tags:
         - Eventi
       parameters:
@@ -277,6 +286,7 @@ paths:
     
     get:
       operationId: getInfoEvento #9
+      description: Lettura delle informazioni su un evento.
       tags:
         - Eventi
       parameters:
@@ -293,10 +303,11 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
           
-  '/rest/eventi/aule/{nome}': # vedere come filtrare la settimana. In base alla i-esima settimana???
+  '/rest/eventi/aule/{nome}/{settimana}': # vedere come filtrare la settimana. In base alla i-esima settimana???
   # nella URL ci va pure eventi?
     get:
       operationId: getEventiAulaSettimana #10
+      description: Lista degli eventi associati a una specifica aula in una determinata settimana.
       tags:
         - Eventi
         - Aule
@@ -315,9 +326,10 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
   
-  '/rest/eventi/attuali': # lista degli eventi attuali (non ancora terminati)
+  '/rest/eventi/attuali':
     get:
       operationId: getEventiAttuali #11
+      description: Lista degli eventi attuali (non ancora terminati).
       tags:
       - Eventi
       responses:
@@ -332,10 +344,10 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
-  # ritorna la lista dei prossimi eventi nelle prossime x ore (se non specificato, quelli delle prossime 3 ore)
   '/rest/eventi/prossimi':
     get:
       operationId: getEventiProssimi #11
+      description: Lista degli eventi delle n prossime ore (se non specificato, quelli delle prossime 3 ore).
       tags:
         - Eventi
       parameters: 
