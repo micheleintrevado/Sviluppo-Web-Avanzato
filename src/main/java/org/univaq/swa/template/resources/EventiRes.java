@@ -1,12 +1,14 @@
 package org.univaq.swa.template.resources;
 
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.DefaultValue;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.PATCH;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -27,6 +29,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 import org.univaq.swa.framework.model.Attrezzatura;
+import org.univaq.swa.framework.model.Aula;
 import org.univaq.swa.framework.model.Evento;
 import org.univaq.swa.framework.model.Tipologia;
 import org.univaq.swa.framework.security.Logged;
@@ -41,6 +44,8 @@ public class EventiRes {
 
     private static final String DB_NAME = "java:comp/env/jdbc/auleweb";
     private static final String QUERY_SELECT_EVENTI_SETTIMANA = "SELECT * FROM evento WHERE week((DATE(orario_inizio))) = week((CONCAT(YEAR(orario_inizio), '-01-01'))) + ? - 1;";
+    private static final String QUERY_SELECT_EVENTI_ATTUALI = "select * from evento where orario_inizio < now() and orario_fine > now();";
+    private static final String QUERY_SELECT_EVENTI_PROSSIME_ORE = "select * from evento where orario_inizio < date_add(now(), INTERVAL ? hour) and orario_fine >= now()";
 
     private static Connection getPooledConnection() throws NamingException, SQLException {
         InitialContext context = new InitialContext();
@@ -154,7 +159,7 @@ public class EventiRes {
         try {
             ArrayList<Attrezzatura> attrezzature = new ArrayList<Attrezzatura>();
             try ( Connection con = getPooledConnection();  PreparedStatement ps = con.prepareStatement(QUERY_SELECT_EVENTI_SETTIMANA)) {
-                ps.setInt(1, idAula);
+                ps.setString(1, nome);
                 try ( ResultSet rs = ps.executeQuery()) {
                     while (rs.next()){
                         //attrezzature.add(obtainAttrezzatura(rs));
@@ -176,15 +181,70 @@ public class EventiRes {
     @Path("attuali")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getEventiAttuali() {
-        return Response.ok().build();
+        try {
+            ArrayList<Evento> eventiAttuali = new ArrayList<Evento>();
+            try ( Connection con = getPooledConnection();  PreparedStatement ps = con.prepareStatement(QUERY_SELECT_EVENTI_ATTUALI)) {
+                try ( ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()){
+                        eventiAttuali.add(obtainEvento(rs));
+                    }
+                }
+            }
+            
+            return Response.ok(eventiAttuali).build();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return null;
+        } catch (NamingException ex) {
+            ex.printStackTrace();
+            return null;
+        }
     }
 
     // 11 TODO --> gestione parametri (x ore)
     @GET
     @Path("prossimi")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getEventiProssimi() {
-        return Response.ok().build();
+    public Response getEventiProssimi(@QueryParam("prossimeOre")@DefaultValue("3") int prossimeOre) {
+        try {
+            ArrayList<Evento> eventiAttuali = new ArrayList<Evento>();
+            
+            try ( Connection con = getPooledConnection();  PreparedStatement ps = con.prepareStatement(QUERY_SELECT_EVENTI_PROSSIME_ORE)) {
+                ps.setInt(1, prossimeOre);
+                try ( ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()){
+                        eventiAttuali.add(obtainEvento(rs));
+                    }
+                }
+            }
+            
+            return Response.ok(eventiAttuali).build();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return null;
+        } catch (NamingException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+    
+    private Evento obtainEvento(ResultSet rs) {
+        try {
+            Evento e = new Evento();
+
+            e.setId(rs.getInt("id"));
+            e.setNome(rs.getString("nome"));
+            e.setOrarioInizio(rs.getTimestamp("orario_inizio").toLocalDateTime());
+            e.setOrarioFine(rs.getTimestamp("orario_fine").toLocalDateTime());
+            e.setDescrizione(rs.getString("descrizione"));
+            e.setNomeOrganizzatore(rs.getString("nome_organizzatore"));
+            e.setEmailResponsabile(rs.getString("email_responsabile"));
+            e.setTipologia(Tipologia.valueOf(rs.getString("tipologia")));
+            return e;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
 }
