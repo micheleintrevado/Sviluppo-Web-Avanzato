@@ -11,9 +11,9 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.UriInfo;
-import java.io.BufferedWriter;
+import java.io.File;
+import java.io.InputStream;
 import java.net.URI;
-import java.nio.file.Files;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -26,6 +26,7 @@ import javax.naming.NamingException;
 import javax.sql.DataSource;
 import org.univaq.swa.framework.model.Aula;
 import org.univaq.swa.framework.security.Logged;
+import org.univaq.swa.framework.utility.CsvUtility;
 import org.univaq.swa.template.exceptions.RESTWebApplicationException;
 
 
@@ -35,13 +36,13 @@ import org.univaq.swa.template.exceptions.RESTWebApplicationException;
  */
 
 @Path("aule")
-public class AuleRes {
+public class AuleRes{
     
     @Context
     private ServletContext servletContext;
     
     private static final String DS_NAME = "java:comp/env/jdbc/auleweb";
-    private static final String QUERY_SELECT_CONFIGURAZIONE_AULE = "select aula.id, aula.nome as nome_aula, luogo, edificio, piano, capienza, email_responsabile, prese_elettriche, prese_rete, note, gruppo.nome as nome_gruppo from aula join aula_gruppo on aula.id = aula_gruppo.id_aula join gruppo on aula_gruppo.id_gruppo = gruppo.id";
+    private static final String QUERY_SELECT_CONFIGURAZIONE_AULE = "SELECT aula.id, aula.nome AS nome_aula, luogo, edificio, piano, capienza, email_responsabile, prese_elettriche, prese_rete, note, gruppo.nome AS nome_gruppo FROM aula LEFT JOIN aula_gruppo ON aula.id = aula_gruppo.id_aula LEFT JOIN gruppo ON aula_gruppo.id_gruppo = gruppo.id;";
     
 
     private static Connection getPooledConnection() throws NamingException, SQLException {
@@ -145,10 +146,16 @@ public class AuleRes {
             }
             
             //here we build the csv file
-            String path = servletContext.getRealPath("") + "\\csv\\configurazioneAule.csv";
-            //BufferedWriter writer = Files.newBufferedWriter()
+            String path = servletContext.getRealPath("");
+            File fileCsv = new File(path, "csv\\configurazione_aule.csv");
+            if(!fileCsv.getParentFile().exists()){
+                fileCsv.getParentFile().mkdirs();
+            }
             
-            return Response.ok().build();
+            CsvUtility.csvAuleWrite(fileCsv, configurazioneAule);            
+            return Response.ok(fileCsv, "text/csv").
+                    header("Content-Disposition", "attachment;filename=configurazione_aule.csv")
+                    .build();
         } catch (SQLException ex) {
             ex.printStackTrace();
             return null;
@@ -163,8 +170,68 @@ public class AuleRes {
     @Path("csv")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.MULTIPART_FORM_DATA)
-    public Response importAuleCsv(){
-        return Response.ok().build();
+    public Response importAuleCsv(@Context UriInfo uriinfo, InputStream csvFile) throws NamingException, SQLException{
+        ArrayList<HashMap<String, Object>> csvData = CsvUtility.csvAuleRead(csvFile);
+        
+        System.out.println("---------------> MI TROVO IN IMPORT AULE CSV");
+        for(var aula: csvData){
+            System.out.println("----------------------------------");
+            for(var entry : aula.keySet()) {
+                System.out.println(entry + ": " + aula.get(entry));
+            }
+        }
+        Connection con = getPooledConnection();
+        final String addAulaQuery = "INSERT INTO `aula` (`nome`, `luogo`, `edificio`, `piano`, `capienza`, `email_responsabile`, `prese_elettriche`, `prese_rete`, `note`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
+        final String addAulaGruppoQuery = "";
+        final String addGruppoQuery = "";
+        for(HashMap<String, Object> aula:csvData){
+        try (PreparedStatement addAulaStatement = con.prepareStatement(addAulaQuery, Statement.RETURN_GENERATED_KEYS)) {
+
+            addAulaStatement.setString(1,(String) aula.get("nomeAula"));
+            addAulaStatement.setString(2,(String) aula.get("luogo"));
+            addAulaStatement.setString(3,(String) aula.get("edificio"));
+            addAulaStatement.setString(4,(String) aula.get("piano"));
+            addAulaStatement.setInt(5,(int) aula.get("capienza"));
+            addAulaStatement.setString(6,(String) aula.get("emailResponsabile"));
+            addAulaStatement.setInt(7,(int) aula.get("preseElettriche"));
+            addAulaStatement.setInt(8,(int) aula.get("preseRete"));
+            addAulaStatement.setString(9,(String) aula.get("note"));
+            addAulaStatement.executeUpdate();
+            // vedo se l'aula appartiene a un gruppo e se quest'ulti è già esistente nel DB non lo creo nuovamente
+            if ((String)aula.get("nomeGruppo") != ""){
+                String selectGruppoQuery= "SELECT * FROM GRUPPO where nome = ?;";
+                try (PreparedStatement selectGruppoStatement = con.prepareStatement(selectGruppoQuery, Statement.RETURN_GENERATED_KEYS)){
+                    selectGruppoStatement.setString(1, (String) aula.get("nomeGruppo"));
+                    try ( ResultSet rs = selectGruppoStatement.executeQuery()) {
+                        if (rs.next()){
+                            // caso in cui il gruppo specifico è già esistente
+                            
+                        }else{
+                            // caso in cui il gruppo specifico non è già esistente. quindi devo crearlo
+                            
+                        }
+                    }
+                }
+            }
+            
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        }
+        /*
+        try ( ResultSet keys = addAulaStatement.getGeneratedKeys()) {
+                keys.next();
+                int id = keys.getInt(2);
+                URI uri = uriinfo.getBaseUriBuilder()
+                        .path(AuleRes.class)
+                        .path(AuleRes.class, "getAula")
+                        .build(id);
+
+                System.out.println(uri);
+
+                return Response.created(uri).build();
+            }*/
+        return Response.noContent().build();
     }
     
     @GET
