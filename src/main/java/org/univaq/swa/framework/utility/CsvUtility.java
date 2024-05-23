@@ -24,8 +24,6 @@ public class CsvUtility {
     
     public static void csvAuleWrite(File fileCsv, ArrayList<HashMap<String, Object>> configurazioneAule){
         try{
-            
-            //BufferedWriter fileWriter = Files.newBufferedWriter(Paths.get(path)); 
             FileWriter fileWriter = new FileWriter(fileCsv);
             CSVFormat format = CSVFormat.DEFAULT.builder()
                     .setHeader("ID", "NOME AULA", "LUOGO","EDIFICIO","PIANO","CAPIENZA", "EMAIL RESPONSABILE","PRESE ELETTRICHE","PRESE RETE","NOTE","NOME GRUPPO")

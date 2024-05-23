@@ -145,8 +145,7 @@ public class AuleRes {
             File fileCsv = new File(path, "csv\\configurazione_aule.csv");
             if (!fileCsv.getParentFile().exists()) {
                 fileCsv.getParentFile().mkdirs();
-            }
-            
+            } 
             CsvUtility.csvAuleWrite(fileCsv, configurazioneAule);
             return Response.ok(fileCsv, "text/csv").
                     header("Content-Disposition", "attachment;filename=configurazione_aule.csv")

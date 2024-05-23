@@ -492,6 +492,7 @@ components:
       required: true
       schema:
         type: string
+        format: date-time
     
     rangeEnd:
       in: query
@@ -499,6 +500,7 @@ components:
       required: true
       schema:
         type: string
+        format: date-time
 
     oreProssime :
       in: query
