@@ -25,10 +25,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -87,7 +90,7 @@ public class EventiRes {
         return e;
 
     }
-    
+
     // 12
     @GET
     @Produces("text/calendar")
@@ -168,47 +171,135 @@ public class EventiRes {
     @Consumes(MediaType.APPLICATION_JSON)
     //@Logged
     public Response addEvento(@Context UriInfo uriinfo, HashMap<String, Object> evento) {
-        String addEventoQuery = "INSERT INTO `evento` (`nome`, `orario_inizio`, `orario_fine`, `descrizione`, `nome_organizzatore`, `email_responsabile`, `tipologia`, `id_master`, `id_aula`, `id_corso`) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        try ( Connection con = getPooledConnection();  PreparedStatement ps = con.prepareStatement(addEventoQuery, Statement.RETURN_GENERATED_KEYS)) {
-            ps.setString(1, (String) evento.get("nome"));
+        String addEventoNonRicorrenteQuery = "INSERT INTO `evento` (`nome`, `orario_inizio`, `orario_fine`, `descrizione`, `nome_organizzatore`, `email_responsabile`, `tipologia`, `id_aula`, `id_corso`) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String addEventoRicorrenteQuery = "INSERT INTO `evento` (`nome`, `orario_inizio`, `orario_fine`, `descrizione`, `nome_organizzatore`, `email_responsabile`, `tipologia`, `id_aula`, `id_corso`, `id_master`) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String addRicorrenzaQuery = "INSERT INTO `ricorrenza` (`tipo`, `data_termine`) VALUES ( ?, ?);";
+        Integer id_master = null;
 
-            var orarioInizio = evento.get("orario_inizio");
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-            LocalDateTime dateTime = LocalDateTime.parse((String) orarioInizio, formatter);
-            ps.setTimestamp(2, Timestamp.valueOf(dateTime));
+        // gestione dell'evento ricorrente
+        if (evento.get("tipo") != null && evento.get("data_termine") != null) {
+            // preparazione statement inserimento della ricorrenza (che sarà l'"id master" dell'evento)
+            try ( Connection con = getPooledConnection();  PreparedStatement addRicorrenzaStatement = con.prepareStatement(addRicorrenzaQuery, Statement.RETURN_GENERATED_KEYS)) {
+                addRicorrenzaStatement.setString(1, (String) evento.get("tipo"));
 
-            var orarioFine = evento.get("orario_fine");
-            dateTime = LocalDateTime.parse((String) orarioFine, formatter);
-            ps.setTimestamp(3, Timestamp.valueOf(dateTime));
+                var dataTermine = evento.get("data_termine");
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                LocalDateTime dateTermineRicorrenza = LocalDateTime.parse((String) dataTermine, formatter);
+                addRicorrenzaStatement.setTimestamp(2, Timestamp.valueOf(dateTermineRicorrenza));
 
-            ps.setString(4, (String) evento.get("descrizione"));
-            ps.setString(5, (String) evento.get("nome_organizzatore"));
-            ps.setString(6, (String) evento.get("email_responsabile"));
+                
+                //creazione della ricorrenza nel DB e salvataggio del suo ID (che sarà l'id master dell'evento)
+                addRicorrenzaStatement.executeUpdate();
+                try ( ResultSet rsAddRicorrenza = addRicorrenzaStatement.getGeneratedKeys();) {
+                    rsAddRicorrenza.next();
+                    id_master = rsAddRicorrenza.getInt(1);
+                    
+                    System.out.println("------ID MASTER: " + id_master.intValue());
+                }
 
-            ps.setString(7, (String) evento.get("tipologia"));
+                ArrayList<LocalDateTime> dateRicorrenzeInizio = new ArrayList<LocalDateTime>();
+                ArrayList<LocalDateTime> dateRicorrenzeFine = new ArrayList<LocalDateTime>();
 
-            ps.setInt(8, (int) evento.get("id_master"));
-            ps.setInt(9, (int) evento.get("id_aula"));
-            ps.setInt(10, (int) evento.get("id_corso"));
+                var dataOrarioInizio = evento.get("orario_inizio");
+                LocalDate dataInizioEvento = LocalDateTime.parse((String) dataOrarioInizio, formatter).toLocalDate();
+                LocalTime orarioInizioEvento = LocalDateTime.parse((String) dataOrarioInizio, formatter).toLocalTime();
 
-            ps.executeUpdate();
+                var dataOrarioFine = evento.get("orario_fine");
+                LocalDate dataFineEvento = LocalDateTime.parse((String) dataOrarioFine, formatter).toLocalDate();
+                LocalTime orarioFineEvento = LocalDateTime.parse((String) dataOrarioFine, formatter).toLocalTime();
 
-            try ( ResultSet keys = ps.getGeneratedKeys()) {
-                keys.next();
-                int idEvento = keys.getInt(1);
-                URI uri = uriinfo.getBaseUriBuilder()
-                        .path(EventiRes.class)
-                        .path(EventiRes.class, "getEvento")
-                        .build(idEvento);
-                return Response.created(uri).build();
+                // mi popolo le liste dateRicorrenzeInizio e dateRicorrenzeFine che contengono le ricorrenze dell'evento fino alla scadenza della ricorrenza
+                while (!dataFineEvento.isAfter(dateTermineRicorrenza.toLocalDate())) {
+                    LocalDateTime dataOraInizioEvento = LocalDateTime.of(dataInizioEvento, orarioInizioEvento);
+                    LocalDateTime dataOraFineEvento = LocalDateTime.of(dataFineEvento, orarioFineEvento);
+
+                    dateRicorrenzeInizio.add(dataOraInizioEvento);
+                    dateRicorrenzeFine.add(dataOraFineEvento);
+
+                    switch (evento.get("tipo").toString()) {
+                        case "giornaliera":
+                            dataInizioEvento = dataInizioEvento.plusDays(1);
+                            dataFineEvento = dataFineEvento.plusDays(1);
+                            break;
+                        case "settimanale":
+                            dataInizioEvento = dataInizioEvento.plusWeeks(1);
+                            dataFineEvento = dataFineEvento.plusWeeks(1);
+                            break;
+                        case "mensile":
+                            dataInizioEvento = dataInizioEvento.plusMonths(1);
+                            dataFineEvento = dataFineEvento.plusMonths(1);
+                            break;
+                    }
+                }
+
+                Iterator<LocalDateTime> ricorrenzeInizioIterator = dateRicorrenzeInizio.iterator();
+                Iterator<LocalDateTime> ricorrenzeFineIterator = dateRicorrenzeFine.iterator();
+                while (ricorrenzeInizioIterator.hasNext() && ricorrenzeFineIterator.hasNext()) {
+                    LocalDateTime dataInizioRicorrenzaEvento = ricorrenzeInizioIterator.next();
+                    LocalDateTime dataFineRicorrenzaEvento = ricorrenzeFineIterator.next();
+                    try (PreparedStatement ps = con.prepareStatement(addEventoRicorrenteQuery, Statement.RETURN_GENERATED_KEYS)) {                        
+                        ps.setString(1, (String) evento.get("nome"));
+                        ps.setTimestamp(2, Timestamp.valueOf(dataInizioRicorrenzaEvento));
+                        ps.setTimestamp(3, Timestamp.valueOf(dataFineRicorrenzaEvento));
+                        ps.setString(4, (String) evento.get("descrizione"));
+                        ps.setString(5, (String) evento.get("nome_organizzatore"));
+                        ps.setString(6, (String) evento.get("email_responsabile"));
+                        ps.setString(7, (String) evento.get("tipologia"));
+                        ps.setInt(9, (int) evento.get("id_aula"));
+                        ps.setInt(10, (int) evento.get("id_corso"));
+                        ps.setInt(8, id_master);
+
+                        ps.executeUpdate();
+
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                    }
+                }
+
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            } catch (NamingException ex) {
+                ex.printStackTrace();
             }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        } catch (NamingException ex) {
-            ex.printStackTrace();
+        } else {
+            try ( Connection con = getPooledConnection();  PreparedStatement ps = con.prepareStatement(addEventoNonRicorrenteQuery, Statement.RETURN_GENERATED_KEYS)) {
+                ps.setString(1, (String) evento.get("nome"));
+
+                var orarioInizio = evento.get("orario_inizio");
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                LocalDateTime dateTime = LocalDateTime.parse((String) orarioInizio, formatter);
+                ps.setTimestamp(2, Timestamp.valueOf(dateTime));
+
+                var orarioFine = evento.get("orario_fine");
+                dateTime = LocalDateTime.parse((String) orarioFine, formatter);
+                ps.setTimestamp(3, Timestamp.valueOf(dateTime));
+                ps.setString(4, (String) evento.get("descrizione"));
+                ps.setString(5, (String) evento.get("nome_organizzatore"));
+                ps.setString(6, (String) evento.get("email_responsabile"));
+                ps.setString(7, (String) evento.get("tipologia"));
+                ps.setInt(8, (int) evento.get("id_aula"));
+                ps.setInt(9, (int) evento.get("id_corso"));
+
+                ps.executeUpdate();
+
+                try ( ResultSet keys = ps.getGeneratedKeys()) {
+                    keys.next();
+                    int idEvento = keys.getInt(1);
+                    URI uri = uriinfo.getBaseUriBuilder()
+                            .path(EventiRes.class)
+                            .path(EventiRes.class, "getEvento")
+                            .build(idEvento);
+                    return Response.created(uri).build();
+                }
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            } catch (NamingException ex) {
+                ex.printStackTrace();
+            }
         }
-        return null;
-    }    
+
+        return Response.noContent().build();
+    }
 
     // 10 TODO, Cambiare nome
     @GET
