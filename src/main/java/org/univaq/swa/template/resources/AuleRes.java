@@ -66,8 +66,9 @@ public class AuleRes {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("{id: [1-9]+}")
+    @Path("{id: [1-9]+}/assignGruppo")
     public Response assignGruppo(@Context UriInfo uriinfo, @PathParam("id") int idAula, HashMap<String, Object> gruppo) throws RESTWebApplicationException {
+        System.out.println("---------------------------> MI TROVO IN assignGruppoAula DI AULE RES");
         Aula aula = new Aula();
         aula.setId(idAula);
         AulaRes aulaRes = new AulaRes(aula);
@@ -77,7 +78,7 @@ public class AuleRes {
 
     // 3
     @POST
-    @Logged
+    //@Logged
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response addAula(@Context UriInfo uriinfo, HashMap<String, Object> evento) {
@@ -234,20 +235,11 @@ public class AuleRes {
                 ex.printStackTrace();
             }
         }
-        /*
-        try ( ResultSet keys = addAulaStatement.getGeneratedKeys()) {
-                keys.next();
-                int id = keys.getInt(2);
-                URI uri = uriinfo.getBaseUriBuilder()
+        URI uri = uriinfo.getBaseUriBuilder()
                         .path(AuleRes.class)
-                        .path(AuleRes.class, "getAula")
-                        .build(id);
-
-                System.out.println(uri);
-
-                return Response.created(uri).build();
-            }*/
-        return Response.noContent().build();
+                        .path(AuleRes.class, "exportAuleCsv")
+                        .build();
+        return Response.created(uri).build();
     }
     
     @GET

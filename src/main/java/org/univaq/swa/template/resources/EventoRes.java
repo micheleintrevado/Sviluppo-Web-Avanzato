@@ -12,12 +12,15 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 import org.univaq.swa.framework.model.Evento;
+import org.univaq.swa.framework.model.Ricorrenza;
+import org.univaq.swa.framework.model.TipoRicorrenza;
 import org.univaq.swa.framework.model.Tipologia;
 import org.univaq.swa.template.exceptions.RESTWebApplicationException;
 
@@ -34,7 +37,7 @@ public class EventoRes {
     }
 
     private static final String DB_NAME = "java:comp/env/jdbc/auleweb";
-    private static final String QUERY_SELECT_EVENTO = "SELECT * FROM evento WHERE id = ?";
+    private static final String QUERY_SELECT_EVENTO = "SELECT E.id, E.nome, E.orario_inizio, E.orario_fine, E.descrizione, E.nome_organizzatore, E.email_responsabile, E.tipologia, E.id_master, E.id_aula, E.id_corso, R.id AS id_master, R.tipo AS tipo_ricorrenza, R.data_termine FROM Evento E LEFT JOIN Ricorrenza R ON E.id_master = R.id WHERE E.id = ?;";
 
     private static Connection getPooledConnection() throws NamingException, SQLException {
         InitialContext context = new InitialContext();
@@ -87,7 +90,6 @@ public class EventoRes {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getInfoEvento(@PathParam("id") int idEvento) throws RESTWebApplicationException{
         try {
-            //List<S> l = new ArrayList();
             Evento evento = null;
             try ( Connection con = getPooledConnection();  PreparedStatement ps = con.prepareStatement(QUERY_SELECT_EVENTO)) {
                 ps.setInt(1, idEvento);
@@ -98,17 +100,12 @@ public class EventoRes {
                 }
             }
             return Response.ok(evento).build();
-            // return "<html lang=\"en\"><body><h1>" + l.toString() + "</h1></body></html>";
-            // return Response.ok(l).build();
         } catch (SQLException e) {
-            //e.printStackTrace();
-            System.out.println("SQL SQL SQL SQL");
-            return null;
+            e.printStackTrace();    
         } catch (NamingException e) {
-            //e.printStackTrace();
-            System.out.println("NAMING NAMING NAMING NAMING");
-            return null;
+            e.printStackTrace();
         }
+        return null;
     }
     
     
@@ -124,6 +121,24 @@ public class EventoRes {
             e.setNomeOrganizzatore(rs.getString("nome_organizzatore"));
             e.setEmailResponsabile(rs.getString("email_responsabile"));
             e.setTipologia(Tipologia.valueOf(rs.getString("tipologia")));
+            
+            if (rs.getString("id_master") != null ){
+                Ricorrenza r = new Ricorrenza();
+                r.setId(rs.getInt("id_master"));
+                switch (rs.getString("tipo_ricorrenza")) {
+                    case "giornaliera":
+                        r.setTipoRicorrenza(TipoRicorrenza.giornaliera);
+                        break;
+                    case "settimanale":
+                        r.setTipoRicorrenza(TipoRicorrenza.settimanale);
+                        break;
+                    case "mensile":
+                        r.setTipoRicorrenza(TipoRicorrenza.mensile);
+                        break;
+                }
+                r.setDataTermine(rs.getTimestamp("data_termine").toLocalDateTime());
+            }
+            
             return e;
         } catch (SQLException e) {
             e.printStackTrace();

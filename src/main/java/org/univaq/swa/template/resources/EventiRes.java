@@ -96,7 +96,6 @@ public class EventiRes {
     @Produces("text/calendar")
     public Response getEventiForRange(@QueryParam("rangeStart") String rangeStart, @QueryParam("rangeEnd") String rangeEnd) throws FileNotFoundException {
         ArrayList<Evento> eventi = new ArrayList<Evento>();
-        //DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         LocalDateTime dataOraInizio = LocalDateTime.parse(rangeStart, DateTimeFormatter.ISO_DATE_TIME);
         LocalDateTime dataOraFine = LocalDateTime.parse(rangeEnd, DateTimeFormatter.ISO_DATE_TIME);
 
@@ -187,14 +186,11 @@ public class EventiRes {
                 LocalDateTime dateTermineRicorrenza = LocalDateTime.parse((String) dataTermine, formatter);
                 addRicorrenzaStatement.setTimestamp(2, Timestamp.valueOf(dateTermineRicorrenza));
 
-                
                 //creazione della ricorrenza nel DB e salvataggio del suo ID (che sarà l'id master dell'evento)
                 addRicorrenzaStatement.executeUpdate();
                 try ( ResultSet rsAddRicorrenza = addRicorrenzaStatement.getGeneratedKeys();) {
                     rsAddRicorrenza.next();
                     id_master = rsAddRicorrenza.getInt(1);
-                    
-                    System.out.println("------ID MASTER: " + id_master.intValue());
                 }
 
                 ArrayList<LocalDateTime> dateRicorrenzeInizio = new ArrayList<LocalDateTime>();
@@ -237,7 +233,7 @@ public class EventiRes {
                 while (ricorrenzeInizioIterator.hasNext() && ricorrenzeFineIterator.hasNext()) {
                     LocalDateTime dataInizioRicorrenzaEvento = ricorrenzeInizioIterator.next();
                     LocalDateTime dataFineRicorrenzaEvento = ricorrenzeFineIterator.next();
-                    try (PreparedStatement ps = con.prepareStatement(addEventoRicorrenteQuery, Statement.RETURN_GENERATED_KEYS)) {                        
+                    try ( PreparedStatement ps = con.prepareStatement(addEventoRicorrenteQuery, Statement.RETURN_GENERATED_KEYS)) {
                         ps.setString(1, (String) evento.get("nome"));
                         ps.setTimestamp(2, Timestamp.valueOf(dataInizioRicorrenzaEvento));
                         ps.setTimestamp(3, Timestamp.valueOf(dataFineRicorrenzaEvento));
@@ -255,6 +251,19 @@ public class EventiRes {
                         ex.printStackTrace();
                     }
                 }
+                
+                // METTERE QUI URI DEL METODO CHE RESTITUISCE EVENTI CON DETERMINATA RICORRENZA
+                /*
+                try ( ResultSet keys = ps.getGeneratedKeys()) {
+                    keys.next();
+                    int idEvento = keys.getInt(1);
+                    URI uri = uriinfo.getBaseUriBuilder()
+                            .path(EventiRes.class)
+                            .path(EventiRes.class, "getEvento")
+                            .build(idEvento);
+                    return Response.created(uri).build();
+                }
+                */
 
             } catch (SQLException ex) {
                 ex.printStackTrace();

@@ -9,13 +9,6 @@ import java.time.LocalDateTime;
  */
 public class Evento {
 
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
     private int id;
     private String nome;
     private LocalDateTime orarioInizio;
@@ -24,10 +17,6 @@ public class Evento {
     private String nomeOrganizzatore;
     private String emailResponsabile;
     private Tipologia tipologia;
-
-    public int getId() {
-        return id;
-    }
 
     public Evento(int id, String nome, LocalDateTime orarioInizio, LocalDateTime orarioFine, String descrizione, String nomeOrganizzatore, String emailResponsabile, Tipologia tipologia) {
         this.id = id;
@@ -39,12 +28,25 @@ public class Evento {
         this.emailResponsabile = emailResponsabile;
         this.tipologia = tipologia;
     }
-
+    
     public Evento() {
+    }
+    
+    public int getId() {
+        return id;
     }
 
     public void setId(int id) {
         this.id = id;
+    }
+    
+    
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 
     public LocalDateTime getOrarioInizio() {

@@ -60,7 +60,7 @@ CREATE TABLE IF NOT EXISTS `Corso` (
 CREATE TABLE IF NOT EXISTS `Ricorrenza` (
     `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
     `tipo` ENUM('giornaliera', 'settimanale', 'mensile') NOT NULL,
-    `data_termine` DATE NOT NULL,
+    `data_termine` DATETIME NOT NULL,
     PRIMARY KEY (id)
 );
 
@@ -111,6 +111,10 @@ INSERT INTO `auleweb`.`evento` (`id`, `nome`, `orario_inizio`, `orario_fine`, `d
 INSERT INTO `auleweb`.`evento` (`id`, `nome`, `orario_inizio`, `orario_fine`, `descrizione`, `nome_organizzatore`, `email_responsabile`, `tipologia`, `id_aula`, `id_corso`) VALUES ('10', 'Prossimo 1', '2024/05/14 17:00', '2024/05/15 18:00', 'AAA', 'AAA', 'AAA', 'lezione', '1', null);
 INSERT INTO `auleweb`.`evento` (`id`, `nome`, `orario_inizio`, `orario_fine`, `descrizione`, `nome_organizzatore`, `email_responsabile`, `tipologia`, `id_aula`, `id_corso`) VALUES ('11', 'Prossimo 2', '2024/05/14 22:00', '2024/05/15 23:00', 'AAA', 'AAA', 'AAA', 'lezione', '1', null);
 
+-- evento ricorrente
+INSERT INTO `auleweb`.`Ricorrenza` (`id`,`tipo`,`data_termine`) VALUES ('1', 'settimanale', '2024-06-30 23:59:00');
+INSERT INTO `auleweb`.`evento` (`id`, `nome`, `orario_inizio`, `orario_fine`, `descrizione`, `nome_organizzatore`, `email_responsabile`, `tipologia`, `id_aula`, `id_corso`, `id_master`) VALUES ('12', 'Prossimo 2', '2024/05/14 22:00', '2024/05/15 23:00', 'AAA', 'AAA', 'AAA', 'lezione', '1', null, '1');
+INSERT INTO `auleweb`.`evento` (`id`, `nome`, `orario_inizio`, `orario_fine`, `descrizione`, `nome_organizzatore`, `email_responsabile`, `tipologia`, `id_aula`, `id_corso`, `id_master`) VALUES ('13', 'Prossimo 2', '2024/05/14 22:00', '2024/05/15 23:00', 'AAA', 'AAA', 'AAA', 'lezione', '1', null, '1');
 
 INSERT INTO `auleweb`.`gruppo` (`id`, `nome`, `descrizione`) VALUES ('1', 'nomeGruppo', 'descrizioneeee');
 INSERT INTO `auleweb`.`gruppo` (`id`, `nome`, `descrizione`) VALUES ('2', 'altro gruppo', 'altra descrizione');

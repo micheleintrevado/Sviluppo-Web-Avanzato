@@ -52,8 +52,9 @@ public class AulaRes {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("assignGruppo")
+    //@Path("assignGruppo")
     public Response assignGruppoAula(@Context UriInfo uriinfo, @PathParam("id") int idAula, HashMap<String, Object> gruppo) {
+        System.out.println("---------------------------> MI TROVO IN assignGruppoAula DI AULA SINGOLA RES");
         String addAulaQuery = "INSERT INTO `aula_gruppo` (`id_aula`,`id_gruppo`) VALUES (?,?)";
         try ( Connection con = getPooledConnection();  PreparedStatement ps = con.prepareStatement(addAulaQuery, Statement.RETURN_GENERATED_KEYS)) {
 
@@ -62,18 +63,12 @@ public class AulaRes {
 
             ps.executeUpdate();
 
-            try ( ResultSet keys = ps.getGeneratedKeys()) {
-                keys.next();
-                int id = keys.getInt(2);
-                URI uri = uriinfo.getBaseUriBuilder()
-                        .path(AuleRes.class)
-                        .path(AuleRes.class, "getAula")
-                        .build(id);
+            URI uri = uriinfo.getBaseUriBuilder()
+                    .path(AuleRes.class)
+                    .path(AuleRes.class, "getAula")
+                    .build(idAula);
 
-                System.out.println(uri);
-
-                return Response.created(uri).build();
-            }
+            return Response.created(uri).build();
         } catch (SQLException ex) {
             ex.printStackTrace();
         } catch (NamingException ex) {
@@ -104,20 +99,19 @@ public class AulaRes {
             ex.printStackTrace();
             return null;
         }
-        //return Response.ok(a).build();
     }
 
     // 6 TODO
     @GET
     @Path("attrezzature")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getAttrezzatureAula(@PathParam("id") int idAula) throws RESTWebApplicationException{
+    public Response getAttrezzatureAula(@PathParam("id") int idAula) throws RESTWebApplicationException {
         try {
             ArrayList<Attrezzatura> attrezzature = new ArrayList<Attrezzatura>();
             try ( Connection con = getPooledConnection();  PreparedStatement ps = con.prepareStatement(QUERY_SELECT_ATTREZZATURA_AULA)) {
                 ps.setInt(1, idAula);
                 try ( ResultSet rs = ps.executeQuery()) {
-                    while (rs.next()){
+                    while (rs.next()) {
                         attrezzature.add(obtainAttrezzatura(rs));
                     }
                 }
@@ -132,9 +126,9 @@ public class AulaRes {
         }
 
     }
-    
+
     private Attrezzatura obtainAttrezzatura(ResultSet rs) {
-     try {
+        try {
             Attrezzatura a = new Attrezzatura();
 
             a.setId(rs.getInt("id"));
