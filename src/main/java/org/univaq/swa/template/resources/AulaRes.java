@@ -18,11 +18,14 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 import org.univaq.swa.framework.model.Attrezzatura;
 import org.univaq.swa.framework.model.Aula;
+import org.univaq.swa.framework.model.Gruppo;
 import org.univaq.swa.template.exceptions.RESTWebApplicationException;
 
 /**
@@ -54,7 +57,6 @@ public class AulaRes {
     @Produces(MediaType.APPLICATION_JSON)
     //@Path("assignGruppo")
     public Response assignGruppoAula(@Context UriInfo uriinfo, @PathParam("id") int idAula, HashMap<String, Object> gruppo) {
-        System.out.println("---------------------------> MI TROVO IN assignGruppoAula DI AULA SINGOLA RES");
         String addAulaQuery = "INSERT INTO `aula_gruppo` (`id_aula`,`id_gruppo`) VALUES (?,?)";
         try ( Connection con = getPooledConnection();  PreparedStatement ps = con.prepareStatement(addAulaQuery, Statement.RETURN_GENERATED_KEYS)) {
 
@@ -144,7 +146,9 @@ public class AulaRes {
         try {
             Aula a = new Aula();
 
-            a.setId(rs.getInt("id"));
+            int idAula = rs.getInt("id");
+
+            a.setId(idAula);
             a.setNome(rs.getString("nome"));
             a.setLuogo(rs.getString("luogo"));
             a.setEdificio(rs.getString("edificio"));
@@ -154,6 +158,33 @@ public class AulaRes {
             a.setPreseElettriche(rs.getInt("prese_elettriche"));
             a.setPreseRete(rs.getInt("prese_rete"));
             a.setNote(rs.getString("note"));
+
+            // final String query_attrezzatura = "SELECT attrezzatura.id as id_attrezzatura, attrezzatura.tipo, aula_attrezzatura.id as id_aula_attrezzatura, aula_attrezzatura.id_aula FROM auleweb.attrezzatura join auleweb.aula_attrezzatura on attrezzatura.id = aula_attrezzatura.id where id_aula = ?;";
+            final String query_gruppo = "SELECT aula_gruppo.id_aula as id_aula, aula_gruppo.id_gruppo as id_gruppo, gruppo.nome as nome_gruppo, gruppo.descrizione as descrizione_gruppo FROM auleweb.gruppo join aula_gruppo on gruppo.id = aula_gruppo.id_gruppo where aula_gruppo.id_aula = ?;";
+            // final String query_aule_associate = "SELECT aula.nome FROM auleweb.aula_gruppo join gruppo on gruppo.id = id_gruppo join aula on aula.id = id_aula where id_gruppo = ?;";
+            
+            ArrayList<Gruppo> gruppi = new ArrayList<Gruppo>();
+            
+            try ( Connection con = getPooledConnection();  PreparedStatement ps = con.prepareStatement(query_gruppo)) {
+                ps.setInt(1, idAula);
+                try ( ResultSet rsGruppo = ps.executeQuery()) {
+                    while (rsGruppo.next()) {
+                        Gruppo group = new Gruppo();
+                        group.setId(rsGruppo.getInt(2));
+                        group.setNome(rsGruppo.getString(3));
+                        group.setDescrizione(rsGruppo.getString(4));
+                        // group.setAuleAssociate(null);
+                        gruppi.add(group);
+                        
+                    }
+                }
+            } catch (NamingException ex) {
+                Logger.getLogger(AulaRes.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+            
+
+            a.setGruppiAssociati(gruppi);
             return a;
         } catch (SQLException e) {
             e.printStackTrace();

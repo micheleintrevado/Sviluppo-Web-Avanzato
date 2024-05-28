@@ -65,6 +65,7 @@ public class EventiRes {
     private static final String QUERY_SELECT_EVENTI_ATTUALI = "select * from evento where orario_inizio < now() and orario_fine > now();";
     private static final String QUERY_SELECT_EVENTI_PROSSIME_ORE = "select * from evento where orario_inizio < date_add(now(), INTERVAL ? hour) and orario_fine >= now()";
     private static final String QUERY_SELECT_EVENTI_RANGE = "SELECT * FROM auleweb.evento where orario_inizio > ? and orario_fine < ?;";
+    private static final String QUERY_SELECT_EVENTI_ID_MASTER = "SELECT * FROM auleweb.evento where id_master = ?;";
 
     private static Connection getPooledConnection() throws NamingException, SQLException {
         InitialContext context = new InitialContext();
@@ -164,6 +165,30 @@ public class EventiRes {
         return eventoRes.getInfoEvento(idEvento);
     }
 
+    @GET
+    @Path("idMaster/{id: [1-9][0-9]*}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getEventiIdMaster(@PathParam("id") int id_master) {
+        try {
+            ArrayList<Evento> eventi = new ArrayList<Evento>();
+            try ( Connection con = getPooledConnection();  PreparedStatement ps = con.prepareStatement(QUERY_SELECT_EVENTI_ID_MASTER)) {
+                ps.setInt(1, id_master);
+                try ( ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        Evento e = obtainEvento(rs);
+                        eventi.add(e);
+                    }
+                }
+            }
+            return Response.ok(eventi).build();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (NamingException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     // 7
     @POST
     @Produces(MediaType.APPLICATION_JSON)
@@ -191,6 +216,7 @@ public class EventiRes {
                 try ( ResultSet rsAddRicorrenza = addRicorrenzaStatement.getGeneratedKeys();) {
                     rsAddRicorrenza.next();
                     id_master = rsAddRicorrenza.getInt(1);
+                    System.out.println("--------------> ID MASTER:" + id_master);
                 }
 
                 ArrayList<LocalDateTime> dateRicorrenzeInizio = new ArrayList<LocalDateTime>();
@@ -241,9 +267,9 @@ public class EventiRes {
                         ps.setString(5, (String) evento.get("nome_organizzatore"));
                         ps.setString(6, (String) evento.get("email_responsabile"));
                         ps.setString(7, (String) evento.get("tipologia"));
-                        ps.setInt(9, (int) evento.get("id_aula"));
-                        ps.setInt(10, (int) evento.get("id_corso"));
-                        ps.setInt(8, id_master);
+                        ps.setInt(8, (int) evento.get("id_aula"));
+                        ps.setInt(9, (int) evento.get("id_corso"));
+                        ps.setInt(10, id_master);
 
                         ps.executeUpdate();
 
@@ -251,20 +277,12 @@ public class EventiRes {
                         ex.printStackTrace();
                     }
                 }
-                
-                // METTERE QUI URI DEL METODO CHE RESTITUISCE EVENTI CON DETERMINATA RICORRENZA
-                /*
-                try ( ResultSet keys = ps.getGeneratedKeys()) {
-                    keys.next();
-                    int idEvento = keys.getInt(1);
+
                     URI uri = uriinfo.getBaseUriBuilder()
                             .path(EventiRes.class)
-                            .path(EventiRes.class, "getEvento")
-                            .build(idEvento);
+                            .path(EventiRes.class, "getEventiIdMaster")
+                            .build(id_master);
                     return Response.created(uri).build();
-                }
-                */
-
             } catch (SQLException ex) {
                 ex.printStackTrace();
             } catch (NamingException ex) {

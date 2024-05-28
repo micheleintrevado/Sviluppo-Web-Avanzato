@@ -66,9 +66,8 @@ public class AuleRes {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("{id: [1-9]+}/assignGruppo")
+    @Path("{id: [1-9][0-9]*}/assignGruppo")
     public Response assignGruppo(@Context UriInfo uriinfo, @PathParam("id") int idAula, HashMap<String, Object> gruppo) throws RESTWebApplicationException {
-        System.out.println("---------------------------> MI TROVO IN assignGruppoAula DI AULE RES");
         Aula aula = new Aula();
         aula.setId(idAula);
         AulaRes aulaRes = new AulaRes(aula);
