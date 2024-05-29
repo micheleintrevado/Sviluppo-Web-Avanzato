@@ -1,6 +1,7 @@
 
 package org.univaq.swa.framework.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.List;
 
 /**
@@ -10,6 +11,7 @@ import java.util.List;
 public class Attrezzatura {
     private int id;
     private String tipo;
+    @JsonIgnore
     private List<Aula> auleAssociate;
 
     public Attrezzatura(int id, String tipo, List<Aula> auleAssociate) {

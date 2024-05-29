@@ -6,6 +6,7 @@ import jakarta.ws.rs.FormParam;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.HttpHeaders;
@@ -14,6 +15,7 @@ import jakarta.ws.rs.core.NewCookie;
 import jakarta.ws.rs.core.Response;
 import static jakarta.ws.rs.core.Response.Status.UNAUTHORIZED;
 import jakarta.ws.rs.core.UriInfo;
+import java.sql.SQLException;
 
 /**
  *
@@ -21,7 +23,7 @@ import jakarta.ws.rs.core.UriInfo;
  */
 @Path("auth")
 public class AuthenticationRes {
-    
+
     @POST
     @Path("login")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
@@ -30,24 +32,24 @@ public class AuthenticationRes {
             @FormParam("username") String username,
             @FormParam("password") String password) {
         try {
-            
-            if (AuthHelpers.getInstance().authenticateUser(username, password)) {
-                String authToken = AuthHelpers.getInstance().issueToken(uriinfo, username);
+            Integer id = AuthHelpers.getInstance().authenticateUser(username, password);
+            if (id != null) {
+                String authToken = AuthHelpers.getInstance().issueToken(uriinfo, id);
                 //Restituiamolo in tutte le modalità, giusto per fare un esempio...
                 return Response.ok(authToken)
                         .cookie(new NewCookie.Builder("token").value(authToken).build())
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + authToken).build();
             }
         } catch (Exception e) {
-            //logging dell'errore 
+            e.printStackTrace();
         }
         return Response.status(UNAUTHORIZED).build();
     }
-    
+
     @DELETE
     @Path("logout")
     @Logged
-    public Response logout(@Context ContainerRequestContext req) {
+    public Response logout(@Context ContainerRequestContext req) throws SQLException, ClassNotFoundException {
         //proprietà estratta dall'authorization header 
         //e iniettata nella request dal filtro di autenticazione
         String token = (String) req.getProperty("token");
@@ -59,16 +61,16 @@ public class AuthenticationRes {
     }
 
     //Metodo per fare "refresh" del token senza ritrasmettere le credenziali
-    @GET
+    /*@GET
     @Path("refresh")
     @Logged
-    public Response refresh(@Context ContainerRequestContext req, @Context UriInfo uriinfo) {
+    public Response refresh(@Context ContainerRequestContext req, @Context UriInfo uriinfo) throws SQLException, ClassNotFoundException {
         //proprietà iniettata nella request dal filtro di autenticazione
         String username = (String) req.getProperty("user");
-        String newtoken = AuthHelpers.getInstance().issueToken(uriinfo, username);
+        String newtoken = AuthHelpers.getInstance().issueToken(uriinfo, id);
         return Response.ok(newtoken)
                 .cookie(new NewCookie.Builder("token").value(newtoken).build())
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + newtoken).build();
-        
-    }
+
+    } */
 }
