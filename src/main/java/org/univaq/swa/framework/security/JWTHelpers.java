@@ -56,13 +56,9 @@ public class JWTHelpers {
                 .setSubject(username)
                 .setIssuer(context.getAbsolutePath().toString())
                 .setIssuedAt(new Date())
-                .setExpiration(Date.from(LocalDateTime.now().plusMinutes(15L).atZone(ZoneId.systemDefault()).toInstant()))
+                .setExpiration(Date.from(LocalDateTime.now().plusMinutes(25L).atZone(ZoneId.systemDefault()).toInstant()))
                 .signWith(key)
                 .compact();
         return token;
-    }
-
-    public void revokeToken(String token) {
-        /* invalidare il token */
     }
 }

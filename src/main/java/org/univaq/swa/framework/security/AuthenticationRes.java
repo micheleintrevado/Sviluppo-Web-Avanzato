@@ -6,7 +6,6 @@ import jakarta.ws.rs.FormParam;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.HttpHeaders;
@@ -34,7 +33,9 @@ public class AuthenticationRes {
         try {
             Integer id = AuthHelpers.getInstance().authenticateUser(username, password);
             if (id != null) {
-                String authToken = AuthHelpers.getInstance().issueToken(uriinfo, id);
+                // String authToken = AuthHelpers.getInstance().issueToken(uriinfo, id); NO JWT
+                String authToken = AuthHelpers.getInstance().issueTokenJWT(uriinfo, username); // Con JWT
+
                 //Restituiamolo in tutte le modalità, giusto per fare un esempio...
                 return Response.ok(authToken)
                         .cookie(new NewCookie.Builder("token").value(authToken).build())
@@ -55,22 +56,24 @@ public class AuthenticationRes {
         String token = (String) req.getProperty("token");
         AuthHelpers.getInstance().revokeToken(token);
         return Response.noContent()
-                //eliminaimo anche il cookie con il token
+                //eliminiamo anche il cookie con il token
                 .cookie(new NewCookie.Builder("token").value("").maxAge(0).build())
                 .build();
     }
 
     //Metodo per fare "refresh" del token senza ritrasmettere le credenziali
-    /*@GET
+    @GET
     @Path("refresh")
     @Logged
     public Response refresh(@Context ContainerRequestContext req, @Context UriInfo uriinfo) throws SQLException, ClassNotFoundException {
         //proprietà iniettata nella request dal filtro di autenticazione
         String username = (String) req.getProperty("user");
-        String newtoken = AuthHelpers.getInstance().issueToken(uriinfo, id);
+        String token = (String) req.getProperty("token");
+        // String newtoken = AuthHelpers.getInstance().issueToken(uriinfo, username, token); NO JWT
+        String newtoken = AuthHelpers.getInstance().issueTokenJWT(uriinfo, username); // con JWT
         return Response.ok(newtoken)
                 .cookie(new NewCookie.Builder("token").value(newtoken).build())
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + newtoken).build();
 
-    } */
+    }
 }

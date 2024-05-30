@@ -22,6 +22,7 @@ import org.univaq.swa.framework.model.Evento;
 import org.univaq.swa.framework.model.Ricorrenza;
 import org.univaq.swa.framework.model.TipoRicorrenza;
 import org.univaq.swa.framework.model.Tipologia;
+import org.univaq.swa.framework.security.Logged;
 import org.univaq.swa.template.exceptions.RESTWebApplicationException;
 
 /**
@@ -48,6 +49,7 @@ public class EventoRes {
     // 8 TODO
     @PATCH
     @Consumes(MediaType.APPLICATION_JSON)
+    @Logged
     public Response updateEvento(@PathParam("id") int idEvento, Map<String, Object> fieldsToUpdate) {
         System.out.println("SONO IN UPDATE EVENTO <----------------------------------------------------");
         

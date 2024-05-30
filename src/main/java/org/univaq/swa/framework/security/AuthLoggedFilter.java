@@ -29,16 +29,24 @@ public class AuthLoggedFilter implements ContainerRequestFilter {
         //in un'applicazione reale, potremmo scegliere una sola modalità
         String authorizationHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            System.out.println("111111111111111111111111111111111111111111111111111");
+
             token = authorizationHeader.substring("Bearer".length()).trim();
         } else if (requestContext.getCookies().containsKey("token")) {
+            System.out.println("22222222222222222222222222222222222222222222222222222");
+
             token = requestContext.getCookies().get("token").getValue();
         } else if (requestContext.getUriInfo().getQueryParameters().containsKey("token")) {
+            System.out.println("3333333333333333333333333333333333333333333333333333333333");
+
             token = requestContext.getUriInfo().getQueryParameters().getFirst("token");
         }
+        System.out.println(token);
         if (token != null && !token.isEmpty()) {
             try {
                 //validiamo il token
-                final String username = AuthHelpers.getInstance().validateToken(token);
+                // final String username = AuthHelpers.getInstance().validateToken(token); NO JWT
+                final String username = JWTHelpers.getInstance().validateToken(token); // Con JWT
                 if (username != null) {
                     //inseriamo nel contesto i risultati dell'autenticazione
                     //per farli usare dai nostri metodi restful

@@ -48,6 +48,7 @@ import net.fortuna.ical4j.validate.ValidationException;
 import org.univaq.swa.framework.model.Attrezzatura;
 import org.univaq.swa.framework.model.Evento;
 import org.univaq.swa.framework.model.Tipologia;
+import org.univaq.swa.framework.security.Logged;
 import org.univaq.swa.template.exceptions.RESTWebApplicationException;
 
 /**
@@ -147,6 +148,7 @@ public class EventiRes {
     @PATCH
     @Path("{id: [1-9]+}")
     @Consumes(MediaType.APPLICATION_JSON)
+    @Logged
     public Response updateEvento(@PathParam("id") int idEvento, Map<String, Object> fieldsToUpdate) {
         Evento evento = new Evento();
         evento.setId(idEvento);
@@ -193,7 +195,7 @@ public class EventiRes {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    //@Logged
+    @Logged
     public Response addEvento(@Context UriInfo uriinfo, HashMap<String, Object> evento) {
         String addEventoNonRicorrenteQuery = "INSERT INTO `evento` (`nome`, `orario_inizio`, `orario_fine`, `descrizione`, `nome_organizzatore`, `email_responsabile`, `tipologia`, `id_aula`, `id_corso`) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?)";
         String addEventoRicorrenteQuery = "INSERT INTO `evento` (`nome`, `orario_inizio`, `orario_fine`, `descrizione`, `nome_organizzatore`, `email_responsabile`, `tipologia`, `id_aula`, `id_corso`, `id_master`) VALUES ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -328,7 +330,7 @@ public class EventiRes {
         return Response.noContent().build();
     }
 
-    // 10 TODO, Cambiare nome
+    // 10 
     @GET
     @Path("aule/{nome: [a-zA-Z]+}/{settimana: }")
     @Produces(MediaType.APPLICATION_JSON)
@@ -379,7 +381,7 @@ public class EventiRes {
         }
     }
 
-    // 11 TODO --> gestione parametri (x ore)
+    // 11
     @GET
     @Path("prossimi")
     @Produces(MediaType.APPLICATION_JSON)

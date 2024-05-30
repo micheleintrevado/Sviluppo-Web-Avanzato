@@ -93,7 +93,7 @@ CREATE TABLE IF NOT EXISTS `Admin`(
 	`id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
     `username` VARCHAR(60) NOT NULL,
     `password` VARCHAR(60) NOT NULL,
-    `token` varchar(60),
+    `token` varchar(255),
     primary key(id)
 );
 

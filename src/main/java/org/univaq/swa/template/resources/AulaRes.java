@@ -6,9 +6,11 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.SecurityContext;
 import jakarta.ws.rs.core.UriInfo;
 import java.net.URI;
 import java.sql.Connection;
@@ -26,6 +28,7 @@ import javax.sql.DataSource;
 import org.univaq.swa.framework.model.Attrezzatura;
 import org.univaq.swa.framework.model.Aula;
 import org.univaq.swa.framework.model.Gruppo;
+import org.univaq.swa.framework.security.Logged;
 import org.univaq.swa.template.exceptions.RESTWebApplicationException;
 
 /**
@@ -51,12 +54,13 @@ public class AulaRes {
         return ds.getConnection();
     }
 
-    // 4 TODO
+    // 4
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
+    @Logged
     //@Path("gruppi")
-    public Response assignGruppoAula(@Context UriInfo uriinfo, @PathParam("id") int idAula, HashMap<String, Object> gruppo) {
+    public Response assignGruppoAula(@Context UriInfo uriinfo, @Context ContainerRequestContext req, @Context SecurityContext sec, @PathParam("id") int idAula, HashMap<String, Object> gruppo) {
         String addAulaQuery = "INSERT INTO `aula_gruppo` (`id_aula`,`id_gruppo`) VALUES (?,?)";
         try ( Connection con = getPooledConnection();  PreparedStatement ps = con.prepareStatement(addAulaQuery, Statement.RETURN_GENERATED_KEYS)) {
 
@@ -71,15 +75,13 @@ public class AulaRes {
                     .build(idAula);
 
             return Response.created(uri).build();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        } catch (NamingException ex) {
+        } catch (SQLException | NamingException ex) {
             ex.printStackTrace();
         }
         return null;
     }
 
-    // 5 TODO
+    // 5
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getInfoAula(@PathParam("id") int idAula) throws RESTWebApplicationException {
@@ -103,7 +105,7 @@ public class AulaRes {
         }
     }
 
-    // 6 TODO
+    // 6 
     @GET
     @Path("attrezzature")
     @Produces(MediaType.APPLICATION_JSON)
