@@ -303,17 +303,16 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
           
-  '/rest/eventi/aule/{nome}/{settimana}': # vedere come filtrare la settimana. In base alla i-esima settimana???
-  # nella URL ci va pure eventi?
+  '/rest/aule/{idAula}/eventi/':
     get:
       operationId: getEventiAulaSettimana #10
-      description: Lista degli eventi associati a una specifica aula in una determinata settimana.
+      description: Lista degli eventi associati a una specifica aula in una determinata settimana. In particolare data una settimana come queryParam vengono aggiunti 7 giorni in automatico
       tags:
         - Eventi
         - Aule
-      parameters:
+      parameters: 
+        - $ref: '#/components/parameters/rangeStart'
         - $ref: '#/components/parameters/idAula'
-        - $ref: '#/components/parameters/numeroSettimana'
       responses:
         '200':
           description: OK
@@ -475,13 +474,6 @@ components:
     idEvento:
       name: evento
       in: path
-      required: true
-      schema:
-        type: integer
-        
-    numeroSettimana:
-      name: settimana
-      in: query
       required: true
       schema:
         type: integer

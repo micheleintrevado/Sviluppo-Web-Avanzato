@@ -61,7 +61,6 @@ public class EventiRes {
     private ServletContext servletContext;
 
     private static final String DB_NAME = "java:comp/env/jdbc/auleweb";
-    private static final String QUERY_SELECT_EVENTI_SETTIMANA = "SELECT * FROM evento WHERE week((DATE(orario_inizio))) = week((CONCAT(YEAR(orario_inizio), '-01-01'))) + ? - 1;";
     private static final String QUERY_SELECT_EVENTI_ATTUALI = "select * from evento where orario_inizio < now() and orario_fine > now();";
     private static final String QUERY_SELECT_EVENTI_PROSSIME_ORE = "select * from evento where orario_inizio < date_add(now(), INTERVAL ? hour) and orario_fine >= now()";
     private static final String QUERY_SELECT_EVENTI_RANGE = "SELECT * FROM auleweb.evento where orario_inizio > ? and orario_fine < ?;";
@@ -216,7 +215,6 @@ public class EventiRes {
                 try ( ResultSet rsAddRicorrenza = addRicorrenzaStatement.getGeneratedKeys();) {
                     rsAddRicorrenza.next();
                     id_master = rsAddRicorrenza.getInt(1);
-                    System.out.println("--------------> ID MASTER:" + id_master);
                 }
 
                 ArrayList<LocalDateTime> dateRicorrenzeInizio = new ArrayList<LocalDateTime>();
@@ -328,32 +326,6 @@ public class EventiRes {
         return Response.noContent().build();
     }
 
-    // 10 TODO, Cambiare nome
-    @GET
-    @Path("aule/{nome: [a-zA-Z]+}/{settimana: }")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getEventiAulaSettimana(@PathParam("nome") String nome
-    ) {
-        try {
-            ArrayList<Attrezzatura> attrezzature = new ArrayList<Attrezzatura>();
-            try ( Connection con = getPooledConnection();  PreparedStatement ps = con.prepareStatement(QUERY_SELECT_EVENTI_SETTIMANA)) {
-                ps.setString(1, nome);
-                try ( ResultSet rs = ps.executeQuery()) {
-                    while (rs.next()) {
-                        //attrezzature.add(obtainAttrezzatura(rs));
-                    }
-                }
-            }
-            return Response.ok(attrezzature).build();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-            return null;
-        } catch (NamingException ex) {
-            ex.printStackTrace();
-            return null;
-        }
-    }
-
     // 11
     @GET
     @Path("attuali")
@@ -379,7 +351,7 @@ public class EventiRes {
         }
     }
 
-    // 11 TODO --> gestione parametri (x ore)
+    // 11
     @GET
     @Path("prossimi")
     @Produces(MediaType.APPLICATION_JSON)

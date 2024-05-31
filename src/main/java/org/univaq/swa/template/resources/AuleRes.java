@@ -7,6 +7,7 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -24,6 +25,7 @@ import java.util.HashMap;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
+import org.univaq.swa.framework.model.Attrezzatura;
 import org.univaq.swa.framework.model.Aula;
 import org.univaq.swa.framework.security.Logged;
 import org.univaq.swa.framework.utility.CsvUtility;
@@ -62,6 +64,18 @@ public class AuleRes {
         
         return aulaRes.getInfoAula(idAula);
     }
+    
+    // 10
+    @GET
+    @Path("{idAula: [1-9][0-9]*}/eventi")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getEventiAulaSettimana(@PathParam("idAula") int idAula, @QueryParam("start") String rangeStart) {
+        Aula aula = new Aula();
+        aula.setId(idAula);
+        AulaRes aulaRes = new AulaRes(aula);
+        
+        return aulaRes.getEventiAulaSettimana(idAula, rangeStart);
+    }    
     
     @POST
     @Consumes(MediaType.APPLICATION_JSON)

@@ -4,6 +4,7 @@ import jakarta.annotation.Priority;
 import jakarta.ws.rs.Priorities;
 import jakarta.ws.rs.container.ContainerRequestContext;
 import jakarta.ws.rs.container.ContainerRequestFilter;
+import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
@@ -21,7 +22,7 @@ import java.security.Principal;
 public class AuthLoggedFilter implements ContainerRequestFilter {
 
     @Override
-    public void filter(ContainerRequestContext requestContext) throws IOException {
+    public void filter(@Context ContainerRequestContext requestContext) throws IOException {
         String token = null;
         final String path = requestContext.getUriInfo().getAbsolutePath().toString();
 

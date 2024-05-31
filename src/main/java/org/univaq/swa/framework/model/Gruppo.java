@@ -1,6 +1,7 @@
 
 package org.univaq.swa.framework.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.List;
 
 /**
@@ -11,6 +12,7 @@ public class Gruppo {
     private int id;
     private String nome;
     private String descrizione;
+    @JsonIgnore
     private List<Aula> auleAssociate;
 
     public Gruppo(int id, String nome, String descrizione, List<Aula> auleAssociate) {

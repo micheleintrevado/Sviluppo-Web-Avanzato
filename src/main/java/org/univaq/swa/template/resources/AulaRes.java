@@ -6,6 +6,7 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -16,6 +17,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Level;
@@ -27,6 +31,8 @@ import org.univaq.swa.framework.model.Attrezzatura;
 import org.univaq.swa.framework.model.Aula;
 import org.univaq.swa.framework.model.Gruppo;
 import org.univaq.swa.template.exceptions.RESTWebApplicationException;
+import org.univaq.swa.framework.model.Evento;
+import org.univaq.swa.framework.model.Tipologia;
 
 /**
  *
@@ -41,6 +47,7 @@ public class AulaRes {
     }
 
     private static final String DS_NAME = "java:comp/env/jdbc/auleweb";
+    private static final String QUERY_SELECT_EVENTI_SETTIMANA = "SELECT * FROM auleweb.evento where orario_inizio > ? and orario_fine < ? and id_aula = ?;";
     private static final String QUERY_SELECT_AULA = "SELECT * FROM aula WHERE id = ?";
     private static final String QUERY_SELECT_ATTREZZATURA_AULA = "SELECT attrezzatura.id, attrezzatura.tipo "
             + "FROM attrezzatura join aula_attrezzatura on attrezzatura.id = aula_attrezzatura.id_attrezzatura where aula_attrezzatura.id_aula = ?";
@@ -128,7 +135,56 @@ public class AulaRes {
         }
 
     }
+    
+    //10
+    @GET
+    //@Path("aule/{id: [1-9][0-9]*}/{settimana: }")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getEventiAulaSettimana(@PathParam("idAula") int idAula, @QueryParam("rangeStart") String rangeStart) {
+        LocalDateTime dataOraInizio = LocalDateTime.parse(rangeStart, DateTimeFormatter.ISO_DATE_TIME);
+        LocalDateTime dataOraFine = dataOraInizio.plusDays(7);
+        try {
+            ArrayList<Evento> eventi = new ArrayList<Evento>();
+            try ( Connection con = getPooledConnection();  PreparedStatement ps = con.prepareStatement(QUERY_SELECT_EVENTI_SETTIMANA)) {
+                ps.setTimestamp(1, Timestamp.valueOf(dataOraInizio));
+                ps.setTimestamp(2, Timestamp.valueOf(dataOraFine));
+                ps.setInt(3, idAula);
+                try ( ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        Evento e = obtainEvento(rs);
+                        eventi.add(e);
+                    }
+                }
+            }
+            return Response.ok(eventi).build();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+            return null;
+        } catch (NamingException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
 
+    private Evento obtainEvento(ResultSet rs) {
+        try {
+            Evento e = new Evento();
+
+            e.setId(rs.getInt("id"));
+            e.setNome(rs.getString("nome"));
+            e.setOrarioInizio(rs.getTimestamp("orario_inizio").toLocalDateTime());
+            e.setOrarioFine(rs.getTimestamp("orario_fine").toLocalDateTime());
+            e.setDescrizione(rs.getString("descrizione"));
+            e.setNomeOrganizzatore(rs.getString("nome_organizzatore"));
+            e.setEmailResponsabile(rs.getString("email_responsabile"));
+            e.setTipologia(Tipologia.valueOf(rs.getString("tipologia")));
+            return e;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    
     private Attrezzatura obtainAttrezzatura(ResultSet rs) {
         try {
             Attrezzatura a = new Attrezzatura();
