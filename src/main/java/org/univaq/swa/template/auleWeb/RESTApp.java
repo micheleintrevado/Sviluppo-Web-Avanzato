@@ -9,8 +9,8 @@ import jakarta.ws.rs.core.Application;
 import org.univaq.swa.framework.jackson.ObjectMapperContextResolver;
 import org.univaq.swa.template.exceptions.AppExceptionMapper;
 import org.univaq.swa.framework.security.CORSFilter;
-//import org.univaq.swa.template.resources.AuthRes;
 import org.univaq.swa.framework.security.AuthLoggedFilter;
+import org.univaq.swa.framework.security.AuthenticationRes;
 import org.univaq.swa.template.exceptions.JacksonExceptionMapper;
 import org.univaq.swa.template.resources.AulaRes;
 import org.univaq.swa.template.resources.AuleRes;
@@ -35,6 +35,7 @@ public class RESTApp extends Application {
         c.add(AuleRes.class);
         c.add(EventoRes.class);
         c.add(AulaRes.class);
+        c.add(AuthenticationRes.class);
 
         //aggiungiamo il provider Jackson per poter
         //usare i suoi servizi di serializzazione e 
@@ -53,7 +54,6 @@ public class RESTApp extends Application {
         //esempi di exception mapper, che mappano in Response eccezioni non già derivanti da WebApplicationException
         c.add(AppExceptionMapper.class);
         c.add(JacksonExceptionMapper.class);
-        
 
         classes = Collections.unmodifiableSet(c);
     }

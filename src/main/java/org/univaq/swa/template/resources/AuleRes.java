@@ -7,10 +7,15 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
+
 import jakarta.ws.rs.QueryParam;
+
+import jakarta.ws.rs.container.ContainerRequestContext;
+
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.SecurityContext;
 import jakarta.ws.rs.core.UriInfo;
 import java.io.File;
 import java.io.InputStream;
@@ -37,23 +42,23 @@ import org.univaq.swa.template.exceptions.RESTWebApplicationException;
  */
 @Path("aule")
 public class AuleRes {
-    
+
     @Context
     private ServletContext servletContext;
-    
+
     private static final String DS_NAME = "java:comp/env/jdbc/auleweb";
     private static final String QUERY_SELECT_CONFIGURAZIONE_AULE = "SELECT aula.id, aula.nome AS nome_aula, luogo, edificio, piano, capienza, email_responsabile, prese_elettriche, prese_rete, note, gruppo.nome AS nome_gruppo FROM aula LEFT JOIN aula_gruppo ON aula.id = aula_gruppo.id_aula LEFT JOIN gruppo ON aula_gruppo.id_gruppo = gruppo.id;";
-    
+
     private static Connection getPooledConnection() throws NamingException, SQLException {
         InitialContext context = new InitialContext();
         DataSource ds = (DataSource) context.lookup(DS_NAME);
         return ds.getConnection();
     }
-    
+
     public AuleRes() throws SQLException, ClassNotFoundException {
         Class.forName("com.mysql.cj.jdbc.Driver");
     }
-    
+
     @GET
     @Path("{id: [1-9]+}")
     @Produces(MediaType.APPLICATION_JSON)
@@ -61,9 +66,10 @@ public class AuleRes {
         Aula aula = new Aula();
         aula.setId(idAula);
         AulaRes aulaRes = new AulaRes(aula);
-        
+
         return aulaRes.getInfoAula(idAula);
     }
+
     
     // 10
     @GET
@@ -77,21 +83,25 @@ public class AuleRes {
         return aulaRes.getEventiAulaSettimana(idAula, rangeStart);
     }    
     
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @Path("{id: [1-9][0-9]*}/assignGruppo")
-    public Response assignGruppo(@Context UriInfo uriinfo, @PathParam("id") int idAula, HashMap<String, Object> gruppo) throws RESTWebApplicationException {
+    @Path("{id: [1-9][0-9]*}/gruppi")
+    @Logged
+    public Response assignGruppo(@Context UriInfo uriinfo, @Context ContainerRequestContext req, @Context SecurityContext sec, @PathParam("id") int idAula, HashMap<String, Object> gruppo) throws RESTWebApplicationException {
+        System.out.println(req.getProperty("token"));
+        System.out.println(sec.toString());
         Aula aula = new Aula();
         aula.setId(idAula);
         AulaRes aulaRes = new AulaRes(aula);
-        
-        return aulaRes.assignGruppoAula(uriinfo, idAula, gruppo);
+
+        return aulaRes.assignGruppoAula(uriinfo, req, sec, idAula, gruppo);
     }
 
     // 3
     @POST
-    //@Logged
+    @Logged
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response addAula(@Context UriInfo uriinfo, HashMap<String, Object> evento) {
@@ -106,9 +116,9 @@ public class AuleRes {
             ps.setInt(7, (int) evento.get("prese_elettriche"));
             ps.setInt(8, (int) evento.get("prese_rete"));
             ps.setString(9, (String) evento.get("note"));
-            
+
             ps.executeUpdate();
-            
+
             try ( ResultSet keys = ps.getGeneratedKeys()) {
                 keys.next();
                 int id = keys.getInt(1);
@@ -133,7 +143,7 @@ public class AuleRes {
     public Response exportAuleCsv() {
         try {
             ArrayList<HashMap<String, Object>> configurazioneAule = new ArrayList<HashMap<String, Object>>();
-            
+
             try ( Connection con = getPooledConnection();  PreparedStatement ps = con.prepareStatement(QUERY_SELECT_CONFIGURAZIONE_AULE)) {
                 try ( ResultSet rs = ps.executeQuery()) {
                     while (rs.next()) {
@@ -154,12 +164,12 @@ public class AuleRes {
                 }
             }
 
-            //here we build the csv file
+            // csv file
             String path = servletContext.getRealPath("");
             File fileCsv = new File(path, "csv\\configurazione_aule.csv");
             if (!fileCsv.getParentFile().exists()) {
                 fileCsv.getParentFile().mkdirs();
-            } 
+            }
             CsvUtility.csvAuleWrite(fileCsv, configurazioneAule);
             return Response.ok(fileCsv, "text/csv").
                     header("Content-Disposition", "attachment;filename=configurazione_aule.csv")
@@ -178,6 +188,7 @@ public class AuleRes {
     @Path("csv")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.MULTIPART_FORM_DATA)
+    @Logged
     public Response importAuleCsv(@Context UriInfo uriinfo, InputStream csvFile) throws NamingException, SQLException {
         ArrayList<HashMap<String, Object>> csvData = CsvUtility.csvAuleRead(csvFile);
         Connection con = getPooledConnection();
@@ -195,7 +206,7 @@ public class AuleRes {
                 addAulaStatement.setInt(7, Integer.parseInt((String) aula.get("preseElettriche")));
                 addAulaStatement.setInt(8, Integer.parseInt((String) aula.get("preseRete")));
                 addAulaStatement.setString(9, (String) aula.get("note"));
-                
+
                 addAulaStatement.executeUpdate();
                 try ( ResultSet rsAddAula = addAulaStatement.getGeneratedKeys();) {
                     rsAddAula.next();
@@ -232,7 +243,7 @@ public class AuleRes {
                                             // creazione nel DB dell'associazione tra aula e gruppo
                                             final String insertAulaGruppoQuery = "INSERT INTO `aula_gruppo` (`id_aula`,`id_gruppo`) VALUES (?,?);";
                                             try ( PreparedStatement insertAulaGruppoStatement = con.prepareStatement(insertAulaGruppoQuery, Statement.RETURN_GENERATED_KEYS)) {
-                                                
+
                                                 insertAulaGruppoStatement.setLong(1, aula_id);
                                                 insertAulaGruppoStatement.setLong(2, gruppo_id);
                                                 insertAulaGruppoStatement.executeUpdate();
@@ -249,12 +260,12 @@ public class AuleRes {
             }
         }
         URI uri = uriinfo.getBaseUriBuilder()
-                        .path(AuleRes.class)
-                        .path(AuleRes.class, "exportAuleCsv")
-                        .build();
+                .path(AuleRes.class)
+                .path(AuleRes.class, "exportAuleCsv")
+                .build();
         return Response.created(uri).build();
     }
-    
+
     @GET
     @Path("{id: [1-9]+}/attrezzature")
     @Produces(MediaType.APPLICATION_JSON)
@@ -262,14 +273,14 @@ public class AuleRes {
         Aula aula = new Aula();
         aula.setId(idAula);
         AulaRes aulaRes = new AulaRes(aula);
-        
+
         return aulaRes.getAttrezzatureAula(idAula);
     }
-    
+
     private Aula obtainAula(ResultSet rs) {
         try {
             Aula a = new Aula();
-            
+
             a.setId(rs.getInt("id"));
             a.setNome(rs.getString("nome"));
             a.setLuogo(rs.getString("luogo"));
@@ -286,11 +297,11 @@ public class AuleRes {
             return null;
         }
     }
-    
+
     private Aula obtainConfigurazioneAula(ResultSet rs) {
         try {
             Aula a = new Aula();
-            
+
             a.setId(rs.getInt("id"));
             a.setNome(rs.getString("nome"));
             a.setLuogo(rs.getString("luogo"));

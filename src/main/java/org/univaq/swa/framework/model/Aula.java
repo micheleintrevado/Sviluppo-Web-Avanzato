@@ -1,6 +1,7 @@
 
 package org.univaq.swa.framework.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.util.List;
 
 /**

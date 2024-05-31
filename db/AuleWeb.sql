@@ -89,6 +89,14 @@ CREATE TABLE IF NOT EXISTS `Evento` (
         REFERENCES Ricorrenza (id)
 );
 
+CREATE TABLE IF NOT EXISTS `Admin`(
+	`id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `username` VARCHAR(60) NOT NULL,
+    `password` VARCHAR(60) NOT NULL,
+    `token` varchar(255),
+    primary key(id)
+);
+
 -- DATI DI PROVA
 drop user 'auleWebUser'@'localhost';
 CREATE USER 'auleWebUser'@'localhost' IDENTIFIED BY 'auleWebPassword';
@@ -120,6 +128,8 @@ INSERT INTO `auleweb`.`gruppo` (`id`, `nome`, `descrizione`) VALUES ('1', 'nomeG
 INSERT INTO `auleweb`.`gruppo` (`id`, `nome`, `descrizione`) VALUES ('2', 'altro gruppo', 'altra descrizione');
 
 INSERT INTO `auleweb`.`aula_gruppo` (`id`,`id_aula`,`id_gruppo`) VALUES ('1','1','1');
+INSERT INTO `auleweb`.`aula_gruppo` (`id`,`id_aula`,`id_gruppo`) VALUES ('2','1','2');
+INSERT INTO `auleweb`.`aula_gruppo` (`id`,`id_aula`,`id_gruppo`) VALUES ('3','2','1');
 
 INSERT INTO `auleweb`.`attrezzatura` (`id`,`tipo`) VALUES ('1','proiettore#1');
 INSERT INTO `auleweb`.`attrezzatura` (`id`,`tipo`) VALUES ('2','computer fisso#1');
@@ -128,3 +138,6 @@ INSERT INTO `auleweb`.`attrezzatura` (`id`,`tipo`) VALUES ('3','condizionatore')
 INSERT INTO `auleweb`.`aula_attrezzatura` (`id`,`id_aula`,`id_attrezzatura`) VALUES ('1','1','1');
 INSERT INTO `auleweb`.`aula_attrezzatura` (`id`,`id_aula`,`id_attrezzatura`) VALUES ('2','1','2');
 INSERT INTO `auleweb`.`aula_attrezzatura` (`id`,`id_aula`,`id_attrezzatura`) VALUES ('3','2','3');
+
+INSERT INTO `auleweb`.`admin` (`id`,`username`,`password`,`token`) VALUES ('1','username1','pass', null);
+

@@ -6,10 +6,15 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
+
 import jakarta.ws.rs.QueryParam;
+
+import jakarta.ws.rs.container.ContainerRequestContext;
+
 import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.SecurityContext;
 import jakarta.ws.rs.core.UriInfo;
 import java.net.URI;
 import java.sql.Connection;
@@ -30,6 +35,7 @@ import javax.sql.DataSource;
 import org.univaq.swa.framework.model.Attrezzatura;
 import org.univaq.swa.framework.model.Aula;
 import org.univaq.swa.framework.model.Gruppo;
+import org.univaq.swa.framework.security.Logged;
 import org.univaq.swa.template.exceptions.RESTWebApplicationException;
 import org.univaq.swa.framework.model.Evento;
 import org.univaq.swa.framework.model.Tipologia;
@@ -58,12 +64,13 @@ public class AulaRes {
         return ds.getConnection();
     }
 
-    // 4 TODO
+    // 4
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    //@Path("assignGruppo")
-    public Response assignGruppoAula(@Context UriInfo uriinfo, @PathParam("id") int idAula, HashMap<String, Object> gruppo) {
+    @Logged
+    //@Path("gruppi")
+    public Response assignGruppoAula(@Context UriInfo uriinfo, @Context ContainerRequestContext req, @Context SecurityContext sec, @PathParam("id") int idAula, HashMap<String, Object> gruppo) {
         String addAulaQuery = "INSERT INTO `aula_gruppo` (`id_aula`,`id_gruppo`) VALUES (?,?)";
         try ( Connection con = getPooledConnection();  PreparedStatement ps = con.prepareStatement(addAulaQuery, Statement.RETURN_GENERATED_KEYS)) {
 
@@ -78,15 +85,13 @@ public class AulaRes {
                     .build(idAula);
 
             return Response.created(uri).build();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        } catch (NamingException ex) {
+        } catch (SQLException | NamingException ex) {
             ex.printStackTrace();
         }
         return null;
     }
 
-    // 5 TODO
+    // 5
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getInfoAula(@PathParam("id") int idAula) throws RESTWebApplicationException {
@@ -110,7 +115,7 @@ public class AulaRes {
         }
     }
 
-    // 6 TODO
+    // 6 
     @GET
     @Path("attrezzature")
     @Produces(MediaType.APPLICATION_JSON)
@@ -215,12 +220,13 @@ public class AulaRes {
             a.setPreseRete(rs.getInt("prese_rete"));
             a.setNote(rs.getString("note"));
 
-            // final String query_attrezzatura = "SELECT attrezzatura.id as id_attrezzatura, attrezzatura.tipo, aula_attrezzatura.id as id_aula_attrezzatura, aula_attrezzatura.id_aula FROM auleweb.attrezzatura join auleweb.aula_attrezzatura on attrezzatura.id = aula_attrezzatura.id where id_aula = ?;";
+            final String query_attrezzatura = "SELECT aula_attrezzatura.id as id_aula_attrezzatura, attrezzatura.id as id_attrezzatura, attrezzatura.tipo, aula_attrezzatura.id_aula FROM auleweb.attrezzatura join auleweb.aula_attrezzatura on attrezzatura.id = aula_attrezzatura.id where id_aula = ?;";
             final String query_gruppo = "SELECT aula_gruppo.id_aula as id_aula, aula_gruppo.id_gruppo as id_gruppo, gruppo.nome as nome_gruppo, gruppo.descrizione as descrizione_gruppo FROM auleweb.gruppo join aula_gruppo on gruppo.id = aula_gruppo.id_gruppo where aula_gruppo.id_aula = ?;";
             // final String query_aule_associate = "SELECT aula.nome FROM auleweb.aula_gruppo join gruppo on gruppo.id = id_gruppo join aula on aula.id = id_aula where id_gruppo = ?;";
-            
+
             ArrayList<Gruppo> gruppi = new ArrayList<Gruppo>();
-            
+            ArrayList<Attrezzatura> attrezzature = new ArrayList<Attrezzatura>();
+
             try ( Connection con = getPooledConnection();  PreparedStatement ps = con.prepareStatement(query_gruppo)) {
                 ps.setInt(1, idAula);
                 try ( ResultSet rsGruppo = ps.executeQuery()) {
@@ -231,16 +237,29 @@ public class AulaRes {
                         group.setDescrizione(rsGruppo.getString(4));
                         // group.setAuleAssociate(null);
                         gruppi.add(group);
-                        
+
                     }
                 }
             } catch (NamingException ex) {
                 Logger.getLogger(AulaRes.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
-            
+
+            try ( Connection con = getPooledConnection();  PreparedStatement ps = con.prepareStatement(query_attrezzatura)) {
+                ps.setInt(1, idAula);
+                try ( ResultSet rsAttrezzatura = ps.executeQuery()) {
+                    while (rsAttrezzatura.next()) {
+                        Attrezzatura attrezzatura = new Attrezzatura();
+                        attrezzatura.setId(rsAttrezzatura.getInt(2));
+                        attrezzatura.setTipo(rsAttrezzatura.getString(3));
+                        attrezzature.add(attrezzatura);
+                    }
+                }
+            } catch (NamingException ex) {
+                Logger.getLogger(AulaRes.class.getName()).log(Level.SEVERE, null, ex);
+            }
 
             a.setGruppiAssociati(gruppi);
+            a.setAttrezzatureAssociate(attrezzature);
             return a;
         } catch (SQLException e) {
             e.printStackTrace();
