@@ -8,6 +8,7 @@ import jakarta.ws.rs.core.Context;
 import jakarta.ws.rs.core.HttpHeaders;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.SecurityContext;
+import jakarta.ws.rs.core.UriInfo;
 import jakarta.ws.rs.ext.Provider;
 import java.io.IOException;
 import java.security.Principal;
@@ -21,14 +22,19 @@ import java.security.Principal;
 @Priority(Priorities.AUTHENTICATION)
 public class AuthLoggedFilter implements ContainerRequestFilter {
 
+    @Context
+    UriInfo uriInfo;
+
     @Override
     public void filter(@Context ContainerRequestContext requestContext) throws IOException {
         String token = null;
         final String path = requestContext.getUriInfo().getAbsolutePath().toString();
+        System.out.println(path);
 
         //come esempio, proviamo a cercare il token in vari punti, in ordine di priorità
         //in un'applicazione reale, potremmo scegliere una sola modalità
         String authorizationHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
+        System.out.println("AUTH HEADER----------------------------" + authorizationHeader);
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             System.out.println("111111111111111111111111111111111111111111111111111");
 
@@ -42,12 +48,13 @@ public class AuthLoggedFilter implements ContainerRequestFilter {
 
             token = requestContext.getUriInfo().getQueryParameters().getFirst("token");
         }
-        System.out.println(token);
+        System.out.println("TOKEN--------------------------" + token);
         if (token != null && !token.isEmpty()) {
             try {
                 //validiamo il token
-                // final String username = AuthHelpers.getInstance().validateToken(token); NO JWT
+                // final String username = AuthHelpers.getInstance().validateToken(token); // NO JWT
                 final String username = JWTHelpers.getInstance().validateToken(token); // Con JWT
+                System.out.println("--------------------------------------------" + username);
                 if (username != null) {
                     //inseriamo nel contesto i risultati dell'autenticazione
                     //per farli usare dai nostri metodi restful

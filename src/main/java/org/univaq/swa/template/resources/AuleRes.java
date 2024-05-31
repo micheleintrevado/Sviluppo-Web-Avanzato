@@ -90,8 +90,7 @@ public class AuleRes {
     @Path("{id: [1-9][0-9]*}/gruppi")
     @Logged
     public Response assignGruppo(@Context UriInfo uriinfo, @Context ContainerRequestContext req, @Context SecurityContext sec, @PathParam("id") int idAula, HashMap<String, Object> gruppo) throws RESTWebApplicationException {
-        System.out.println(req.getProperty("token"));
-        System.out.println(sec.toString());
+        System.out.println("AULE RES ---------------------------" + req.getProperty("token"));
         Aula aula = new Aula();
         aula.setId(idAula);
         AulaRes aulaRes = new AulaRes(aula);

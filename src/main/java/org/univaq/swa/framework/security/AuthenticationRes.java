@@ -27,15 +27,15 @@ public class AuthenticationRes {
     @Path("login")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public Response login(@Context UriInfo uriinfo,
+            @Context ContainerRequestContext req,
             //un altro modo per ricevere e iniettare i parametri con JAX-RS...
             @FormParam("username") String username,
             @FormParam("password") String password) {
         try {
             Integer id = AuthHelpers.getInstance().authenticateUser(username, password);
             if (id != null) {
-                // String authToken = AuthHelpers.getInstance().issueToken(uriinfo, id); NO JWT
+                //String authToken = AuthHelpers.getInstance().issueToken(uriinfo, id); //NO JWT
                 String authToken = AuthHelpers.getInstance().issueTokenJWT(uriinfo, username); // Con JWT
-
                 //Restituiamolo in tutte le modalità, giusto per fare un esempio...
                 return Response.ok(authToken)
                         .cookie(new NewCookie.Builder("token").value(authToken).build())
@@ -69,7 +69,7 @@ public class AuthenticationRes {
         //proprietà iniettata nella request dal filtro di autenticazione
         String username = (String) req.getProperty("user");
         String token = (String) req.getProperty("token");
-        // String newtoken = AuthHelpers.getInstance().issueToken(uriinfo, username, token); NO JWT
+        // String newtoken = AuthHelpers.getInstance().issueToken(uriinfo, username, token); // NO JWT
         String newtoken = AuthHelpers.getInstance().issueTokenJWT(uriinfo, username); // con JWT
         return Response.ok(newtoken)
                 .cookie(new NewCookie.Builder("token").value(newtoken).build())
