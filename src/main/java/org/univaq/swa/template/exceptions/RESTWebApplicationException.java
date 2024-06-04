@@ -22,4 +22,11 @@ public class RESTWebApplicationException extends WebApplicationException {
                 .type("text/plain")
                 .build());
     }
+
+    public RESTWebApplicationException(Exception ex) {
+        super(Response.status(500)
+                .entity(ex.getMessage())
+                .type("text/plain")
+                .build());
+    }
 }

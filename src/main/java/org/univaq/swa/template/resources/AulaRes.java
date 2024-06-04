@@ -70,7 +70,7 @@ public class AulaRes {
     @Produces(MediaType.APPLICATION_JSON)
     // @Logged
     //@Path("gruppi")
-    public Response assignGruppoAula(@Context UriInfo uriinfo, @Context ContainerRequestContext req, @Context SecurityContext sec, @PathParam("id") int idAula, HashMap<String, Object> gruppo) {
+    public Response assignGruppoAula(@Context UriInfo uriinfo, /* @Context ContainerRequestContext req,*/ @Context SecurityContext sec, @PathParam("id") int idAula, HashMap<String, Object> gruppo) {
         String addAulaQuery = "INSERT INTO `aula_gruppo` (`id_aula`,`id_gruppo`) VALUES (?,?)";
         try ( Connection con = getPooledConnection();  PreparedStatement ps = con.prepareStatement(addAulaQuery, Statement.RETURN_GENERATED_KEYS)) {
 
@@ -87,9 +87,8 @@ public class AulaRes {
 
             return Response.created(uri).build();
         } catch (SQLException | NamingException ex) {
-            ex.printStackTrace();
+            throw new RESTWebApplicationException(ex);
         }
-        return null;
     }
 
     // 5
@@ -107,12 +106,8 @@ public class AulaRes {
                 }
             }
             return Response.ok(aula).build();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-            return null;
-        } catch (NamingException ex) {
-            ex.printStackTrace();
-            return null;
+        } catch (SQLException | NamingException ex) {
+            throw new RESTWebApplicationException(ex);
         }
     }
 
@@ -132,16 +127,12 @@ public class AulaRes {
                 }
             }
             return Response.ok(attrezzature).build();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-            return null;
-        } catch (NamingException ex) {
-            ex.printStackTrace();
-            return null;
+        } catch (SQLException | NamingException ex) {
+            throw new RESTWebApplicationException(ex);
         }
 
     }
-    
+
     //10
     @GET
     //@Path("aule/{id: [1-9][0-9]*}/{settimana: }")
@@ -163,12 +154,8 @@ public class AulaRes {
                 }
             }
             return Response.ok(eventi).build();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-            return null;
-        } catch (NamingException ex) {
-            ex.printStackTrace();
-            return null;
+        } catch (SQLException | NamingException ex) {
+            throw new RESTWebApplicationException(ex);
         }
     }
 
@@ -185,12 +172,11 @@ public class AulaRes {
             e.setEmailResponsabile(rs.getString("email_responsabile"));
             e.setTipologia(Tipologia.valueOf(rs.getString("tipologia")));
             return e;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return null;
+        } catch (SQLException ex) {
+            throw new RESTWebApplicationException(ex);
         }
     }
-    
+
     private Attrezzatura obtainAttrezzatura(ResultSet rs) {
         try {
             Attrezzatura a = new Attrezzatura();
@@ -198,9 +184,8 @@ public class AulaRes {
             a.setId(rs.getInt("id"));
             a.setTipo(rs.getString("tipo"));
             return a;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return null;
+        } catch (SQLException ex) {
+            throw new RESTWebApplicationException(ex);
         }
     }
 
@@ -262,9 +247,8 @@ public class AulaRes {
             a.setGruppiAssociati(gruppi);
             a.setAttrezzatureAssociate(attrezzature);
             return a;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return null;
+        } catch (SQLException ex) {
+            throw new RESTWebApplicationException(ex);
         }
     }
 }

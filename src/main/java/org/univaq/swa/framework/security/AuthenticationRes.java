@@ -1,5 +1,6 @@
 package org.univaq.swa.framework.security;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
 import jakarta.ws.rs.FormParam;
@@ -36,13 +37,14 @@ public class AuthenticationRes {
             if (id != null) {
                 //String authToken = AuthHelpers.getInstance().issueToken(uriinfo, id); //NO JWT
                 String authToken = AuthHelpers.getInstance().issueTokenJWT(uriinfo, username); // Con JWT
+                System.out.println(authToken);
                 //Restituiamolo in tutte le modalità, giusto per fare un esempio...
                 return Response.ok(authToken)
                         .cookie(new NewCookie.Builder("token").value(authToken).build())
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + authToken).build();
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (ClassNotFoundException | SQLException e) {
+            return Response.status(UNAUTHORIZED).build();
         }
         return Response.status(UNAUTHORIZED).build();
     }
@@ -50,9 +52,10 @@ public class AuthenticationRes {
     @DELETE
     @Path("logout")
     @Logged
-    public Response logout(@Context ContainerRequestContext req) throws SQLException, ClassNotFoundException {
+    public Response logout(@Context ContainerRequestContext req, @Context HttpServletRequest request) throws SQLException, ClassNotFoundException {
         //proprietà estratta dall'authorization header 
         //e iniettata nella request dal filtro di autenticazione
+        System.out.println("HTTP REQUEST: " + request.getAttribute("token"));
         String token = (String) req.getProperty("token");
         AuthHelpers.getInstance().revokeToken(token);
         return Response.noContent()
@@ -68,7 +71,7 @@ public class AuthenticationRes {
     public Response refresh(@Context ContainerRequestContext req, @Context UriInfo uriinfo) throws SQLException, ClassNotFoundException {
         //proprietà iniettata nella request dal filtro di autenticazione
         String username = (String) req.getProperty("user");
-        String token = (String) req.getProperty("token");
+        // String token = (String) req.getProperty("token"); // NO JWT
         // String newtoken = AuthHelpers.getInstance().issueToken(uriinfo, username, token); // NO JWT
         String newtoken = AuthHelpers.getInstance().issueTokenJWT(uriinfo, username); // con JWT
         return Response.ok(newtoken)

@@ -52,7 +52,7 @@ public class EventoRes {
     @Logged
     public Response updateEvento(@PathParam("id") int idEvento, Map<String, Object> fieldsToUpdate) {
         System.out.println("SONO IN UPDATE EVENTO <----------------------------------------------------");
-        
+
         StringBuilder queryBuilder = new StringBuilder("UPDATE evento SET ");
         for (String key : fieldsToUpdate.keySet()) {
             queryBuilder.append(key + " = ?, ");
@@ -60,13 +60,13 @@ public class EventoRes {
         // Remove the last ", " characters
         queryBuilder.delete(queryBuilder.length() - 2, queryBuilder.length());
         queryBuilder.append(" WHERE id = ?");
-        
+
         System.out.println("QUERY CREATA:");
         System.out.println(queryBuilder.toString());
 
         try ( Connection con = getPooledConnection();  PreparedStatement ps = con.prepareStatement(queryBuilder.toString())) {
             int i = 1;
-            for (String key: fieldsToUpdate.keySet()){
+            for (String key : fieldsToUpdate.keySet()) {
                 ps.setObject(i, fieldsToUpdate.get(key));
                 i++;
             }
@@ -77,20 +77,16 @@ public class EventoRes {
             } else {
                 return Response.status(Response.Status.NOT_FOUND).build();
             }
-            
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        } catch (NamingException ex) {
-            ex.printStackTrace();
-        }
 
-        return null;
+        } catch (SQLException | NamingException ex) {
+            throw new RESTWebApplicationException(ex);
+        }
     }
 
     // 9 TODO: vedere perché stampa male il json dell'evento
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getInfoEvento(@PathParam("id") int idEvento) throws RESTWebApplicationException{
+    public Response getInfoEvento(@PathParam("id") int idEvento) throws RESTWebApplicationException {
         try {
             Evento evento = null;
             try ( Connection con = getPooledConnection();  PreparedStatement ps = con.prepareStatement(QUERY_SELECT_EVENTO)) {
@@ -102,15 +98,11 @@ public class EventoRes {
                 }
             }
             return Response.ok(evento).build();
-        } catch (SQLException e) {
-            e.printStackTrace();    
-        } catch (NamingException e) {
-            e.printStackTrace();
+        } catch (SQLException | NamingException ex) {
+            throw new RESTWebApplicationException(ex);
         }
-        return null;
     }
-    
-    
+
     private Evento obtainEvento(ResultSet rs) {
         try {
             Evento e = new Evento();
@@ -123,8 +115,8 @@ public class EventoRes {
             e.setNomeOrganizzatore(rs.getString("nome_organizzatore"));
             e.setEmailResponsabile(rs.getString("email_responsabile"));
             e.setTipologia(Tipologia.valueOf(rs.getString("tipologia")));
-            
-            if (rs.getString("id_master") != null ){
+
+            if (rs.getString("id_master") != null) {
                 Ricorrenza r = new Ricorrenza();
                 r.setId(rs.getInt("id_master"));
                 switch (rs.getString("tipo_ricorrenza")) {
@@ -140,12 +132,11 @@ public class EventoRes {
                 }
                 r.setDataTermine(rs.getTimestamp("data_termine").toLocalDateTime());
             }
-            
+
             return e;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return null;
+        } catch (SQLException ex) {
+            throw new RESTWebApplicationException(ex);
         }
     }
-    
+
 }

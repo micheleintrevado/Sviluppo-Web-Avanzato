@@ -109,10 +109,8 @@ public class EventiRes {
                     eventi.add(e);
                 }
             }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        } catch (NamingException ex) {
-            ex.printStackTrace();
+        } catch (SQLException | NamingException ex) {
+            throw new RESTWebApplicationException(ex);
         }
 
         Calendar calendar = new Calendar();
@@ -182,12 +180,9 @@ public class EventiRes {
                 }
             }
             return Response.ok(eventi).build();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (NamingException e) {
-            e.printStackTrace();
+        } catch (SQLException | NamingException ex) {
+            throw new RESTWebApplicationException(ex);
         }
-        return null;
     }
 
     // 7
@@ -274,19 +269,17 @@ public class EventiRes {
                         ps.executeUpdate();
 
                     } catch (SQLException ex) {
-                        ex.printStackTrace();
+                        throw new RESTWebApplicationException(ex);
                     }
                 }
 
-                    URI uri = uriinfo.getBaseUriBuilder()
-                            .path(EventiRes.class)
-                            .path(EventiRes.class, "getEventiIdMaster")
-                            .build(id_master);
-                    return Response.created(uri).build();
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            } catch (NamingException ex) {
-                ex.printStackTrace();
+                URI uri = uriinfo.getBaseUriBuilder()
+                        .path(EventiRes.class)
+                        .path(EventiRes.class, "getEventiIdMaster")
+                        .build(id_master);
+                return Response.created(uri).build();
+            } catch (SQLException | NamingException ex) {
+                throw new RESTWebApplicationException(ex);
             }
         } else {
             try ( Connection con = getPooledConnection();  PreparedStatement ps = con.prepareStatement(addEventoNonRicorrenteQuery, Statement.RETURN_GENERATED_KEYS)) {
@@ -318,16 +311,11 @@ public class EventiRes {
                             .build(idEvento);
                     return Response.created(uri).build();
                 }
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            } catch (NamingException ex) {
-                ex.printStackTrace();
+            } catch (SQLException | NamingException ex) {
+                throw new RESTWebApplicationException(ex);
             }
-        }
-
-        return Response.noContent().build();
+        }        // return Response.noContent().build();
     }
-
 
     // 11
     @GET
@@ -345,12 +333,8 @@ public class EventiRes {
             }
 
             return Response.ok(eventiAttuali).build();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-            return null;
-        } catch (NamingException ex) {
-            ex.printStackTrace();
-            return null;
+        } catch (SQLException | NamingException ex) {
+            throw new RESTWebApplicationException(ex);
         }
     }
 
@@ -372,12 +356,8 @@ public class EventiRes {
             }
 
             return Response.ok(eventiAttuali).build();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-            return null;
-        } catch (NamingException ex) {
-            ex.printStackTrace();
-            return null;
+        } catch (SQLException | NamingException ex) {
+            throw new RESTWebApplicationException(ex);
         }
     }
 
@@ -394,9 +374,8 @@ public class EventiRes {
             e.setEmailResponsabile(rs.getString("email_responsabile"));
             e.setTipologia(Tipologia.valueOf(rs.getString("tipologia")));
             return e;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return null;
+        } catch (SQLException ex) {
+            throw new RESTWebApplicationException(ex);
         }
     }
 

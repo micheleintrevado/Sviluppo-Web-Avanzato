@@ -1,6 +1,7 @@
 package org.univaq.swa.template.resources;
 
 import jakarta.servlet.ServletContext;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
@@ -9,6 +10,7 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 
 import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.WebApplicationException;
 
 import jakarta.ws.rs.container.ContainerRequestContext;
 
@@ -70,7 +72,6 @@ public class AuleRes {
         return aulaRes.getInfoAula(idAula);
     }
 
-    
     // 10
     @GET
     @Path("{idAula: [1-9][0-9]*}/eventi")
@@ -79,23 +80,24 @@ public class AuleRes {
         Aula aula = new Aula();
         aula.setId(idAula);
         AulaRes aulaRes = new AulaRes(aula);
-        
+
         return aulaRes.getEventiAulaSettimana(idAula, rangeStart);
-    }    
-    
+    }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{id: [1-9][0-9]*}/gruppi")
     @Logged
-    public Response assignGruppo(@Context UriInfo uriinfo, @Context ContainerRequestContext req, @Context SecurityContext sec, @PathParam("id") int idAula, HashMap<String, Object> gruppo) throws RESTWebApplicationException {
-        System.out.println("AULE RES ---------------------------" + req.getProperty("token"));
+    public Response assignGruppo(@Context UriInfo uriinfo, @Context HttpServletRequest req, @Context SecurityContext sec, @PathParam("id") int idAula, HashMap<String, Object> gruppo) throws RESTWebApplicationException {
+        // System.out.println("AULE RES ---------------------------" + req.getProperty("token"));
+        System.out.println("HTTP REQUEST ASSIGN: " + req.getAttribute("token"));
+
         Aula aula = new Aula();
         aula.setId(idAula);
         AulaRes aulaRes = new AulaRes(aula);
 
-        return aulaRes.assignGruppoAula(uriinfo, req, sec, idAula, gruppo);
+        return aulaRes.assignGruppoAula(uriinfo, sec, idAula, gruppo);
     }
 
     // 3
@@ -127,12 +129,9 @@ public class AuleRes {
                         .build(id);
                 return Response.created(uri).build();
             }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        } catch (NamingException ex) {
-            ex.printStackTrace();
+        } catch (SQLException | NamingException ex) {
+            throw new RESTWebApplicationException(ex);
         }
-        return null;
     }
 
     // 2
@@ -173,12 +172,8 @@ public class AuleRes {
             return Response.ok(fileCsv, "text/csv").
                     header("Content-Disposition", "attachment;filename=configurazione_aule.csv")
                     .build();
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-            return null;
-        } catch (NamingException ex) {
-            ex.printStackTrace();
-            return null;
+        } catch (SQLException | NamingException ex) {
+            throw new RESTWebApplicationException(ex);
         }
     }
 
@@ -255,7 +250,7 @@ public class AuleRes {
                     }
                 }
             } catch (SQLException ex) {
-                ex.printStackTrace();
+                throw new RESTWebApplicationException(ex);
             }
         }
         URI uri = uriinfo.getBaseUriBuilder()
@@ -291,9 +286,8 @@ public class AuleRes {
             a.setPreseRete(rs.getInt("prese_rete"));
             a.setNote(rs.getString("note"));
             return a;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return null;
+        } catch (SQLException ex) {
+            throw new RESTWebApplicationException(ex);
         }
     }
 
@@ -312,9 +306,8 @@ public class AuleRes {
             a.setPreseRete(rs.getInt("prese_rete"));
             a.setNote(rs.getString("note"));
             return a;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return null;
+        } catch (SQLException ex) {
+            throw new RESTWebApplicationException(ex);
         }
     }
 }

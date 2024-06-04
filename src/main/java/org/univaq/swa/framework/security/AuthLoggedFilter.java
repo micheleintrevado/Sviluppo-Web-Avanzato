@@ -22,11 +22,11 @@ import java.security.Principal;
 @Priority(Priorities.AUTHENTICATION)
 public class AuthLoggedFilter implements ContainerRequestFilter {
 
-    @Context
-    UriInfo uriInfo;
-
+    //@Context
+    //UriInfo uriInfo;
+    
     @Override
-    public void filter(@Context ContainerRequestContext requestContext) throws IOException {
+    public void filter(ContainerRequestContext requestContext) throws IOException {
         String token = null;
         final String path = requestContext.getUriInfo().getAbsolutePath().toString();
         System.out.println(path);
@@ -37,23 +37,21 @@ public class AuthLoggedFilter implements ContainerRequestFilter {
         System.out.println("AUTH HEADER----------------------------" + authorizationHeader);
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             System.out.println("111111111111111111111111111111111111111111111111111");
-
             token = authorizationHeader.substring("Bearer".length()).trim();
         } else if (requestContext.getCookies().containsKey("token")) {
             System.out.println("22222222222222222222222222222222222222222222222222222");
-
             token = requestContext.getCookies().get("token").getValue();
         } else if (requestContext.getUriInfo().getQueryParameters().containsKey("token")) {
             System.out.println("3333333333333333333333333333333333333333333333333333333333");
-
             token = requestContext.getUriInfo().getQueryParameters().getFirst("token");
-        }
+        } 
         System.out.println("TOKEN--------------------------" + token);
-        if (token != null && !token.isEmpty()) {
+        if ((token != null) && !(token.isEmpty())) {
             try {
+                System.out.println("NEL TRY");
                 //validiamo il token
-                // final String username = AuthHelpers.getInstance().validateToken(token); // NO JWT
-                final String username = JWTHelpers.getInstance().validateToken(token); // Con JWT
+                final String username = AuthHelpers.getInstance().validateToken(token); // NO JWT
+                // final String username = JWTHelpers.getInstance().validateToken(token); // Con JWT
                 System.out.println("--------------------------------------------" + username);
                 if (username != null) {
                     //inseriamo nel contesto i risultati dell'autenticazione
