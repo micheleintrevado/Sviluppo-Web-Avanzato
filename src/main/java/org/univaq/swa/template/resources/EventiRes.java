@@ -143,7 +143,7 @@ public class EventiRes {
     }
 
     @PATCH
-    @Path("{id: [1-9]+}")
+    @Path("{id: [1-9][0-9]*}")
     @Consumes(MediaType.APPLICATION_JSON)
     @Logged
     public Response updateEvento(@PathParam("id") int idEvento, Map<String, Object> fieldsToUpdate) {
@@ -154,7 +154,7 @@ public class EventiRes {
     }
 
     @GET
-    @Path("{id: [1-9]+}")
+    @Path("{id: [1-9][0-9]*}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getEvento(@PathParam("id") int idEvento) throws RESTWebApplicationException {
         Evento evento = new Evento();

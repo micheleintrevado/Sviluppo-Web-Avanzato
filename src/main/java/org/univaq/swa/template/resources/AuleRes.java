@@ -62,7 +62,7 @@ public class AuleRes {
     }
 
     @GET
-    @Path("{id: [1-9]+}")
+    @Path("{id: [1-9][0-9]*}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAula(@PathParam("id") int idAula) throws RESTWebApplicationException {
         Aula aula = new Aula();
@@ -261,7 +261,7 @@ public class AuleRes {
     }
 
     @GET
-    @Path("{id: [1-9]+}/attrezzature")
+    @Path("{id: [1-9][0-9]*}/attrezzature")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAttrezzatureAula(@PathParam("id") int idAula) throws RESTWebApplicationException {
         Aula aula = new Aula();

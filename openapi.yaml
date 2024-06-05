@@ -174,7 +174,8 @@ paths:
                 format: uri
         '500':
           $ref: '#/components/responses/GeneralError'
-          
+  
+  '/rest/aule/{id}':        
     get:
       operationId: getInfoAula #5
       description: Lettura delle informazioni di base relative a un'aula.

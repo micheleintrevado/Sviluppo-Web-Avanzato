@@ -1,29 +1,14 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>JAX-RS Template application (JakartaEE 10)</title>
+        <title>AuleWEB REST App</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="res/restest.css"/>
     </head>
     <body>
-        <h1>JAX-RS Template application (JakartaEE 10)</h1>
+        <h1>AuleWEB REST App</h1>
         <p>This is a template web application based on <strong>JakartaEE 10</strong> that runs on Apache <strong>Tomcat 10.1</strong> with <strong>Java 14</strong> or above.</p>
-        <p> The application is configured to expose RESTful resources through the <strong>JAX-RS</strong> reference implementation, <strong>Jersey</strong> (version 3, for Jakarta EE).</p>
-        <p> JAX-RS JSON serialization is handled by the <strong>Jackson</strong> JSON Provider (version 2, for Jakarta EE).</p>
-
-        <p>The application also shows:</p>
-        <ul>
-            <li>how to <strong>perform the basic JAX-RS environment setup</strong> (class <em>org.univaq.swa.template.base.RESTApp</em>)</li>
-            <li>how to implement a simple <strong>resource class</strong> (class <em>org.univaq.swa.template.resources.SimpleRes</em>)</li>
-            <li>how to implement a simple <strong>WebApplicationException</strong> (class <em>org.univaq.swa.template.exceptions.RESTWebApplicationException</em>)</li>                        
-            <li>how to implement a custom <strong>exception mapper</strong> (classes <em>org.univaq.swa.template.exceptions.AppExceptionMapper</em> and <em>org.univaq.swa.template.exceptions.JacksonExceptionMapper</em>)</li>
-            <li>how to implement <strong>Jackson custom serializers and deserializers</strong> for Java classes (package <em>org.univaq.swa.framework.jackson</em>).</li>
-            <li>how to implement a <strong>filter to handle CORS preflight requests</strong> (class <em>org.univaq.swa.framework.security.CORSFilter</em>)</li>
-            <li>how to declare a <strong>JAX-RS authentication annotation</strong> (class <em>org.univaq.swa.framework.security.Logged</em>)</li>
-            <li>how to implement a simple <strong>login resource class</strong> to issue an access token (class <em>org.univaq.swa.framework.security.AuthenticationRes</em>)</li>
-            <li>how to implement a <strong>filter to handle JAX-RS authentication annotations</strong> (class <em>org.univaq.swa.framework.security.AuthLoggedFilter</em>)</li>
-        </ul>
 
         <p>The RESTful resources, grouped under the /rest prefix, are the following:</p>
 
@@ -69,7 +54,123 @@
                 <tr>
                     <td><a data-rest-test data-rest-test-status="404" data-rest-test-target href="rest/simple/14"><small>GET rest/simple/14</small></a></td>
                     <td  class="output">404</td>
-                </tr>            
+                </tr>
+                
+                <!-- DA QUIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII -->
+                <tr>
+                    <td rowspan="2">/rest/aule/csv</td>
+                    <td>GET</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td><a data-rest-test data-rest-test-target href="rest/aule/csv"><small>GET rest/aule/csv</small></a></td>
+                    <td  class="output"></td>
+                </tr>
+                <tr>
+                    <td>POST</td>
+                    <td></td>
+                    <td>any string</td>
+                    <td></td>
+                    <td><span data-rest-test-target data-rest-test-method="post" data-rest-test-payoad="testtest"  data-rest-test-status="201" data-rest-test-url="rest/simple">POST rest/aule/csv</span></td>
+                    <td class="output"></td>
+                </tr>
+                <tr>
+                    <td rowspan="1">/rest/aule</td>
+                    <td>POST</td>
+                    <td></td>
+                    <td>any string</td>
+                    <td></td>
+                    <td><span data-rest-test-target data-rest-test-method="post" data-rest-test-payoad="testtest"  data-rest-test-status="201" data-rest-test-url="rest/simple">POST rest/aule</span></td>
+                    <td class="output"></td>
+                </tr>
+                <tr>
+                    <td rowspan="1">/rest/aule/{id}/assignGruppo</td>
+                    <td>POST</td>
+                    <td>id: [1-9][0-9]*</td>
+                    <td></td>
+                    <td></td>
+                    <td><span data-rest-test-target data-rest-test-method="post" data-rest-test-payoad="testtest"  data-rest-test-status="201" data-rest-test-url="rest/simple">POST rest/aule/{id}/assignGruppo</span></td>
+                    <td  class="output"></td>
+                </tr>
+                <tr>
+                    <td rowspan="1">/rest/aule/{id}</td>
+                    <td>GET</td>
+                    <td>id: [1-9][0-9]*</td>
+                    <td></td>
+                    <td></td>
+                    <td><a data-rest-test data-rest-test-target href="rest/aule/1"><small>GET rest/aule/1</small></a></td>
+                    <td  class="output"></td>
+                </tr>
+                <tr>
+                    <td rowspan="1">/rest/aule/{id}/attrezzature</td>
+                    <td>GET</td>
+                    <td>id: [1-9][0-9]*</td>
+                    <td></td>
+                    <td></td>
+                    <td><a data-rest-test data-rest-test-target href="rest/aule/1/attrezzature"><small>GET rest/aule/1/attrezzature</small></a></td>
+                    <td  class="output"></td>
+                </tr>
+                <tr>
+                    <td rowspan="2">/rest/eventi</td>
+                    <td>POST</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td><span data-rest-test-target data-rest-test-method="post" data-rest-test-payoad="testtest"  data-rest-test-status="201" data-rest-test-url="rest/eventi">POST rest/eventi</span></td>
+                    <td  class="output"></td>
+                </tr>
+                <tr>
+                    <td>GET</td>
+                    <td>rangeStart: datetime, rangeEnd: datetime</td>
+                    <td></td>
+                    <td></td>
+                    <td><a data-rest-test data-rest-test-target href="rest/eventi?rangeStart=2024-01-06T00:00:00&rangeEnd=2024-01-20T23:59:00"><small>GET rest/eventi?rangeStart=2024-01-06T00:00:00&rangeEnd=2024-01-20T23:59:00</small></a></td>
+                    <td  class="output"></td>
+                </tr>
+                <tr>
+                    <td rowspan="2">/rest/eventi/{evento}</td>
+                    <td>PATCH</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td><span data-rest-test-target data-rest-test-method="post" data-rest-test-payoad="testtest"  data-rest-test-status="201" data-rest-test-url="rest/eventi/{1}">PATCH rest/eventi/{1}</span></td>
+                    <td  class="output"></td>
+                </tr>
+                <tr>
+                    <td>GET</td>
+                    <td>id: [1-9][0-9]*</td>
+                    <td></td>
+                    <td></td>
+                    <td><a data-rest-test data-rest-test-target href="rest/eventi/1"><small>GET rest/eventi/1</small></a></td>
+                    <td  class="output"></td>
+                </tr>
+                <tr>
+                    <td rowspan="1">/rest/aule/{idAula}/eventi</td>
+                    <td>GET</td>
+                    <td>idAula: [1-9][0-9]*, rangeStart: dateTime</td>
+                    <td></td>
+                    <td></td>
+                    <td><a data-rest-test data-rest-test-target href="rest/aule/1/eventi?rangeStart=2024-01-16T00:00:00"><small>GET /rest/aule/1/eventi?rangeStart=2024-01-16T00:00:00</small></a></td>
+                    <td  class="output"></td>
+                </tr>
+                <tr>
+                    <td rowspan="1">/rest/eventi/attuali</td>
+                    <td>GET</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td><a data-rest-test data-rest-test-target href="/rest/eventi/attuali"><small>GET /rest/eventi/attuali</small></a></td>
+                    <td  class="output"></td>
+                </tr>
+                <tr>prossimi
+                    <td rowspan="1">/rest/eventi/prossimi</td>
+                    <td>GET</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td><a data-rest-test data-rest-test-target href="/rest/eventi/prossimi?oreProssime=48"><small>GET /rest/eventi/prossimi?oreProssime=48</small></a></td>
+                    <td  class="output"></td>
+                </tr>
             </tbody>
         </table>
 
