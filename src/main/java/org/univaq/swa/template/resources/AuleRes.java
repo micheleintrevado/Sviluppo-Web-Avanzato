@@ -76,7 +76,7 @@ public class AuleRes {
     @GET
     @Path("{idAula: [1-9][0-9]*}/eventi")
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getEventiAulaSettimana(@PathParam("idAula") int idAula, @QueryParam("start") String rangeStart) {
+    public Response getEventiAulaSettimana(@PathParam("idAula") int idAula, @QueryParam("rangeStart") String rangeStart) {
         Aula aula = new Aula();
         aula.setId(idAula);
         AulaRes aulaRes = new AulaRes(aula);
@@ -105,18 +105,19 @@ public class AuleRes {
     @Logged
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response addAula(@Context UriInfo uriinfo, HashMap<String, Object> evento) {
+    public Response addAula(@Context UriInfo uriinfo, HashMap<String, Object> aula) {
+        System.out.println("CIAOOOOOOOOO");
         String addAulaQuery = "INSERT INTO `aula` (`nome`, `luogo`, `edificio`, `piano`, `capienza`, `email_responsabile`, `prese_elettriche`, `prese_rete`, `note`) VALUES (?,?, ?, ?, ?, ?, ?, ?, ?)";
         try ( Connection con = getPooledConnection();  PreparedStatement ps = con.prepareStatement(addAulaQuery, Statement.RETURN_GENERATED_KEYS)) {
-            ps.setString(1, (String) evento.get("nome"));
-            ps.setString(2, (String) evento.get("luogo"));
-            ps.setString(3, (String) evento.get("edificio"));
-            ps.setString(4, (String) evento.get("piano"));
-            ps.setInt(5, (int) evento.get("capienza"));
-            ps.setString(6, (String) evento.get("email_responsabile"));
-            ps.setInt(7, (int) evento.get("prese_elettriche"));
-            ps.setInt(8, (int) evento.get("prese_rete"));
-            ps.setString(9, (String) evento.get("note"));
+            ps.setString(1, (String) aula.get("nome"));
+            ps.setString(2, (String) aula.get("luogo"));
+            ps.setString(3, (String) aula.get("edificio"));
+            ps.setString(4, (String) aula.get("piano"));
+            ps.setInt(5, (int) aula.get("capienza"));
+            ps.setString(6, (String) aula.get("email_responsabile"));
+            ps.setInt(7, (int) aula.get("prese_elettriche"));
+            ps.setInt(8, (int) aula.get("prese_rete"));
+            ps.setString(9, (String) aula.get("note"));
 
             ps.executeUpdate();
 

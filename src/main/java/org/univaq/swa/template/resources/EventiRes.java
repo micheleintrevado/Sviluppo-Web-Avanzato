@@ -133,12 +133,9 @@ public class EventiRes {
         CalendarOutputter outputter = new CalendarOutputter();
         try {
             outputter.output(calendar, fout);
-        } catch (IOException ex) {
-            Logger.getLogger(EventiRes.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (ValidationException ex) {
+        } catch (IOException | ValidationException ex) {
             Logger.getLogger(EventiRes.class.getName()).log(Level.SEVERE, null, ex);
         }
-
         return Response.ok(file, "text/calendar").header("Content-Disposition", "attachment;filename=calendar.ics").build();
     }
 
