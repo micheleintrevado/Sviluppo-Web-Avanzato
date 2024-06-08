@@ -6,6 +6,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="res/restest.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
 </head>
 
 <body>
@@ -15,7 +18,7 @@
 
     <p>The RESTful resources, grouped under the /rest prefix, are the following:</p>
 
-    <table class="restest" width="100%">
+    <!--    <table class="restest" width="100%">
         <thead>
             <tr>
                 <th>Path</th>
@@ -28,7 +31,7 @@
             </tr>
         </thead>
         <tbody>
-            <!-- <tr>
+             <tr>
                 <td rowspan="2">/simple</td>
                 <td>GET</td>
                 <td></td>
@@ -60,9 +63,9 @@
                 <td><a data-rest-test data-rest-test-status="404" data-rest-test-target href="rest/simple/14"><small>GET
                             rest/simple/14</small></a></td>
                 <td class="output">404</td>
-            </tr> -->
+            </tr> 
 
-            <!-- DA QUIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII -->
+             DA QUIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII 
             <tr>
                 <td rowspan="2">/rest/aule/csv</td>
                 <td>GET</td>
@@ -74,26 +77,26 @@
                 <td class="output"></td>
             </tr>
             <tr>
-                <!-- <td>POST</td>
+                 <td>POST</td>
                 <td></td>
                 <td>any string</td>
                 <td></td>
                 <td><span data-rest-test-target data-rest-test-method="post" data-rest-test-payoad="testtest"
                         data-rest-test-status="201" data-rest-test-url="rest/simple">POST rest/aule/csv</span></td>
-                <td class="output"></td> -->
+                <td class="output"></td> 
             </tr>
             <tr>
-                <!-- <td rowspan="1">/rest/aule</td>
+                 <td rowspan="1">/rest/aule</td>
                 <td>POST</td>
                 <td></td>
                 <td>any string</td>
                 <td></td>
                 <td><span data-rest-test-target data-rest-test-method="post" data-rest-test-payoad="testtest"
                         data-rest-test-status="201" data-rest-test-url="rest/simple">POST rest/aule</span></td>
-                <td class="output"></td> -->
+                <td class="output"></td> 
             </tr>
             <tr>
-                <!-- <td rowspan="1">/rest/aule/{id}/assignGruppo</td>
+                 <td rowspan="1">/rest/aule/{id}/assignGruppo</td>
                 <td>POST</td>
                 <td>id: [1-9][0-9]*</td>
                 <td></td>
@@ -101,7 +104,7 @@
                 <td><span data-rest-test-target data-rest-test-method="post" data-rest-test-payoad="testtest"
                         data-rest-test-status="201" data-rest-test-url="rest/simple">POST
                         rest/aule/{id}/assignGruppo</span></td>
-                <td class="output"></td> -->
+                <td class="output"></td> 
             </tr>
             <tr>
                 <td rowspan="1">/rest/aule/{id}</td>
@@ -124,13 +127,13 @@
             </tr>
             <tr>
                 <td rowspan="2">/rest/eventi</td>
-                <!-- <td>POST</td>
+                 <td>POST</td>
                 <td></td>
                 <td></td>
                 <td></td>
                 <td><span data-rest-test-target data-rest-test-method="post" data-rest-test-payoad="testtest"
                         data-rest-test-status="201" data-rest-test-url="rest/eventi">POST rest/eventi</span></td>
-                <td class="output"></td> -->
+                <td class="output"></td> 
             </tr>
             <tr>
                 <td>GET</td>
@@ -138,20 +141,20 @@
                 <td></td>
                 <td></td>
                 <td><a data-rest-test data-rest-test-target
-                        href="rest/eventi?rangeStart=2024-01-06T00:00:00&rangeEnd=2024-01-20T23:59:00"><small>GET
-                            rest/eventi?rangeStart=2024-01-06T00:00:00&rangeEnd=2024-01-20T23:59:00</small></a></td>
+                        href="rest/eventi?rangeStart=2024-01-06T00:00:00&amp;rangeEnd=2024-01-20T23:59:00"><small>GET
+                            rest/eventi?rangeStart=2024-01-06T00:00:00&amp;rangeEnd=2024-01-20T23:59:00</small></a></td>
                 <td class="output"></td>
             </tr>
             <tr>
                 <td rowspan="2">/rest/eventi/{evento}</td>
-                <!-- <td>PATCH</td>
+                 <td>PATCH</td>
                 <td></td>
                 <td></td>
                 <td></td>
                 <td><span data-rest-test-target data-rest-test-method="post" data-rest-test-payoad="testtest"
                         data-rest-test-status="201" data-rest-test-url="rest/eventi/{1}">PATCH rest/eventi/{1}</span>
                 </td>
-                <td class="output"></td> -->
+                <td class="output"></td> 
             </tr>
             <tr>
                 <td>GET</td>
@@ -194,7 +197,7 @@
                 <td class="output"></td>
             </tr>
         </tbody>
-    </table>
+    </table>-->
 
     <h2> Post methods </h2>
     <p> The POST methods are used to create new resources. </p>
@@ -206,37 +209,52 @@
                 <th>Method</th>
                 <th>Parameters</th>
                 <th>Payload</th>
-                <th></th>
             </tr>
         </thead>
         <tbody>
             <tr>
                 <td rowspan="1">/rest/aule</td>
                 <td>POST</td>
-                <td></td>
-                <td></td>
-                <td><a data-rest-test data-rest-test-target href="rest/aule"><small>POST rest/aule</small></a></td>
+                <td>
+                    <form method="post" action="rest/aule" enctype="multipart/form-data">
+                        <!-- String addAulaQuery = "INSERT INTO `aula` (`nome`, `luogo`, `edificio`, `piano`, `capienza`, `email_responsabile`, `prese_elettriche`, `prese_rete`, `note`) VALUES (?,?, ?, ?, ?, ?, ?, ?, ?)"; -->
+
+                        <div>
+                            <label for="nome_aula"> nome: </label> <input style="width:30%" type="text" value="C1.10"
+                                id="nome_aula" name="nome_aula" /> <br>
+                            <label for="luogo_aula"> luogo:</label>
+                            <input style="width:30%" type="text" value="Coppito" id="luogo_aula" name="luogo_aula" />
+                            <br>
+                            <label for="edificio_aula">edificio:</label>
+                            <input style="width:30%" type="text" value="Coppito" id="edificio_aula"
+                                name="edificio_aula" />
+                            <br>
+                            <label for="piano_aula"> piano:</label>
+                            <input style="width:30%" type="text" value="1" id="piano_aula" name="piano_aula" /> <br>
+                            <label for="capienza_aula"> capienza</label>
+                            <input style="width:30%" type="number" value="50" id="capienza_aula" name="capienza_aula" />
+                            <br>
+                            <label for="email_responsabile_aula">email</label>
+                            <input style="width:30%" type="text" value="u@u.u" id="email_responsabile_aula"
+                                name="email_responsabile_aula" /> <br>
+                            <label for="prese_elettriche_aula">prese elettriche: </label><input style="width:30%"
+                                type="number" value="1" id="prese_elettriche_aula" name="prese_elettriche-aula" /> <br>
+                            <label for="prese_rete_aula">prese rete:</label> <input style="width:30%" type="number"
+                                value="1" id="prese_rete_aula" name="prese_rete_aula" /> <br>
+                            <label for="note_aula">note:</label>
+                            <input style="width:30%" type="text" value="C1.10" id="note_aula" name="note_aula" /> <br>
+                            <input type="button" value="addAula" onclick="addAula()" name="addAula_button"
+                                id="addAula_button"/>
+                        </div>
+                    </form>
+                </td>
+                <td> </td>
+                <!-- <span data-rest-test-token data-rest-test-url="rest/aule" data-rest-test-method="post"
+                        data-rest-test-status="200" data-rest-test-content-type="application/json">rest/aule</span></td> -->
+                <!--<td><a data-rest-test data-rest-test-target href="rest/aule"><small>POST rest/aule</small></a></td>-->
             </tr>
             <td>
-                <form method="post" action="rest/aule">
-                    <!-- String addAulaQuery = "INSERT INTO `aula` (`nome`, `luogo`, `edificio`, `piano`, `capienza`, `email_responsabile`, `prese_elettriche`, `prese_rete`, `note`) VALUES (?,?, ?, ?, ?, ?, ?, ?, ?)"; -->
 
-                    <p>nome: <input style="width:30%" type="text" value="C1.10" id="nome-aula" name="nome-field" />
-                        luogo: <input style="width:30%" type="text" value="Coppito" id="luogo-aula" name="luogo-field" />
-                        edificio: <input style="width:30%" type="text" value="Coppito" id="edificio-aula"
-                            name="edificio-field" />
-                        piano: <input style="width:30%" type="text" value="1" id="piano-aula" name="piano-field" />
-                        capienza: <input style="width:30%" type="number" value="50" id="capienza-aula" name="capienza-field" />
-                        email_responsabile: <input style="width:30%" type="text" value="u@u.u"
-                            id="email_responsabile-aula" name="email_responsabile" />
-                        prese_elettriche: <input style="width:30%" type="number" value="1" id="prese_elettriche_aula"
-                            name="prese_elettriche-field" />
-                        prese_rete: <input style="width:30%" type="number" value="1" id="prese_rete_aula"
-                            name="prese_rete-field" />
-                        note: <input style="width:30%" type="text" value="C1.10" id="note_aula" name="note" />
-                        <input type="submit" value="addAula" name="addAula-button" id="addAula-button" />
-                    </p>
-                </form>
             </td>
         </tbody>
     </table>

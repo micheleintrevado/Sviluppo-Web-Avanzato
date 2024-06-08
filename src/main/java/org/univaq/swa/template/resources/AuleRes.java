@@ -105,8 +105,11 @@ public class AuleRes {
     @Logged
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response addAula(@Context UriInfo uriinfo, HashMap<String, Object> aula) {
-        System.out.println("CIAOOOOOOOOO");
+    public Response addAula(@Context UriInfo uriinfo,@Context ContainerRequestContext req, HashMap<String, Object> aula) {
+        System.out.println("AULA NOME: " + aula.get("nome"));
+        System.out.println("AULA CAPIENZA: " + aula.get("capienza"));
+        System.out.println("AULA CAPIENZA CLASS: " + aula.get("capienza").getClass());
+
         String addAulaQuery = "INSERT INTO `aula` (`nome`, `luogo`, `edificio`, `piano`, `capienza`, `email_responsabile`, `prese_elettriche`, `prese_rete`, `note`) VALUES (?,?, ?, ?, ?, ?, ?, ?, ?)";
         try ( Connection con = getPooledConnection();  PreparedStatement ps = con.prepareStatement(addAulaQuery, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, (String) aula.get("nome"));
@@ -128,6 +131,7 @@ public class AuleRes {
                         .path(AuleRes.class)
                         .path(AuleRes.class, "getAula")
                         .build(id);
+                System.out.println("URI: " + uri);
                 return Response.created(uri).build();
             }
         } catch (SQLException | NamingException ex) {
