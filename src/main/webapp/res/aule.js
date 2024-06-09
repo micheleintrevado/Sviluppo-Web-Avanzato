@@ -1,6 +1,6 @@
 function addAula() {
     let token = document.getElementById("token-field").value;
-    //message("", "");
+    message("", "");
     $.ajax({
         url: "rest/aule",
         method: "POST",

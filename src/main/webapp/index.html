@@ -1,258 +1,258 @@
 <!DOCTYPE html>
 <html>
 
-<head>
-    <title>AuleWEB REST App</title>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="res/restest.css" />
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <head>
+        <title>AuleWEB REST App</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="res/restest.css" />
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
-</head>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+    </head>
 
-<body>
-    <h1>AuleWEB REST App</h1>
-    <p>This is a template web application based on <strong>JakartaEE 10</strong> that runs on Apache <strong>Tomcat
-            10.1</strong> with <strong>Java 14</strong> or above.</p>
+    <body>
+        <h1>AuleWEB REST App</h1>
+        <p>This is a template web application based on <strong>JakartaEE 10</strong> that runs on Apache <strong>Tomcat
+                10.1</strong> with <strong>Java 14</strong> or above.</p>
 
-    <p>The RESTful resources, grouped under the /rest prefix, are the following:</p>
+        <p>The RESTful resources, grouped under the /rest prefix, are the following:</p>
 
-    <!--    <table class="restest" width="100%">
-        <thead>
-            <tr>
-                <th>Path</th>
-                <th>Method</th>
-                <th>Parameters</th>
-                <th>Payload</th>
-                <th>Authentication</th>
-                <th>URL to Try</th>
-                <th>(Expected) Result</th>
-            </tr>
-        </thead>
-        <tbody>
-             <tr>
-                <td rowspan="2">/simple</td>
-                <td>GET</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td><a data-rest-test data-rest-test-target href="rest/aule/1"><small>GET rest/aule/1</small></a></td>
-                <td class="output">a list of greetings</td>
-            </tr>
-            <tr>
-                <td>POST</td>
-                <td></td>
-                <td>any string</td>
-                <td></td>
-                <td><span data-rest-test-target data-rest-test-method="post" data-rest-test-payoad="testtest"
-                        data-rest-test-status="201" data-rest-test-url="rest/simple"></span></td>
-                <td class="output">the URL to item 1000</td>
-            </tr>
-            <tr>
-                <td rowspan="2">/simple/{item}</td>
-                <td rowspan="2">GET</td>
-                <td rowspan="2">item: [0-9]+</td>
-                <td rowspan="2"></td>
-                <td rowspan="2"></td>
-                <td><a data-rest-test data-rest-test-target href="rest/simple/14000"><small>GET
-                            rest/simple/14000</small></a></td>
-                <td class="output">200 with the item</td>
-            </tr>
-            <tr>
-                <td><a data-rest-test data-rest-test-status="404" data-rest-test-target href="rest/simple/14"><small>GET
-                            rest/simple/14</small></a></td>
-                <td class="output">404</td>
-            </tr> 
+        <!--    <table class="restest" width="100%">
+            <thead>
+                <tr>
+                    <th>Path</th>
+                    <th>Method</th>
+                    <th>Parameters</th>
+                    <th>Payload</th>
+                    <th>Authentication</th>
+                    <th>URL to Try</th>
+                    <th>(Expected) Result</th>
+                </tr>
+            </thead>
+            <tbody>
+                 <tr>
+                    <td rowspan="2">/simple</td>
+                    <td>GET</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td><a data-rest-test data-rest-test-target href="rest/aule/1"><small>GET rest/aule/1</small></a></td>
+                    <td class="output">a list of greetings</td>
+                </tr>
+                <tr>
+                    <td>POST</td>
+                    <td></td>
+                    <td>any string</td>
+                    <td></td>
+                    <td><span data-rest-test-target data-rest-test-method="post" data-rest-test-payoad="testtest"
+                            data-rest-test-status="201" data-rest-test-url="rest/simple"></span></td>
+                    <td class="output">the URL to item 1000</td>
+                </tr>
+                <tr>
+                    <td rowspan="2">/simple/{item}</td>
+                    <td rowspan="2">GET</td>
+                    <td rowspan="2">item: [0-9]+</td>
+                    <td rowspan="2"></td>
+                    <td rowspan="2"></td>
+                    <td><a data-rest-test data-rest-test-target href="rest/simple/14000"><small>GET
+                                rest/simple/14000</small></a></td>
+                    <td class="output">200 with the item</td>
+                </tr>
+                <tr>
+                    <td><a data-rest-test data-rest-test-status="404" data-rest-test-target href="rest/simple/14"><small>GET
+                                rest/simple/14</small></a></td>
+                    <td class="output">404</td>
+                </tr> 
+    
+                 DA QUIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII 
+                <tr>
+                    <td rowspan="2">/rest/aule/csv</td>
+                    <td>GET</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td><a data-rest-test data-rest-test-target href="rest/aule/csv"><small>GET rest/aule/csv</small></a>
+                    </td>
+                    <td class="output"></td>
+                </tr>
+                <tr>
+                     <td>POST</td>
+                    <td></td>
+                    <td>any string</td>
+                    <td></td>
+                    <td><span data-rest-test-target data-rest-test-method="post" data-rest-test-payoad="testtest"
+                            data-rest-test-status="201" data-rest-test-url="rest/simple">POST rest/aule/csv</span></td>
+                    <td class="output"></td> 
+                </tr>
+                <tr>
+                     <td rowspan="1">/rest/aule</td>
+                    <td>POST</td>
+                    <td></td>
+                    <td>any string</td>
+                    <td></td>
+                    <td><span data-rest-test-target data-rest-test-method="post" data-rest-test-payoad="testtest"
+                            data-rest-test-status="201" data-rest-test-url="rest/simple">POST rest/aule</span></td>
+                    <td class="output"></td> 
+                </tr>
+                <tr>
+                     <td rowspan="1">/rest/aule/{id}/assignGruppo</td>
+                    <td>POST</td>
+                    <td>id: [1-9][0-9]*</td>
+                    <td></td>
+                    <td></td>
+                    <td><span data-rest-test-target data-rest-test-method="post" data-rest-test-payoad="testtest"
+                            data-rest-test-status="201" data-rest-test-url="rest/simple">POST
+                            rest/aule/{id}/assignGruppo</span></td>
+                    <td class="output"></td> 
+                </tr>
+                <tr>
+                    <td rowspan="1">/rest/aule/{id}</td>
+                    <td>GET</td>
+                    <td>id: [1-9][0-9]*</td>
+                    <td></td>
+                    <td></td>
+                    <td><a data-rest-test data-rest-test-target href="rest/aule/1"><small>GET rest/aule/1</small></a></td>
+                    <td class="output"></td>
+                </tr>
+                <tr>
+                    <td rowspan="1">/rest/aule/{id}/attrezzature</td>
+                    <td>GET</td>
+                    <td>id: [1-9][0-9]*</td>
+                    <td></td>
+                    <td></td>
+                    <td><a data-rest-test data-rest-test-target href="rest/aule/1/attrezzature"><small>GET
+                                rest/aule/1/attrezzature</small></a></td>
+                    <td class="output"></td>
+                </tr>
+                <tr>
+                    <td rowspan="2">/rest/eventi</td>
+                     <td>POST</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td><span data-rest-test-target data-rest-test-method="post" data-rest-test-payoad="testtest"
+                            data-rest-test-status="201" data-rest-test-url="rest/eventi">POST rest/eventi</span></td>
+                    <td class="output"></td> 
+                </tr>
+                <tr>
+                    <td>GET</td>
+                    <td>rangeStart: datetime, rangeEnd: datetime</td>
+                    <td></td>
+                    <td></td>
+                    <td><a data-rest-test data-rest-test-target
+                            href="rest/eventi?rangeStart=2024-01-06T00:00:00&amp;rangeEnd=2024-01-20T23:59:00"><small>GET
+                                rest/eventi?rangeStart=2024-01-06T00:00:00&amp;rangeEnd=2024-01-20T23:59:00</small></a></td>
+                    <td class="output"></td>
+                </tr>
+                <tr>
+                    <td rowspan="2">/rest/eventi/{evento}</td>
+                     <td>PATCH</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td><span data-rest-test-target data-rest-test-method="post" data-rest-test-payoad="testtest"
+                            data-rest-test-status="201" data-rest-test-url="rest/eventi/{1}">PATCH rest/eventi/{1}</span>
+                    </td>
+                    <td class="output"></td> 
+                </tr>
+                <tr>
+                    <td>GET</td>
+                    <td>id: [1-9][0-9]*</td>
+                    <td></td>
+                    <td></td>
+                    <td><a data-rest-test data-rest-test-target href="rest/eventi/1"><small>GET rest/eventi/1</small></a>
+                    </td>
+                    <td class="output"></td>
+                </tr>
+                <tr>
+                    <td rowspan="1">/rest/aule/{idAula}/eventi</td>
+                    <td>GET</td>
+                    <td>idAula: [1-9][0-9]*, rangeStart: dateTime</td>
+                    <td></td>
+                    <td></td>
+                    <td><a data-rest-test data-rest-test-target
+                            href="rest/aule/1/eventi?rangeStart=2024-01-16T00:00:00"><small>GET
+                                /rest/aule/1/eventi?rangeStart=2024-01-16T00:00:00</small></a></td>
+                    <td class="output"></td>
+                </tr>
+                <tr>
+                    <td rowspan="1">/rest/eventi/attuali</td>
+                    <td>GET</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td><a data-rest-test data-rest-test-target href="rest/eventi/attuali"><small>GET
+                                /rest/eventi/attuali</small></a></td>
+                    <td class="output"></td>
+                </tr>
+                <tr>prossimi
+                    <td rowspan="1">/rest/eventi/prossimi</td>
+                    <td>GET</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td><a data-rest-test data-rest-test-target href="rest/eventi/prossimi?oreProssime=48"><small>GET
+                                /rest/eventi/prossimi?oreProssime=48</small></a></td>
+                    <td class="output"></td>
+                </tr>
+            </tbody>
+        </table>-->
 
-             DA QUIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII 
-            <tr>
-                <td rowspan="2">/rest/aule/csv</td>
-                <td>GET</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td><a data-rest-test data-rest-test-target href="rest/aule/csv"><small>GET rest/aule/csv</small></a>
-                </td>
-                <td class="output"></td>
-            </tr>
-            <tr>
-                 <td>POST</td>
-                <td></td>
-                <td>any string</td>
-                <td></td>
-                <td><span data-rest-test-target data-rest-test-method="post" data-rest-test-payoad="testtest"
-                        data-rest-test-status="201" data-rest-test-url="rest/simple">POST rest/aule/csv</span></td>
-                <td class="output"></td> 
-            </tr>
-            <tr>
-                 <td rowspan="1">/rest/aule</td>
-                <td>POST</td>
-                <td></td>
-                <td>any string</td>
-                <td></td>
-                <td><span data-rest-test-target data-rest-test-method="post" data-rest-test-payoad="testtest"
-                        data-rest-test-status="201" data-rest-test-url="rest/simple">POST rest/aule</span></td>
-                <td class="output"></td> 
-            </tr>
-            <tr>
-                 <td rowspan="1">/rest/aule/{id}/assignGruppo</td>
-                <td>POST</td>
-                <td>id: [1-9][0-9]*</td>
-                <td></td>
-                <td></td>
-                <td><span data-rest-test-target data-rest-test-method="post" data-rest-test-payoad="testtest"
-                        data-rest-test-status="201" data-rest-test-url="rest/simple">POST
-                        rest/aule/{id}/assignGruppo</span></td>
-                <td class="output"></td> 
-            </tr>
-            <tr>
-                <td rowspan="1">/rest/aule/{id}</td>
-                <td>GET</td>
-                <td>id: [1-9][0-9]*</td>
-                <td></td>
-                <td></td>
-                <td><a data-rest-test data-rest-test-target href="rest/aule/1"><small>GET rest/aule/1</small></a></td>
-                <td class="output"></td>
-            </tr>
-            <tr>
-                <td rowspan="1">/rest/aule/{id}/attrezzature</td>
-                <td>GET</td>
-                <td>id: [1-9][0-9]*</td>
-                <td></td>
-                <td></td>
-                <td><a data-rest-test data-rest-test-target href="rest/aule/1/attrezzature"><small>GET
-                            rest/aule/1/attrezzature</small></a></td>
-                <td class="output"></td>
-            </tr>
-            <tr>
-                <td rowspan="2">/rest/eventi</td>
-                 <td>POST</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td><span data-rest-test-target data-rest-test-method="post" data-rest-test-payoad="testtest"
-                        data-rest-test-status="201" data-rest-test-url="rest/eventi">POST rest/eventi</span></td>
-                <td class="output"></td> 
-            </tr>
-            <tr>
-                <td>GET</td>
-                <td>rangeStart: datetime, rangeEnd: datetime</td>
-                <td></td>
-                <td></td>
-                <td><a data-rest-test data-rest-test-target
-                        href="rest/eventi?rangeStart=2024-01-06T00:00:00&amp;rangeEnd=2024-01-20T23:59:00"><small>GET
-                            rest/eventi?rangeStart=2024-01-06T00:00:00&amp;rangeEnd=2024-01-20T23:59:00</small></a></td>
-                <td class="output"></td>
-            </tr>
-            <tr>
-                <td rowspan="2">/rest/eventi/{evento}</td>
-                 <td>PATCH</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td><span data-rest-test-target data-rest-test-method="post" data-rest-test-payoad="testtest"
-                        data-rest-test-status="201" data-rest-test-url="rest/eventi/{1}">PATCH rest/eventi/{1}</span>
-                </td>
-                <td class="output"></td> 
-            </tr>
-            <tr>
-                <td>GET</td>
-                <td>id: [1-9][0-9]*</td>
-                <td></td>
-                <td></td>
-                <td><a data-rest-test data-rest-test-target href="rest/eventi/1"><small>GET rest/eventi/1</small></a>
-                </td>
-                <td class="output"></td>
-            </tr>
-            <tr>
-                <td rowspan="1">/rest/aule/{idAula}/eventi</td>
-                <td>GET</td>
-                <td>idAula: [1-9][0-9]*, rangeStart: dateTime</td>
-                <td></td>
-                <td></td>
-                <td><a data-rest-test data-rest-test-target
-                        href="rest/aule/1/eventi?rangeStart=2024-01-16T00:00:00"><small>GET
-                            /rest/aule/1/eventi?rangeStart=2024-01-16T00:00:00</small></a></td>
-                <td class="output"></td>
-            </tr>
-            <tr>
-                <td rowspan="1">/rest/eventi/attuali</td>
-                <td>GET</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td><a data-rest-test data-rest-test-target href="rest/eventi/attuali"><small>GET
-                            /rest/eventi/attuali</small></a></td>
-                <td class="output"></td>
-            </tr>
-            <tr>prossimi
-                <td rowspan="1">/rest/eventi/prossimi</td>
-                <td>GET</td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td><a data-rest-test data-rest-test-target href="rest/eventi/prossimi?oreProssime=48"><small>GET
-                            /rest/eventi/prossimi?oreProssime=48</small></a></td>
-                <td class="output"></td>
-            </tr>
-        </tbody>
-    </table>-->
+        <h2> Post methods </h2>
+        <p> The POST methods are used to create new resources. </p>
 
-    <h2> Post methods </h2>
-    <p> The POST methods are used to create new resources. </p>
+        <table class="restest" width="100%">
+            <thead>
+                <tr>
+                    <th>Path</th>
+                    <th>Method</th>
+                    <th>Parameters</th>
+                    <th>Payload</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td rowspan="1">/rest/aule</td>
+                    <td>POST</td>
+                    <td>
+                        <form method="post" action="rest/aule" enctype="multipart/form-data">
+                            <!-- String addAulaQuery = "INSERT INTO `aula` (`nome`, `luogo`, `edificio`, `piano`, `capienza`, `email_responsabile`, `prese_elettriche`, `prese_rete`, `note`) VALUES (?,?, ?, ?, ?, ?, ?, ?, ?)"; -->
 
-    <table class="restest" width="100%">
-        <thead>
-            <tr>
-                <th>Path</th>
-                <th>Method</th>
-                <th>Parameters</th>
-                <th>Payload</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td rowspan="1">/rest/aule</td>
-                <td>POST</td>
-                <td>
-                    <form method="post" action="rest/aule" enctype="multipart/form-data">
-                        <!-- String addAulaQuery = "INSERT INTO `aula` (`nome`, `luogo`, `edificio`, `piano`, `capienza`, `email_responsabile`, `prese_elettriche`, `prese_rete`, `note`) VALUES (?,?, ?, ?, ?, ?, ?, ?, ?)"; -->
-
-                        <div>
-                            <label for="nome_aula"> nome: </label> <input style="width:30%" type="text" value="C1.10"
-                                id="nome_aula" name="nome_aula" /> <br>
-                            <label for="luogo_aula"> luogo:</label>
-                            <input style="width:30%" type="text" value="Coppito" id="luogo_aula" name="luogo_aula" />
-                            <br>
-                            <label for="edificio_aula">edificio:</label>
-                            <input style="width:30%" type="text" value="Coppito" id="edificio_aula"
-                                name="edificio_aula" />
-                            <br>
-                            <label for="piano_aula"> piano:</label>
-                            <input style="width:30%" type="text" value="1" id="piano_aula" name="piano_aula" /> <br>
-                            <label for="capienza_aula"> capienza</label>
-                            <input style="width:30%" type="number" value="50" id="capienza_aula" name="capienza_aula" />
-                            <br>
-                            <label for="email_responsabile_aula">email</label>
-                            <input style="width:30%" type="text" value="u@u.u" id="email_responsabile_aula"
-                                name="email_responsabile_aula" /> <br>
-                            <label for="prese_elettriche_aula">prese elettriche: </label><input style="width:30%"
-                                type="number" value="1" id="prese_elettriche_aula" name="prese_elettriche-aula" /> <br>
-                            <label for="prese_rete_aula">prese rete:</label> <input style="width:30%" type="number"
-                                value="1" id="prese_rete_aula" name="prese_rete_aula" /> <br>
-                            <label for="note_aula">note:</label>
-                            <input style="width:30%" type="text" value="C1.10" id="note_aula" name="note_aula" /> <br>
-                            <input type="button" value="addAula" onclick="addAula()" name="addAula_button"
-                                id="addAula_button"/>
-                        </div>
-                    </form>
-                </td>
-                <td> </td>
-                <!-- <span data-rest-test-token data-rest-test-url="rest/aule" data-rest-test-method="post"
-                        data-rest-test-status="200" data-rest-test-content-type="application/json">rest/aule</span></td> -->
-                <!--<td><a data-rest-test data-rest-test-target href="rest/aule"><small>POST rest/aule</small></a></td>-->
-            </tr>
+                            <div>
+                                <label for="nome_aula"> nome: </label> <input style="width:30%" type="text" value="C1.10"
+                                                                              id="nome_aula" name="nome_aula" /> <br>
+                                <label for="luogo_aula"> luogo:</label>
+                                <input style="width:30%" type="text" value="Coppito" id="luogo_aula" name="luogo_aula" />
+                                <br>
+                                <label for="edificio_aula">edificio:</label>
+                                <input style="width:30%" type="text" value="Coppito" id="edificio_aula"
+                                       name="edificio_aula" />
+                                <br>
+                                <label for="piano_aula"> piano:</label>
+                                <input style="width:30%" type="text" value="1" id="piano_aula" name="piano_aula" /> <br>
+                                <label for="capienza_aula"> capienza</label>
+                                <input style="width:30%" type="number" value="50" id="capienza_aula" name="capienza_aula" />
+                                <br>
+                                <label for="email_responsabile_aula">email</label>
+                                <input style="width:30%" type="text" value="u@u.u" id="email_responsabile_aula"
+                                       name="email_responsabile_aula" /> <br>
+                                <label for="prese_elettriche_aula">prese elettriche: </label><input style="width:30%"
+                                                                                                    type="number" value="1" id="prese_elettriche_aula" name="prese_elettriche-aula" /> <br>
+                                <label for="prese_rete_aula">prese rete:</label> <input style="width:30%" type="number"
+                                                                                        value="1" id="prese_rete_aula" name="prese_rete_aula" /> <br>
+                                <label for="note_aula">note:</label>
+                                <input style="width:30%" type="text" value="C1.10" id="note_aula" name="note_aula" /> <br>
+                                <input type="button" value="addAula" onclick="addAula()" name="addAula_button"
+                                       id="addAula_button"/>
+                            </div>
+                        </form>
+                    </td>
+                    <td> </td>
+                    <!-- <span data-rest-test-token data-rest-test-url="rest/aule" data-rest-test-method="post"
+                            data-rest-test-status="200" data-rest-test-content-type="application/json">rest/aule</span></td> -->
+                    <!--<td><a data-rest-test data-rest-test-target href="rest/aule"><small>POST rest/aule</small></a></td>-->
+                </tr>
             <td>
 
             </td>
@@ -277,8 +277,8 @@
         <tbody>
             <tr>
                 <td><span data-rest-test-token data-rest-test-url="rest/auth/login" data-rest-test-method="post"
-                        data-rest-test-status="200" data-rest-test-content-type="application/x-www-form-urlencoded"
-                        data-rest-test-payload="username=u&password=p">/auth/login</span></td>
+                          data-rest-test-status="200" data-rest-test-content-type="application/x-www-form-urlencoded"
+                          data-rest-test-payload="username=u&password=p">/auth/login</span></td>
                 <td>POST</td>
                 <td></td>
                 <td>form-encoded username and password</td>
@@ -286,7 +286,7 @@
             </tr>
             <tr>
                 <td><span data-rest-test-auth="1000" data-rest-test-url="rest/auth/logout"
-                        data-rest-test-method="delete" data-rest-test-status="204">/auth/logout</span></td>
+                          data-rest-test-method="delete" data-rest-test-status="204">/auth/logout</span></td>
                 <td>DELETE</td>
                 <td></td>
                 <td></td>
@@ -294,7 +294,7 @@
             </tr>
             <tr>
                 <td><span data-rest-test-auth data-rest-test-url="rest/auth/refresh" data-rest-test-method="get"
-                        data-rest-test-status="200">/auth/refresh</span></td>
+                          data-rest-test-status="200">/auth/refresh</span></td>
                 <td>GET</td>
                 <td></td>
                 <td></td>
@@ -306,16 +306,16 @@
                 <td colspan="5">
                     <form method="post" action="rest/auth/login" enctype="application/x-www-form-urlencoded">
                         <p>Username: <input style="width:30%" type="text" value="u" id="username-field"
-                                name="username-field" />
+                                            name="username-field" />
                             Password: <input style="width:30%" type="password" value="p" id="password-field"
-                                name="password-field" />
-                            <input type="submit" value="login" name="login-button" id="login-button" />
-                            <input type="submit" value="logout" name="logout-button" id="logout-button" />
+                                             name="password-field" />
+                            <input type="button" value="login" name="login-button" id="login-button" />
+                            <input type="button" value="logout" name="logout-button" id="logout-button" />
                         </p>
                     </form>
                     <form method="post" action="rest/auth/login" enctype="application/x-www-form-urlencoded">
                         <p>Token: <input style="width:80%" type="text" id="token-field" name="token-field" /> <input
-                                type="submit" value="refresh" name="refresh-button" id="refresh-button" /></p>
+                                type="button" value="refresh" name="refresh-button" id="refresh-button" /></p>
                     </form>
                 </td>
             </tr>
@@ -343,11 +343,12 @@
 
 
 
+    <script src="res/authentication.js">/* */</script>        
     <script src="res/aule.js">/* */</script>
-    <script src="res/restest.js">/* */</script>
+    <!-- <script src="res/restest.js">/* */</script> 
     <script>
         let tester = new Restest();
-    </script>
+    </script>-->
 </body>
 
 </html>
