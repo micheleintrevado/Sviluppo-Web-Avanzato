@@ -1,6 +1,6 @@
 function addAula() {
-    let token = document.getElementById("token-field").value;
-    message("", "");
+    //let token = document.getElementById("token-field").value;
+    //message("", "");
     $.ajax({
         url: "rest/aule",
         method: "POST",
@@ -16,9 +16,6 @@ function addAula() {
             prese_rete: parseInt($('#prese_rete_aula').val()),
             note: $('#note_aula').val()
         }),
-        headers: {
-            'Authorization': 'Bearer ' + token
-        },
         success: function (request, status, error) {
             // header.substring("Bearer".length).trim();
             alert("addAula ok");

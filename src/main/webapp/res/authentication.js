@@ -5,14 +5,14 @@
 
 $(document).ready(function () {
     console.log("AUTH.JS");
-    const login_btn = $("#login_button");
-    login_btn.css("color","red");
-    const logout_btn = $('#logout_button');
+    const login_btn = $("#login-button");
+    const logout_btn = $('#logout-button');
+    const refresh_btn = $('#refresh-button');
+    const token_field = $('#token-field');
     let token = ''; // Variable to store the token
 
     // Send login request
     login_btn.click(function (event) {
-        console.log("CLICK BOOM BOOM");
         event.preventDefault(); // Prevent default form submission
 
         const username = $('#username-field').val();
@@ -25,7 +25,13 @@ $(document).ready(function () {
                 password: password
             },
             success: function (data) {
-                token = data.token; // Assuming the response contains the token in the 'token' field
+                token = data; // Assuming the response contains the token in the 'token' field
+                $.ajaxSetup({
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    }
+                });
+                token_field.val(token);
                 login_btn.css('color', 'red');
                 $('#token-field').css('background-color', 'yellow');
                 logout_btn.css('color', 'green');
@@ -40,16 +46,18 @@ $(document).ready(function () {
 
     // Send logout request
     logout_btn.click(function (event) {
-        event.preventDefault(); // Prevent default form submission
+        event.preventDefault();
 
         $.ajax({
             url: 'rest/auth/logout',
             type: 'DELETE',
-            headers: {
-                'Authorization': 'Bearer ' + token // Include the token in the logout request header
-            },
             success: function () {
                 token = ''; // Clear the token
+                $.ajaxSetup({
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    }
+                });
                 login_btn.css('color', 'green');
                 $('#token-field').css('background-color', 'orange');
                 logout_btn.css('color', 'red');
@@ -60,5 +68,31 @@ $(document).ready(function () {
             },
             cache: false,
         });
+    });
+    
+    refresh_btn.click(function(event){
+        event.preventDefault();
+        
+        $.ajax({
+            url: 'rest/auth/refresh',
+            type: 'GET',
+            success: function (data) {
+                token = data; // Assuming the response contains the token in the 'token' field
+                $.ajaxSetup({
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    }
+                });
+                token_field.val(token);
+                refresh_btn.css('color', 'blue');
+                $('#token-field').css('background-color', 'green');
+                alert("Refresh effettuato con successo.");
+            },
+            error: function (request, status, error) {
+                alert("Errore Refresh");
+            },
+            cache: false,
+        });
+                
     });
 });
