@@ -7,7 +7,7 @@ function addAula() {
         contentType: "application/json",
         data: JSON.stringify({
             nome: $('#nome_aula').val(),
-            luogo: $('#luogo_aula').val(), 
+            luogo: $('#luogo_aula').val(),
             edificio: $('#edificio_aula').val(),
             piano: $('#piano_aula').val(),
             capienza: parseInt($('#capienza_aula').val()),
@@ -34,4 +34,65 @@ function addAula() {
         // },
         cache: false,
     });
-}
+};
+
+function assignGruppoAula(idAula) {
+    $.ajax({
+        url: "rest/aule/" + idAula + "/gruppi",
+        method: "POST",
+        contentType: "application/json",
+        data: JSON.stringify({
+            id_gruppo: parseInt($('#id_gruppo_assign').val()),
+        }),
+        success: function (request, status, error) {
+            alert("assignGruppoAula ok");
+            console.log("assignGruppoAula ok");
+        },
+        error: function (request, status, error) {
+            console.log("assignGruppoAula error: " + error);
+        },
+        cache: false,
+    });
+};
+
+function getAuleUtility() {
+    $.ajax({
+        url: "rest/aule/",
+        method: "GET",
+        success: function (data) {
+            $.each(data, function (key) {
+                $("#id_aula_gruppi").append(
+                    "<option value=" + data[key] + ">" + data[key] + "</option>"
+                )
+            });
+        },
+        error: function (request, status, error) {
+            alert("ID AULE NON TROVATI");
+            console.log("ID AULE NON TROVATI");
+        },
+        cache: false,
+    })
+};
+function getGruppiUtility() {
+    console.log("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
+    $.ajax({
+        url: "rest/aule/gruppi/",
+        method: "GET",
+        success: function (data) {
+            console.log(data);
+            $.each(data, function (key) {
+                console.log(data[key]);
+                $("#id_gruppo_assign").append(
+                    "<option value=" + data[key] + ">" + data[key] + "</option>"
+                )
+            });
+        },
+        error: function (request, status, error) {
+            alert("ID GRUPPI AULE NON TROVATI");
+            console.log("ID GRUPPI AULE NON TROVATI");
+        },
+        cache: false,
+    })
+};
+getAuleUtility();
+getGruppiUtility();
