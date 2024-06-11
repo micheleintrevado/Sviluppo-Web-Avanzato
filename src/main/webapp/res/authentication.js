@@ -1,19 +1,13 @@
-/* 
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/JavaScript.js to edit this template
- */
-
 $(document).ready(function () {
-    console.log("AUTH.JS");
     const login_btn = $("#login-button");
     const logout_btn = $('#logout-button');
     const refresh_btn = $('#refresh-button');
     const token_field = $('#token-field');
-    let token = ''; // Variable to store the token
+    let token = '';
 
     // Send login request
     login_btn.click(function (event) {
-        event.preventDefault(); // Prevent default form submission
+        event.preventDefault();
 
         const username = $('#username-field').val();
         const password = $('#password-field').val();
@@ -25,7 +19,7 @@ $(document).ready(function () {
                 password: password
             },
             success: function (data) {
-                token = data; // Assuming the response contains the token in the 'token' field
+                token = data; 
                 $.ajaxSetup({
                     headers: {
                         'Authorization': 'Bearer ' + token
@@ -77,7 +71,7 @@ $(document).ready(function () {
             url: 'rest/auth/refresh',
             type: 'GET',
             success: function (data) {
-                token = data; // Assuming the response contains the token in the 'token' field
+                token = data; 
                 $.ajaxSetup({
                     headers: {
                         'Authorization': 'Bearer ' + token
@@ -91,7 +85,7 @@ $(document).ready(function () {
             error: function (request, status, error) {
                 alert("Errore Refresh");
             },
-            cache: false,
+            cache: false
         });
                 
     });

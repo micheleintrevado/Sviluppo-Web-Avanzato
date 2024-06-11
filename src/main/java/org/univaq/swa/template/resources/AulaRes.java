@@ -192,7 +192,6 @@ public class AulaRes {
     private Aula obtainAula(ResultSet rs) {
         try {
             Aula a = new Aula();
-
             int idAula = rs.getInt("id");
 
             a.setId(idAula);

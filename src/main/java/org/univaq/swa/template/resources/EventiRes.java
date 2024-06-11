@@ -66,6 +66,7 @@ public class EventiRes {
     private static final String QUERY_SELECT_EVENTI_PROSSIME_ORE = "select * from evento where orario_inizio < date_add(now(), INTERVAL ? hour) and orario_fine >= now()";
     private static final String QUERY_SELECT_EVENTI_RANGE = "SELECT * FROM auleweb.evento where orario_inizio > ? and orario_fine < ?;";
     private static final String QUERY_SELECT_EVENTI_ID_MASTER = "SELECT * FROM auleweb.evento where id_master = ?;";
+    private static final String QUERY_SELECT_ID_CORSI = "SELECT id FROM corso;";
 
     private static Connection getPooledConnection() throws NamingException, SQLException {
         InitialContext context = new InitialContext();
@@ -195,13 +196,15 @@ public class EventiRes {
 
         // gestione dell'evento ricorrente
         if (evento.get("tipo") != null && evento.get("data_termine") != null) {
+            System.out.println("EVENTO RICORRENTE");
             // preparazione statement inserimento della ricorrenza (che sarà l'"id master" dell'evento)
             try ( Connection con = getPooledConnection();  PreparedStatement addRicorrenzaStatement = con.prepareStatement(addRicorrenzaQuery, Statement.RETURN_GENERATED_KEYS)) {
                 addRicorrenzaStatement.setString(1, (String) evento.get("tipo"));
 
                 var dataTermine = evento.get("data_termine");
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-                LocalDateTime dateTermineRicorrenza = LocalDateTime.parse((String) dataTermine, formatter);
+                // DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+                LocalDateTime dateTermineRicorrenza = LocalDateTime.parse((String) dataTermine, DateTimeFormatter.ISO_DATE_TIME);
                 addRicorrenzaStatement.setTimestamp(2, Timestamp.valueOf(dateTermineRicorrenza));
 
                 //creazione della ricorrenza nel DB e salvataggio del suo ID (che sarà l'id master dell'evento)
@@ -215,12 +218,12 @@ public class EventiRes {
                 ArrayList<LocalDateTime> dateRicorrenzeFine = new ArrayList<LocalDateTime>();
 
                 var dataOrarioInizio = evento.get("orario_inizio");
-                LocalDate dataInizioEvento = LocalDateTime.parse((String) dataOrarioInizio, formatter).toLocalDate();
-                LocalTime orarioInizioEvento = LocalDateTime.parse((String) dataOrarioInizio, formatter).toLocalTime();
+                LocalDate dataInizioEvento = LocalDateTime.parse((String) dataOrarioInizio, DateTimeFormatter.ISO_DATE_TIME).toLocalDate();
+                LocalTime orarioInizioEvento = LocalDateTime.parse((String) dataOrarioInizio, DateTimeFormatter.ISO_DATE_TIME).toLocalTime();
 
                 var dataOrarioFine = evento.get("orario_fine");
-                LocalDate dataFineEvento = LocalDateTime.parse((String) dataOrarioFine, formatter).toLocalDate();
-                LocalTime orarioFineEvento = LocalDateTime.parse((String) dataOrarioFine, formatter).toLocalTime();
+                LocalDate dataFineEvento = LocalDateTime.parse((String) dataOrarioFine, DateTimeFormatter.ISO_DATE_TIME).toLocalDate();
+                LocalTime orarioFineEvento = LocalDateTime.parse((String) dataOrarioFine, DateTimeFormatter.ISO_DATE_TIME).toLocalTime();
 
                 // mi popolo le liste dateRicorrenzeInizio e dateRicorrenzeFine che contengono le ricorrenze dell'evento fino alla scadenza della ricorrenza
                 while (!dataFineEvento.isAfter(dateTermineRicorrenza.toLocalDate())) {
@@ -279,16 +282,17 @@ public class EventiRes {
                 throw new RESTWebApplicationException(ex);
             }
         } else {
+            System.out.println("EVENTO NON RICORRENTE");
             try ( Connection con = getPooledConnection();  PreparedStatement ps = con.prepareStatement(addEventoNonRicorrenteQuery, Statement.RETURN_GENERATED_KEYS)) {
                 ps.setString(1, (String) evento.get("nome"));
 
                 var orarioInizio = evento.get("orario_inizio");
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-                LocalDateTime dateTime = LocalDateTime.parse((String) orarioInizio, formatter);
+                //DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                LocalDateTime dateTime = LocalDateTime.parse((String) orarioInizio, DateTimeFormatter.ISO_DATE_TIME);
                 ps.setTimestamp(2, Timestamp.valueOf(dateTime));
 
                 var orarioFine = evento.get("orario_fine");
-                dateTime = LocalDateTime.parse((String) orarioFine, formatter);
+                dateTime = LocalDateTime.parse((String) orarioFine, DateTimeFormatter.ISO_DATE_TIME);
                 ps.setTimestamp(3, Timestamp.valueOf(dateTime));
                 ps.setString(4, (String) evento.get("descrizione"));
                 ps.setString(5, (String) evento.get("nome_organizzatore"));
@@ -353,6 +357,25 @@ public class EventiRes {
             }
 
             return Response.ok(eventiAttuali).build();
+        } catch (SQLException | NamingException ex) {
+            throw new RESTWebApplicationException(ex);
+        }
+    }
+
+    @GET
+    @Path("corsi")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getidCorsi() throws RESTWebApplicationException {
+        try {
+            ArrayList<Integer> idCorsi = new ArrayList<Integer>();
+            try ( Connection con = getPooledConnection();  PreparedStatement ps = con.prepareStatement(QUERY_SELECT_ID_CORSI)) {
+                try ( ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        idCorsi.add(rs.getInt("id"));
+                    }
+                }
+            }
+            return Response.ok(idCorsi).build();
         } catch (SQLException | NamingException ex) {
             throw new RESTWebApplicationException(ex);
         }

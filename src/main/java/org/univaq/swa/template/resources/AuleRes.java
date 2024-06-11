@@ -231,8 +231,8 @@ public class AuleRes {
         ArrayList<HashMap<String, Object>> csvData = CsvUtility.csvAuleRead(csvFile);
         Connection con = getPooledConnection();
         final String addAulaQuery = "INSERT INTO `aula` (`nome`, `luogo`, `edificio`, `piano`, `capienza`, `email_responsabile`, `prese_elettriche`, `prese_rete`, `note`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
-        final String addAulaGruppoQuery = "";
-        final String addGruppoQuery = "";
+        //final String addAulaGruppoQuery = "";
+        //final String addGruppoQuery = "";
         for (HashMap<String, Object> aula : csvData) {
             try ( PreparedStatement addAulaStatement = con.prepareStatement(addAulaQuery, Statement.RETURN_GENERATED_KEYS)) {
                 addAulaStatement.setString(1, (String) aula.get("nomeAula"));
@@ -251,7 +251,7 @@ public class AuleRes {
                     int aula_id = rsAddAula.getInt(1);
 
                     // vedo se l'aula appartiene a un gruppo e se quest'ultimo è già esistente nel DB non lo creo nuovamente
-                    if ((String) aula.get("nomeGruppo") != "") {
+                    if (!"".equals((String) aula.get("nomeGruppo"))) {
                         final String selectGruppoQuery = "SELECT * FROM GRUPPO where nome = ?;";
                         try ( PreparedStatement selectGruppoStatement = con.prepareStatement(selectGruppoQuery, Statement.RETURN_GENERATED_KEYS)) {
                             selectGruppoStatement.setString(1, (String) aula.get("nomeGruppo"));
