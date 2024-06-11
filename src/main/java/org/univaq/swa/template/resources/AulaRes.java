@@ -68,7 +68,7 @@ public class AulaRes {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    // @Logged
+    @Logged
     //@Path("gruppi")
     public Response assignGruppoAula(@Context UriInfo uriinfo, /* @Context ContainerRequestContext req,*/ @Context SecurityContext sec, @PathParam("id") int idAula, HashMap<String, Object> gruppo) {
         String addAulaQuery = "INSERT INTO `aula_gruppo` (`id_aula`,`id_gruppo`) VALUES (?,?)";

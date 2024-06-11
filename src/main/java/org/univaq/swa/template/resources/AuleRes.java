@@ -50,6 +50,8 @@ public class AuleRes {
 
     private static final String DS_NAME = "java:comp/env/jdbc/auleweb";
     private static final String QUERY_SELECT_CONFIGURAZIONE_AULE = "SELECT aula.id, aula.nome AS nome_aula, luogo, edificio, piano, capienza, email_responsabile, prese_elettriche, prese_rete, note, gruppo.nome AS nome_gruppo FROM aula LEFT JOIN aula_gruppo ON aula.id = aula_gruppo.id_aula LEFT JOIN gruppo ON aula_gruppo.id_gruppo = gruppo.id;";
+    private static final String QUERY_SELECT_ID_AULE = "SELECT id FROM aula;";
+    private static final String QUERY_SELECT_ID_GRUPPI = "SELECT id FROM gruppo;";
 
     private static Connection getPooledConnection() throws NamingException, SQLException {
         InitialContext context = new InitialContext();
@@ -59,6 +61,43 @@ public class AuleRes {
 
     public AuleRes() throws SQLException, ClassNotFoundException {
         Class.forName("com.mysql.cj.jdbc.Driver");
+    }
+    
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getidAule() throws RESTWebApplicationException {
+        try {
+            ArrayList<Integer> idAule = new ArrayList<Integer>();
+            try ( Connection con = getPooledConnection();  PreparedStatement ps = con.prepareStatement(QUERY_SELECT_ID_AULE)) {
+                try ( ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        idAule.add(rs.getInt("id"));
+                    }
+                }
+            }
+            return Response.ok(idAule).build();
+        } catch (SQLException | NamingException ex) {
+            throw new RESTWebApplicationException(ex);
+        }
+    }
+    
+    @GET
+    @Path("gruppi")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getidGruppi() throws RESTWebApplicationException {
+        try {
+            ArrayList<Integer> idGruppi = new ArrayList<Integer>();
+            try ( Connection con = getPooledConnection();  PreparedStatement ps = con.prepareStatement(QUERY_SELECT_ID_GRUPPI)) {
+                try ( ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        idGruppi.add(rs.getInt("id"));
+                    }
+                }
+            }
+            return Response.ok(idGruppi).build();
+        } catch (SQLException | NamingException ex) {
+            throw new RESTWebApplicationException(ex);
+        }
     }
 
     @GET

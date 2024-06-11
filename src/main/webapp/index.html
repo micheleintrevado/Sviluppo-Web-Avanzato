@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html>
 
-    <head>
-        <title>AuleWEB REST App</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="res/restest.css" />
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<head>
+    <title>AuleWEB REST App</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="res/restest.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
-    </head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+</head>
 
-    <body>
-        <h1>AuleWEB REST App</h1>
-        <p>This is a template web application based on <strong>JakartaEE 10</strong> that runs on Apache <strong>Tomcat
-                10.1</strong> with <strong>Java 14</strong> or above.</p>
+<body>
+    <h1>AuleWEB REST App</h1>
+    <p>This is a template web application based on <strong>JakartaEE 10</strong> that runs on Apache <strong>Tomcat
+            10.1</strong> with <strong>Java 14</strong> or above.</p>
 
-        <p>The RESTful resources, grouped under the /rest prefix, are the following:</p>
+    <p>The RESTful resources, grouped under the /rest prefix, are the following:</p>
 
-        <!--    <table class="restest" width="100%">
+    <!--    <table class="restest" width="100%">
             <thead>
                 <tr>
                     <th>Path</th>
@@ -199,84 +199,104 @@
             </tbody>
         </table>-->
 
-        <h2> Post methods </h2>
-        <p> The POST methods are used to create new resources. </p>
+    <h2> Post methods </h2>
+    <p> The POST methods are used to create new resources. </p>
 
-        <table class="restest" width="100%">
-            <thead>
-                <tr>
-                    <th>Path</th>
-                    <th>Method</th>
-                    <th>Parameters</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td rowspan="1">/rest/aule</td>
-                    <td>POST</td>
-                    <td>
-                        <form method="post" action="rest/aule" enctype="multipart/form-data">
-                            <!-- String addAulaQuery = "INSERT INTO `aula` (`nome`, `luogo`, `edificio`, `piano`, `capienza`, `email_responsabile`, `prese_elettriche`, `prese_rete`, `note`) VALUES (?,?, ?, ?, ?, ?, ?, ?, ?)"; -->
+    <table class="restest" width="100%">
+        <thead>
+            <tr>
+                <th>Path</th>
+                <th>Method</th>
+                <th>Parameters</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td rowspan="1">/rest/aule</td>
+                <td>POST</td>
+                <td>
+                    <form method="post" action="rest/aule" enctype="multipart/form-data">
+                        <!-- String addAulaQuery = "INSERT INTO `aula` (`nome`, `luogo`, `edificio`, `piano`, `capienza`, `email_responsabile`, `prese_elettriche`, `prese_rete`, `note`) VALUES (?,?, ?, ?, ?, ?, ?, ?, ?)"; -->
 
-                            <div>
-                                <label for="nome_aula"> nome: </label> <input style="width:30%" type="text" value="C1.10"
-                                                                              id="nome_aula" name="nome_aula" /> <br>
-                                <label for="luogo_aula"> luogo:</label>
-                                <input style="width:30%" type="text" value="Coppito" id="luogo_aula" name="luogo_aula" />
-                                <br>
-                                <label for="edificio_aula">edificio:</label>
-                                <input style="width:30%" type="text" value="Coppito" id="edificio_aula"
-                                       name="edificio_aula" />
-                                <br>
-                                <label for="piano_aula"> piano:</label>
-                                <input style="width:30%" type="text" value="1" id="piano_aula" name="piano_aula" /> <br>
-                                <label for="capienza_aula"> capienza</label>
-                                <input style="width:30%" type="number" value="50" id="capienza_aula" name="capienza_aula" />
-                                <br>
-                                <label for="email_responsabile_aula">email</label>
-                                <input style="width:30%" type="text" value="u@u.u" id="email_responsabile_aula"
-                                       name="email_responsabile_aula" /> <br>
-                                <label for="prese_elettriche_aula">prese elettriche: </label><input style="width:30%"
-                                                                                                    type="number" value="1" id="prese_elettriche_aula" name="prese_elettriche-aula" /> <br>
-                                <label for="prese_rete_aula">prese rete:</label> <input style="width:30%" type="number"
-                                                                                        value="1" id="prese_rete_aula" name="prese_rete_aula" /> <br>
-                                <label for="note_aula">note:</label>
-                                <input style="width:30%" type="text" value="C1.10" id="note_aula" name="note_aula" /> <br>
-                                <input type="button" value="addAula" onclick="addAula()" name="addAula_button"
-                                       id="addAula_button"/>
-                            </div>
-                        </form>
-                    </td>
-                    <!-- <span data-rest-test-token data-rest-test-url="rest/aule" data-rest-test-method="post"
+                        <div>
+                            <label for="nome_aula"> nome: </label> <input style="width:30%" type="text" value="C1.10"
+                                id="nome_aula" name="nome_aula" required/> <br>
+                            <label for="luogo_aula"> luogo:</label>
+                            <input style="width:30%" type="text" value="Coppito" id="luogo_aula" name="luogo_aula" required/>
+                            <br>
+                            <label for="edificio_aula">edificio:</label>
+                            <input style="width:30%" type="text" value="Coppito" id="edificio_aula"
+                                name="edificio_aula" required/>
+                            <br>
+                            <label for="piano_aula"> piano:</label>
+                            <input style="width:30%" type="text" value="1" id="piano_aula" name="piano_aula" required/> <br>
+                            <label for="capienza_aula"> capienza</label>
+                            <input style="width:30%" type="number" value="50" id="capienza_aula" name="capienza_aula" required/>
+                            <br>
+                            <label for="email_responsabile_aula">email</label>
+                            <input style="width:30%" type="text" value="u@u.u" id="email_responsabile_aula"
+                                name="email_responsabile_aula" required/> <br>
+                            <label for="prese_elettriche_aula">prese elettriche: </label><input style="width:30%"
+                                type="number" value="1" id="prese_elettriche_aula" name="prese_elettriche-aula" required/> <br>
+                            <label for="prese_rete_aula">prese rete:</label> <input style="width:30%" type="number"
+                                value="1" id="prese_rete_aula" name="prese_rete_aula" required/> <br>
+                            <label for="note_aula">note:</label>
+                            <input style="width:30%" type="text" value="C1.10" id="note_aula" name="note_aula" required/> <br>
+                            <input type="button" value="addAula" onclick="addAula()" name="addAula_button"
+                                id="addAula_button" />
+                        </div>
+                    </form>
+                </td>
+                <!-- <span data-rest-test-token data-rest-test-url="rest/aule" data-rest-test-method="post"
                             data-rest-test-status="200" data-rest-test-content-type="application/json">rest/aule</span></td> -->
-                    <!--<td><a data-rest-test data-rest-test-target href="rest/aule"><small>POST rest/aule</small></a></td>-->
-                </tr>
+                <!--<td><a data-rest-test data-rest-test-target href="rest/aule"><small>POST rest/aule</small></a></td>-->
+            </tr>
 
-                <tr>
-                    <td rowspan="1">/rest/aule/<span id="assignGruppo-idAula">idAula</span>/gruppi</td>
-                    <td>POST</td>
-                    <td>
-                        <form method="post" action="rest/aule/idAula/gruppi" enctype="multipart/form-data">
-                            <!-- INSERT INTO `aula_gruppo` (`id_aula`,`id_gruppo`) VALUES (?,?) -->
+            <tr>
+                <td rowspan="1">/rest/aule/<span id="assignGruppo-idAula">idAula</span>/gruppi</td>
+                <td>POST</td>
+                <td>
+                    <form method="post" action="rest/aule/idAula/gruppi" enctype="multipart/form-data">
+                        <!-- INSERT INTO `aula_gruppo` (`id_aula`,`id_gruppo`) VALUES (?,?) -->
 
-                            <div>
-                                <label for="id_aula"> id aula: </label> 
-                                <select style="width:30%" type="number" id="id_aula_gruppi" name="id_aula">
+                        <div>
+                            <label for="id_aula"> id aula: </label>
+                            <select style="width:30%" type="number" id="id_aula_gruppi" name="id_aula" required>
 
-                                </select>
-                                <br>
+                            </select>
+                            <br>
 
-                                <label for="id_gruppo"> id gruppo:</label>
-                                <select style="width:30%" type="text" id="id_gruppo_assign" name="id_gruppo"> 
+                            <label for="id_gruppo"> id gruppo:</label>
+                            <select style="width:30%" type="text" id="id_gruppo_assign" name="id_gruppo" required>
 
-                                </select>
-                                <br>
-                                
-                                <input type="button" value="assignGruppoAula" onclick="assignGruppoAula($('#id_aula_gruppi').val())" name="assignGruppoAula_button" id="assignGruppoAula_button"/>
-                            </div>
-                        </form>
-                    </td>
-                </tr>
+                            </select>
+                            <br>
+
+                            <input type="button" value="assignGruppoAula"
+                                onclick="assignGruppoAula($('#id_aula_gruppi').val())" name="assignGruppoAula_button"
+                                id="assignGruppoAula_button" />
+                        </div>
+                    </form>
+                </td>
+            </tr>
+
+            <tr>
+                <td rowspan="1">/rest/aule/csv</td>
+                <td>POST</td>
+                <td>
+                    <form method="post" action="rest/aule/csv" enctype="multipart/form-data">
+
+                        <div>
+                            <label for="fileCSV"> Seleziona file CSV per importare aule:</label><br>
+                            <input type="file" value="fileCSV" id="fileCSV" accept=".csv" required>
+                            <br>
+                            <input type="button" value="importFileCSV"
+                                onclick="importAuleFromCSV()" name="importFileCSV_button"
+                                id="importFileCSV_button" />
+                        </div>
+                    </form>
+                </td>
+            </tr>
             <td>
 
             </td>
@@ -301,8 +321,8 @@
         <tbody>
             <tr>
                 <td><span data-rest-test-token data-rest-test-url="rest/auth/login" data-rest-test-method="post"
-                          data-rest-test-status="200" data-rest-test-content-type="application/x-www-form-urlencoded"
-                          data-rest-test-payload="username=u&password=p">/auth/login</span></td>
+                        data-rest-test-status="200" data-rest-test-content-type="application/x-www-form-urlencoded"
+                        data-rest-test-payload="username=u&password=p">/auth/login</span></td>
                 <td>POST</td>
                 <td></td>
                 <td>form-encoded username and password</td>
@@ -310,7 +330,7 @@
             </tr>
             <tr>
                 <td><span data-rest-test-auth="1000" data-rest-test-url="rest/auth/logout"
-                          data-rest-test-method="delete" data-rest-test-status="204">/auth/logout</span></td>
+                        data-rest-test-method="delete" data-rest-test-status="204">/auth/logout</span></td>
                 <td>DELETE</td>
                 <td></td>
                 <td></td>
@@ -318,7 +338,7 @@
             </tr>
             <tr>
                 <td><span data-rest-test-auth data-rest-test-url="rest/auth/refresh" data-rest-test-method="get"
-                          data-rest-test-status="200">/auth/refresh</span></td>
+                        data-rest-test-status="200">/auth/refresh</span></td>
                 <td>GET</td>
                 <td></td>
                 <td></td>
@@ -330,9 +350,9 @@
                 <td colspan="5">
                     <form method="post" action="rest/auth/login" enctype="application/x-www-form-urlencoded">
                         <p>Username: <input style="width:30%" type="text" value="username1" id="username-field"
-                                            name="username-field" />
+                                name="username-field" />
                             Password: <input style="width:30%" type="password" value="pass" id="password-field"
-                                             name="password-field" />
+                                name="password-field" />
                             <input type="submit" value="login" name="login-button" id="login-button" />
                             <input type="submit" value="logout" name="logout-button" id="logout-button" />
                         </p>
@@ -367,7 +387,7 @@
 
 
 
-    <script src="res/authentication.js">/* */</script>        
+    <script src="res/authentication.js">/* */</script>
     <script src="res/aule.js">/* */</script>
     <!-- <script src="res/restest.js">/* */</script> 
     <script>

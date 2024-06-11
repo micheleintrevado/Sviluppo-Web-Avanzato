@@ -74,14 +74,11 @@ function getAuleUtility() {
     })
 };
 function getGruppiUtility() {
-    console.log("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
     $.ajax({
         url: "rest/aule/gruppi/",
         method: "GET",
         success: function (data) {
-            console.log(data);
             $.each(data, function (key) {
-                console.log(data[key]);
                 $("#id_gruppo_assign").append(
                     "<option value=" + data[key] + ">" + data[key] + "</option>"
                 )
@@ -94,5 +91,45 @@ function getGruppiUtility() {
         cache: false,
     })
 };
+
+function importAuleFromCSV() {
+    console.log("UEUEUEUEUEUEUEUEUEUEUEUEUEUEUEUEUEUEUEUEUEUEUEUEUEUEUEUEUEUEUEUE");
+    
+    console.log("$('#fileCSV')[0]");
+    console.log($('#fileCSV')[0]);
+    console.log("$('#fileCSV')[0].files[0]")
+    console.log($('#fileCSV')[0].files[0]);
+
+
+    var formData = new FormData();
+    formData.append('file', $('#fileCSV')[0].files[0]);
+    console.log("formData: ");
+    console.log(formData);
+
+    $.ajax({
+        url: "rest/aule/csv",
+        method: "POST",
+        contentType: "multipart/form-data",
+        data: formData,
+        success: function (request, status, error) {
+            // header.substring("Bearer".length).trim();
+            alert("importAuleCSV ok");
+            console.log("importAuleCSV ok");
+        },
+        // success: function () {
+        //     collezione_result.children().remove();
+        //     clear();
+        //     message("Collezione aggiornata con il nuovo disco.", "success");
+        // },
+        error: function (request, status, error) {
+            console.log("importAuleCSV error: " + error);
+        },
+        // function (request, status, error) {
+        //     handleError(request, status, error, "#collezione", "Errore nel caricamento della collezione.");
+        // },
+        cache: false,
+    });
+}
+
 getAuleUtility();
 getGruppiUtility();
