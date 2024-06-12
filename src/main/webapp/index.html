@@ -322,7 +322,7 @@
                             <legend>Crea nuovo evento</legend>
                             <div>
                                 <label for="nome_evento"> nome: </label> <input style="width:30%" type="text"
-                                    value="Evento XYZ" id="nome_evento" name="nome_evento" required /> <br>
+                                    value="Evento XYZ" id="nome_evento" name="nome_evento" /> <br>
                                 <label for="orario_inizio"> Data e orario di inizio:</label>
                                 <input style="width:30%" type="datetime-local" value="2025-01-01T09:00"
                                     id="orario_inizio" name="orario_inizio">
@@ -387,6 +387,79 @@
                                 <br>
                                 <input type="button" value="Aggiungi Evento" id="addEvento_button" />
                                 <input type="reset" value="Reset" id="reset_button" />
+                            </div>
+                        </fieldset>
+
+                    </form>
+                </td>
+                <!-- <span data-rest-test-token data-rest-test-url="rest/aule" data-rest-test-method="post"
+                                data-rest-test-status="200" data-rest-test-content-type="application/json">rest/aule</span></td> -->
+                <!--<td><a data-rest-test data-rest-test-target href="rest/aule"><small>POST rest/aule</small></a></td>-->
+            </tr>
+
+            <tr>
+                <td rowspan="1">/rest/aule/<span id="modificaEvento-idEvento">idEvento</span></td>
+                <td>PATCH</td>
+                <td>
+                    <form method="post" action="rest/eventi">
+                        <fieldset>
+                            <legend>Modifica un Evento</legend>
+                            <div>
+                                <label for="id_evento_modifica"> id evento: </label>
+                                <select style="width:30%" id="id_evento_modifica" name="lista_id_eventi" required>
+                                </select>
+                                <br>
+
+                                <label for="nome_evento_modifica"> nome: </label> 
+                                <input style="width:30%" type="text" value="Evento XYZ" id="nome_evento_modifica" name="nome_evento_modifica" /> 
+                                <br>
+                                
+                                <label for="orario_inizio_modifica"> Data e orario di inizio:</label>
+                                <input style="width:30%" type="datetime-local" value="2025-01-01T09:00" id="orario_inizio_modifica" name="orario_inizio_modifica">
+                                <br>
+
+                                <label for="orario_fine_modifica"> Data e orario di fine:</label>
+                                <input style="width:30%" type="datetime-local" value="2025-01-01T11:00" id="orario_fine_modifica" name="orario_fine_modifica">
+                                <br>
+                                
+                                <label for="descrizione_evento_modifica"> descrizione:</label>
+                                <input style="width:30%" type="text" value="Descrizione Evento XYZ" id="descrizione_evento_modifica" name="descrizione_evento_modifica">
+                                <br>
+
+                                <label for="nome_organizzatore_evento_modifica"> nome organizzatore:</label>
+                                <input style="width:30%" type="text" value="Nome Organizzatore XYZ" id="nome_organizzatore_evento_modifica" name="nome_organizzatore_evento_modifica">
+                                <br>
+                                
+                                <label for="email_responsabile_evento_modifica"> email responsabile:</label>
+                                <input style="width:30%" type="text" value="u@u.u" id="email_responsabile_evento_modifica" name="email_responsabile_evento_modifica">
+                                <br>
+
+                                <label for="tipologia_evento_modifica"> tipologia:</label>
+                                <select style="width:40%" id="tipologia_evento_modifica" name="tipologia_evento_modifica">
+                                    <option value="lezione">lezione</option>
+                                    <option value="esame">esame</option>
+                                    <option value="parziale">parziale</option>
+                                    <option value="riunione">riunione</option>
+                                    <option value="lauree">lauree</option>
+                                    <option value="seminario">seminario</option>
+                                    <option value="altro" selected>altro</option>
+                                </select>
+                                <br>
+
+                                <label for="id_aula_evento_modifica"> id aula:</label>
+                                <select style="width:30%" id="id_aula_evento_modifica" name="lista_id_aule">
+                                </select>
+                                <br>
+
+                                <div id="corso_container_modifica">
+                                    <label for="id_corso_evento_modifica"> id corso:</label>
+                                    <select style="width:30%" id="id_corso_evento_modifica" name="lista_id_corso">
+                                    </select>
+                                </div>
+                                <br>
+
+                                <input type="button" value="ModificaEvento" id="modificaEvento_button" />
+                                <input type="reset" value="ResetModifica" id="reset_button_modifica" />
                             </div>
                         </fieldset>
 
