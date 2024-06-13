@@ -51,7 +51,12 @@ public class EventoRes {
     @Consumes(MediaType.APPLICATION_JSON)
     @Logged
     public Response updateEvento(@PathParam("id") int idEvento, Map<String, Object> fieldsToUpdate) {
-        System.out.println("SONO IN UPDATE EVENTO <----------------------------------------------------");
+        System.out.println("SONO IN UPDATE EVENTO "+ idEvento + " <----------------------------------------------------");
+        System.out.println("MAPPA RICEVUTA:");
+        for (var key : fieldsToUpdate.keySet()) {
+            System.out.println("key: " + key + ". value: " + fieldsToUpdate.get(key));
+        }
+        
 
         StringBuilder queryBuilder = new StringBuilder("UPDATE evento SET ");
         for (String key : fieldsToUpdate.keySet()) {
