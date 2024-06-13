@@ -93,8 +93,9 @@ public class EventiRes {
         return e;
 
     }
-    
+
     @GET
+    @Path("ids")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getidEventi() throws RESTWebApplicationException {
         try {
@@ -177,7 +178,6 @@ public class EventiRes {
         Evento evento = new Evento();
         evento.setId(idEvento);
         EventoRes eventoRes = new EventoRes(evento);
-
         return eventoRes.getInfoEvento(idEvento);
     }
 
@@ -215,7 +215,6 @@ public class EventiRes {
 
         // gestione dell'evento ricorrente
         if (evento.get("tipo") != null && evento.get("data_termine") != null) {
-            System.out.println("EVENTO RICORRENTE");
             // preparazione statement inserimento della ricorrenza (che sarà l'"id master" dell'evento)
             try ( Connection con = getPooledConnection();  PreparedStatement addRicorrenzaStatement = con.prepareStatement(addRicorrenzaQuery, Statement.RETURN_GENERATED_KEYS)) {
                 addRicorrenzaStatement.setString(1, (String) evento.get("tipo"));
@@ -244,7 +243,7 @@ public class EventiRes {
                 LocalDate dataFineEvento = LocalDateTime.parse((String) dataOrarioFine, DateTimeFormatter.ISO_DATE_TIME).toLocalDate();
                 LocalTime orarioFineEvento = LocalDateTime.parse((String) dataOrarioFine, DateTimeFormatter.ISO_DATE_TIME).toLocalTime();
 
-                // mi popolo le liste dateRicorrenzeInizio e dateRicorrenzeFine che contengono le ricorrenze dell'evento fino alla scadenza della ricorrenza
+                // popolo le liste dateRicorrenzeInizio e dateRicorrenzeFine che contengono le ricorrenze dell'evento fino alla scadenza della ricorrenza
                 while (!dataFineEvento.isAfter(dateTermineRicorrenza.toLocalDate())) {
                     LocalDateTime dataOraInizioEvento = LocalDateTime.of(dataInizioEvento, orarioInizioEvento);
                     LocalDateTime dataOraFineEvento = LocalDateTime.of(dataFineEvento, orarioFineEvento);
@@ -301,7 +300,6 @@ public class EventiRes {
                 throw new RESTWebApplicationException(ex);
             }
         } else {
-            System.out.println("EVENTO NON RICORRENTE");
             try ( Connection con = getPooledConnection();  PreparedStatement ps = con.prepareStatement(addEventoNonRicorrenteQuery, Statement.RETURN_GENERATED_KEYS)) {
                 ps.setString(1, (String) evento.get("nome"));
 
@@ -318,8 +316,10 @@ public class EventiRes {
                 ps.setString(6, (String) evento.get("email_responsabile"));
                 ps.setString(7, (String) evento.get("tipologia"));
                 ps.setInt(8, (int) evento.get("id_aula"));
-                ps.setInt(9, (int) evento.get("id_corso"));
-
+                if (evento.get("id_corso") != null) {
+                    ps.setInt(9, (int) evento.get("id_corso"));
+                }
+                else ps.setObject(9, null);
                 ps.executeUpdate();
 
                 try ( ResultSet keys = ps.getGeneratedKeys()) {

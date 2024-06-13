@@ -89,8 +89,9 @@ function getCorsiUtility() {
         success: function (data) {
             $.each(data, function (key) {
                 $("[name='lista_id_corso']").append(
-                    "<option value=" + data[key] + ">" + data[key] + "</option>")
+                    "<option value=" + data[key] + ">" + data[key] + "</option>");
             });
+            $("[name='lista_id_corso']").append("<option selected> Scegli un corso </option>");
         },
         error: function (request, status, error) {
             alert("ID CORSI NON TROVATI");
@@ -107,7 +108,7 @@ function getAuleUtility() {
         success: function (data) {
             $.each(data, function (key) {
                 $("[name='lista_id_aule']").append(
-                    "<option value=" + data[key] + ">" + data[key] + "</option>")
+                    "<option value=" + data[key] + ">" + data[key] + "</option>");
             });
         },
         error: function (request, status, error) {

@@ -51,12 +51,11 @@ public class EventoRes {
     @Consumes(MediaType.APPLICATION_JSON)
     @Logged
     public Response updateEvento(@PathParam("id") int idEvento, Map<String, Object> fieldsToUpdate) {
-        System.out.println("SONO IN UPDATE EVENTO "+ idEvento + " <----------------------------------------------------");
+        System.out.println("SONO IN UPDATE EVENTO " + idEvento + " <----------------------------------------------------");
         System.out.println("MAPPA RICEVUTA:");
         for (var key : fieldsToUpdate.keySet()) {
             System.out.println("key: " + key + ". value: " + fieldsToUpdate.get(key));
         }
-        
 
         StringBuilder queryBuilder = new StringBuilder("UPDATE evento SET ");
         for (String key : fieldsToUpdate.keySet()) {
@@ -119,8 +118,9 @@ public class EventoRes {
             e.setDescrizione(rs.getString("descrizione"));
             e.setNomeOrganizzatore(rs.getString("nome_organizzatore"));
             e.setEmailResponsabile(rs.getString("email_responsabile"));
-            e.setTipologia(Tipologia.valueOf(rs.getString("tipologia")));
-
+            e.setTipologia(Tipologia.valueOf(rs.getString("tipologia")));            
+            e.setIdAula(rs.getInt("id_aula"));
+            e.setIdCorso(rs.getInt("id_corso"));
             if (rs.getString("id_master") != null) {
                 Ricorrenza r = new Ricorrenza();
                 r.setId(rs.getInt("id_master"));

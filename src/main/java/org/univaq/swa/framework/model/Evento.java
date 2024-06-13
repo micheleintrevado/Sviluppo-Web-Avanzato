@@ -1,4 +1,3 @@
-
 package org.univaq.swa.framework.model;
 
 import java.time.LocalDateTime;
@@ -17,8 +16,10 @@ public class Evento {
     private String nomeOrganizzatore;
     private String emailResponsabile;
     private Tipologia tipologia;
+    private int idAula;
+    private int idCorso;
 
-    public Evento(int id, String nome, LocalDateTime orarioInizio, LocalDateTime orarioFine, String descrizione, String nomeOrganizzatore, String emailResponsabile, Tipologia tipologia) {
+    public Evento(int id, String nome, LocalDateTime orarioInizio, LocalDateTime orarioFine, String descrizione, String nomeOrganizzatore, String emailResponsabile, Tipologia tipologia, int aula, int corso) {
         this.id = id;
         this.nome = nome;
         this.orarioInizio = orarioInizio;
@@ -27,11 +28,13 @@ public class Evento {
         this.nomeOrganizzatore = nomeOrganizzatore;
         this.emailResponsabile = emailResponsabile;
         this.tipologia = tipologia;
+        this.idAula = aula;
+        this.idCorso = corso;
     }
-    
+
     public Evento() {
     }
-    
+
     public int getId() {
         return id;
     }
@@ -39,8 +42,7 @@ public class Evento {
     public void setId(int id) {
         this.id = id;
     }
-    
-    
+
     public String getNome() {
         return nome;
     }
@@ -96,5 +98,21 @@ public class Evento {
     public void setTipologia(Tipologia tipologia) {
         this.tipologia = tipologia;
     }
-    
+
+    public int getIdAula() {
+        return idAula;
+    }
+
+    public void setIdAula(int aula) {
+        this.idAula = aula;
+    }
+
+    public void setIdCorso(int corso) {
+        this.idCorso = corso;
+    }
+
+    public int getIdCorso() {
+        return idCorso;
+    }
+
 }

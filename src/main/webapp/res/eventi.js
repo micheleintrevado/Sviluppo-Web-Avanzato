@@ -24,7 +24,6 @@ $(document).ready(function () {
 
     $('input[name="ricorrenza_evento"]').change(function () {
         let selectedValue = $('input[name="ricorrenza_evento"]:checked').val();
-        console.log(selectedValue);
         if (selectedValue === 'giornaliera' || selectedValue === 'settimanale' || selectedValue === 'mensile') {
             $('#ricorrenza_container').show();
         } else {
@@ -41,9 +40,8 @@ $('#reset_button').click(function () {
 });
 
 function addEvento() {
-    const tipo = $('input[name="ricorrenza_evento"]:checked').val();
-    if (tipo != null) {
-        console.log(tipo);
+    let tipo = $('input[name="ricorrenza_evento"]:checked').val();
+    if (tipo !== "null") {
         $("#data_fine_ricorrenza").prop("hidden", true);
     }
     $.ajax({
@@ -60,7 +58,7 @@ function addEvento() {
             tipologia: $('#tipologia_evento').val(),
             id_aula: parseInt($('#id_aula_evento').val()),
             id_corso: parseInt($('#id_corso_evento').val()),
-            tipo: $('input[name="ricorrenza_evento"]:checked').val(),
+            tipo: $('input[name="ricorrenza_evento"]:checked').val() === "null" ? null : $('input[name="ricorrenza_evento"]:checked').val(),
             data_termine: new Date($('#data_fine_ricorrenza').val()).toISOString()
         }),
         success: function (request, status, error) {
@@ -74,7 +72,8 @@ function addEvento() {
         //     message("Collezione aggiornata con il nuovo disco.", "success");
         // },
         error: function (request, status, error) {
-            if (request.status == 401) alert("LOGIN ERROR");
+            if (request.status == 401)
+                alert("LOGIN ERROR");
             console.log("addEvento error: " + request.status);
         },
         // function (request, status, error) {
@@ -97,8 +96,8 @@ function modificaEvento() {
             nome_organizzatore: $('#nome_organizzatore_evento_modifica').val(),
             email_responsabile: $('#email_responsabile_evento_modifica').val(),
             tipologia: $('#tipologia_evento_modifica').val(),
-            id_aula: parseInt($('#id_aula_evento_modifica').val()),
-            id_corso: parseInt($('#id_corso_evento_modifica').val())
+            id_aula: $('#id_aula_evento_modifica').val(),
+            id_corso: $('#id_corso_evento_modifica').val()
         }),
         success: function (request, status, error) {
             // header.substring("Bearer".length).trim();
@@ -106,7 +105,8 @@ function modificaEvento() {
             console.log("modificaEvento ok");
         },
         error: function (request, status, error) {
-            if (request.status == 401) alert("LOGIN ERROR");
+            if (request.status == 401)
+                alert("LOGIN ERROR");
             console.log("modificaEvento error: " + request.status);
         },
         // function (request, status, error) {
@@ -118,12 +118,12 @@ function modificaEvento() {
 
 function getEventiUtility() {
     $.ajax({
-        url: "rest/eventi/",
+        url: "rest/eventi/ids",
         method: "GET",
         success: function (data) {
             $.each(data, function (key) {
                 $("[name='lista_id_eventi']").append(
-                    "<option value=" + data[key] + ">" + data[key] + "</option>")
+                        "<option value=" + data[key] + ">" + data[key] + "</option>");
             });
         },
         error: function (request, status, error) {
@@ -134,6 +134,44 @@ function getEventiUtility() {
     });
 }
 
+$(document).ready(function () {
+    // I campi della form vengono modificati in base al valore dell'id evento selezionato
+    $('#id_evento_modifica').change(function () {
+        let idEvento = $(this).val();
+
+        $.ajax({
+            url: 'rest/eventi/' + idEvento,
+            type: 'GET',
+            success: function (data) {
+                console.log(data);
+                $('#nome_evento_modifica').val(data.nome);
+                $('#orario_inizio_modifica').val(formatDateTimeUtility(data.orarioInizio));
+                $('#orario_fine_modifica').val(formatDateTimeUtility(data.orarioFine));
+                $('#descrizione_evento_modifica').val(data.descrizione);
+                $('#nome_organizzatore_evento_modifica').val(data.nomeOrganizzatore);
+                $('#email_responsabile_evento_modifica').val(data.emailResponsabile);
+                $('#tipologia_evento_modifica').val(data.tipologia);
+                $('#id_aula_evento_modifica').val(data.idAula);
+                $('#id_corso_evento_modifica').val(data.idCorso);
+            },
+            error: function (xhr, status, error) {
+                $('#modifica_evento_form').trigger('reset');
+            }
+        });
+    });
+
+    // 
+    $('#id_corso_evento').change(function () {
+        let idCorso = $(this).val();
+        
+    }
+    );
+});
+
+function formatDateTimeUtility(dateArray) {
+    const [year, month, day, hour, minute] = dateArray;
+    return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}T${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
+}
 getEventiUtility();
 const addEventoBtn = $('#addEvento_button');
 addEventoBtn.click(addEvento);
