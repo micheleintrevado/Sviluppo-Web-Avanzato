@@ -102,42 +102,69 @@ drop user 'auleWebUser'@'localhost';
 CREATE USER 'auleWebUser'@'localhost' IDENTIFIED BY 'auleWebPassword';
 GRANT CREATE, ALTER, DROP, INSERT, UPDATE, DELETE, SELECT, REFERENCES, RELOAD on *.* TO 'auleWebUser'@'localhost' WITH GRANT OPTION;
 
-INSERT INTO `auleweb`.`aula` (`id`, `nome`, `luogo`, `edificio`, `piano`, `capienza`, `email_responsabile`, `prese_elettriche`, `prese_rete`, `note`) VALUES ('1', '1.1', 'Coppito', 'blocco 0', '1', '50', 'qualcuno@gmail.com', '4', '1', '');
-INSERT INTO `auleweb`.`aula` (`id`, `nome`, `luogo`, `edificio`, `piano`, `capienza`, `email_responsabile`, `prese_elettriche`, `prese_rete`, `note`) VALUES ('2', '0.2', 'Coppito', 'blocco 0', '0', '70', 'qualcuno@gmail.com', '4', '1', '');
+-- Inserimento AULE **************
+INSERT INTO `auleweb`.`aula` (`id`, `nome`, `luogo`, `edificio`, `piano`, `capienza`, `email_responsabile`, `prese_elettriche`, `prese_rete`, `note`) VALUES ('1', 'C1.10', 'Coppito', 'Renato Ricamo', '0', '50', 'sandro@gmail.com', '9', '5', 'Nota1');
+INSERT INTO `auleweb`.`aula` (`id`, `nome`, `luogo`, `edificio`, `piano`, `capienza`, `email_responsabile`, `prese_elettriche`, `prese_rete`, `note`) VALUES ('2', 'A1.1', 'Coppito', 'Blocco 0', '1', '65', 'mario@gmail.com', '20', '11', 'Nota2');
+INSERT INTO `auleweb`.`aula` (`id`, `nome`, `luogo`, `edificio`, `piano`, `capienza`, `email_responsabile`, `prese_elettriche`, `prese_rete`, `note`) VALUES ('3', 'A1.6', 'Coppito', 'Blocco 0', '1', '55', 'giovanna@gmail.com', '15', '14', 'Nota3');
+INSERT INTO `auleweb`.`aula` (`id`, `nome`, `luogo`, `edificio`, `piano`, `capienza`, `email_responsabile`, `prese_elettriche`, `prese_rete`, `note`) VALUES ('4', 'C1.16', 'Coppito', 'Renato Ricamo', '0', '35', 'gilda@gmail.com', '10', '7', 'Nota4');
 
-INSERT INTO `auleweb`.`corso` (`id`, `nome`) VALUES ('1', 'AI');
+-- Inserimento CORSI *********** 
+INSERT INTO `auleweb`.`corso` (`id`, `nome`) VALUES ('1', 'Artificial Intellgence');
+INSERT INTO `auleweb`.`corso` (`id`, `nome`) VALUES ('2', 'Data Analytics');
+INSERT INTO `auleweb`.`corso` (`id`, `nome`) VALUES ('3', 'Ingegneria del software');
+INSERT INTO `auleweb`.`corso` (`id`, `nome`) VALUES ('4', 'Software quality engineering');
 
-INSERT INTO `auleweb`.`evento` (`id`, `nome`, `orario_inizio`, `orario_fine`, `descrizione`, `nome_organizzatore`, `email_responsabile`, `tipologia`, `id_aula`, `id_corso`) VALUES ('1', 'lezioneSwa', '11/11/11 11:00', '11/11/11 12:00', 'AAA', 'AAA', 'AAA', 'lezione', '1', '1');
-INSERT INTO `auleweb`.`evento` (`id`, `nome`, `orario_inizio`, `orario_fine`, `descrizione`, `nome_organizzatore`, `email_responsabile`, `tipologia`, `id_aula`, `id_corso`) VALUES ('2', 'lezioneWe', '12/11/11 11:00', '12/11/11 12:30', 'AAA', 'AAA', 'AAA', 'seminario', '1', null);
-INSERT INTO `auleweb`.`evento` (`id`, `nome`, `orario_inizio`, `orario_fine`, `descrizione`, `nome_organizzatore`, `email_responsabile`, `tipologia`, `id_aula`, `id_corso`) VALUES ('3', 'TerzaSettPrimo', '2024/01/16 11:00', '2024/01/16 13:00', 'AAA', 'AAA', 'AAA', 'seminario', '1', null);
-INSERT INTO `auleweb`.`evento` (`id`, `nome`, `orario_inizio`, `orario_fine`, `descrizione`, `nome_organizzatore`, `email_responsabile`, `tipologia`, `id_aula`, `id_corso`) VALUES ('4', 'TerzaSettSecondo', '2024/01/18 11:00', '2024/01/18 13:30', 'AAA', 'AAA', 'AAA', 'lezione', '1', null);
-INSERT INTO `auleweb`.`evento` (`id`, `nome`, `orario_inizio`, `orario_fine`, `descrizione`, `nome_organizzatore`, `email_responsabile`, `tipologia`, `id_aula`, `id_corso`) VALUES ('5', 'TerzaSettTerzo', '2024/01/20 11:00', '2024/01/20 12:00', 'AAA', 'AAA', 'AAA', 'seminario', '1', null);
-INSERT INTO `auleweb`.`evento` (`id`, `nome`, `orario_inizio`, `orario_fine`, `descrizione`, `nome_organizzatore`, `email_responsabile`, `tipologia`, `id_aula`, `id_corso`) VALUES ('6', 'A caso', '2023/01/11 09:00', '2023/01/11 09:30', 'AAA', 'AAA', 'AAA', 'lezione', '1', null);
-INSERT INTO `auleweb`.`evento` (`id`, `nome`, `orario_inizio`, `orario_fine`, `descrizione`, `nome_organizzatore`, `email_responsabile`, `tipologia`, `id_aula`, `id_corso`) VALUES ('7', 'A caso2', '2023/01/19 09:00', '2023/01/19 09:30', 'AAA', 'AAA', 'AAA', 'lezione', '1', null);
-INSERT INTO `auleweb`.`evento` (`id`, `nome`, `orario_inizio`, `orario_fine`, `descrizione`, `nome_organizzatore`, `email_responsabile`, `tipologia`, `id_aula`, `id_corso`) VALUES ('8', 'Attuale 1', '2024/05/14 09:00', '2024/05/15 09:00', 'AAA', 'AAA', 'AAA', 'lezione',  '1', null);
-INSERT INTO `auleweb`.`evento` (`id`, `nome`, `orario_inizio`, `orario_fine`, `descrizione`, `nome_organizzatore`, `email_responsabile`, `tipologia`, `id_aula`, `id_corso`) VALUES ('9', 'Attuale 2', '2024/05/14 09:00', '2024/05/15 09:00', 'AAA', 'AAA', 'AAA', 'lezione', '1', null);
-INSERT INTO `auleweb`.`evento` (`id`, `nome`, `orario_inizio`, `orario_fine`, `descrizione`, `nome_organizzatore`, `email_responsabile`, `tipologia`, `id_aula`, `id_corso`) VALUES ('10', 'Prossimo 1', '2024/05/14 17:00', '2024/05/15 18:00', 'AAA', 'AAA', 'AAA', 'lezione', '1', null);
-INSERT INTO `auleweb`.`evento` (`id`, `nome`, `orario_inizio`, `orario_fine`, `descrizione`, `nome_organizzatore`, `email_responsabile`, `tipologia`, `id_aula`, `id_corso`) VALUES ('11', 'Prossimo 2', '2024/05/14 22:00', '2024/05/15 23:00', 'AAA', 'AAA', 'AAA', 'lezione', '1', null);
+-- INSERT INTO `auleweb`.`evento` (`id`, `nome`, `orario_inizio`, `orario_fine`, `descrizione`, `nome_organizzatore`, `email_responsabile`, `tipologia`, `id_aula`, `id_corso`) VALUES ('1', 'lezioneSwa', '11/11/11 11:00', '11/11/11 12:00', 'AAA', 'AAA', 'AAA', 'lezione', '1', '1');
+-- INSERT INTO `auleweb`.`evento` (`id`, `nome`, `orario_inizio`, `orario_fine`, `descrizione`, `nome_organizzatore`, `email_responsabile`, `tipologia`, `id_aula`, `id_corso`) VALUES ('2', 'lezioneWe', '12/11/11 11:00', '12/11/11 12:30', 'AAA', 'AAA', 'AAA', 'seminario', '1', null);
+-- INSERT INTO `auleweb`.`evento` (`id`, `nome`, `orario_inizio`, `orario_fine`, `descrizione`, `nome_organizzatore`, `email_responsabile`, `tipologia`, `id_aula`, `id_corso`) VALUES ('3', 'TerzaSettPrimo', '2024/01/16 11:00', '2024/01/16 13:00', 'AAA', 'AAA', 'AAA', 'seminario', '1', null);
+-- INSERT INTO `auleweb`.`evento` (`id`, `nome`, `orario_inizio`, `orario_fine`, `descrizione`, `nome_organizzatore`, `email_responsabile`, `tipologia`, `id_aula`, `id_corso`) VALUES ('4', 'TerzaSettSecondo', '2024/01/18 11:00', '2024/01/18 13:30', 'AAA', 'AAA', 'AAA', 'lezione', '1', null);
+-- INSERT INTO `auleweb`.`evento` (`id`, `nome`, `orario_inizio`, `orario_fine`, `descrizione`, `nome_organizzatore`, `email_responsabile`, `tipologia`, `id_aula`, `id_corso`) VALUES ('5', 'TerzaSettTerzo', '2024/01/20 11:00', '2024/01/20 12:00', 'AAA', 'AAA', 'AAA', 'seminario', '1', null);
+-- INSERT INTO `auleweb`.`evento` (`id`, `nome`, `orario_inizio`, `orario_fine`, `descrizione`, `nome_organizzatore`, `email_responsabile`, `tipologia`, `id_aula`, `id_corso`) VALUES ('6', 'A caso', '2023/01/11 09:00', '2023/01/11 09:30', 'AAA', 'AAA', 'AAA', 'lezione', '1', null);
+-- INSERT INTO `auleweb`.`evento` (`id`, `nome`, `orario_inizio`, `orario_fine`, `descrizione`, `nome_organizzatore`, `email_responsabile`, `tipologia`, `id_aula`, `id_corso`) VALUES ('7', 'A caso2', '2023/01/19 09:00', '2023/01/19 09:30', 'AAA', 'AAA', 'AAA', 'lezione', '1', null);
+-- INSERT INTO `auleweb`.`evento` (`id`, `nome`, `orario_inizio`, `orario_fine`, `descrizione`, `nome_organizzatore`, `email_responsabile`, `tipologia`, `id_aula`, `id_corso`) VALUES ('8', 'Attuale 1', '2024/05/14 09:00', '2024/05/15 09:00', 'AAA', 'AAA', 'AAA', 'lezione',  '1', null);
+-- INSERT INTO `auleweb`.`evento` (`id`, `nome`, `orario_inizio`, `orario_fine`, `descrizione`, `nome_organizzatore`, `email_responsabile`, `tipologia`, `id_aula`, `id_corso`) VALUES ('9', 'Attuale 2', '2024/05/14 09:00', '2024/05/15 09:00', 'AAA', 'AAA', 'AAA', 'lezione', '1', null);
+-- INSERT INTO `auleweb`.`evento` (`id`, `nome`, `orario_inizio`, `orario_fine`, `descrizione`, `nome_organizzatore`, `email_responsabile`, `tipologia`, `id_aula`, `id_corso`) VALUES ('10', 'Prossimo 1', '2024/05/14 17:00', '2024/05/15 18:00', 'AAA', 'AAA', 'AAA', 'lezione', '1', null);
+-- INSERT INTO `auleweb`.`evento` (`id`, `nome`, `orario_inizio`, `orario_fine`, `descrizione`, `nome_organizzatore`, `email_responsabile`, `tipologia`, `id_aula`, `id_corso`) VALUES ('11', 'Prossimo 2', '2024/05/14 22:00', '2024/05/15 23:00', 'AAA', 'AAA', 'AAA', 'lezione', '1', null);
 
--- evento ricorrente
+-- Inserimento EVENTI ***************************
+INSERT INTO Evento (nome, orario_inizio, orario_fine, descrizione, nome_organizzatore, email_responsabile, tipologia, id_master, id_aula, id_corso)
+VALUES 
+('Lezione di Matematica', '2024-06-15 09:00:00', '2024-06-15 11:00:00', 'Lezione sul calcolo differenziale', 'Prof. Mario Rossi', 'm.rossi@universita.it', 'lezione', NULL, 1, 2),
+('Esame di Fisica', '2024-06-16 14:00:00', '2024-06-16 17:00:00', 'Esame finale di fisica generale', 'Prof.ssa Anna Bianchi', 'a.bianchi@universita.it', 'esame', NULL, 2, 2),
+('Seminario di Informatica', '2024-06-17 10:00:00', '2024-06-17 12:00:00', 'Seminario su Intelligenza Artificiale', 'Prof. Luigi Verdi', 'l.verdi@universita.it', 'seminario', NULL, 3, NULL),
+('Riunione del Dipartimento', '2024-06-18 09:30:00', '2024-06-18 11:00:00', 'Riunione mensile del dipartimento di ingegneria', 'Dott. Carlo Neri', 'c.neri@universita.it', 'riunione', NULL, 4, NULL),
+('Parziale di Chimica', '2024-06-19 08:00:00', '2024-06-19 10:00:00', 'Parziale di chimica organica', 'Prof.ssa Laura Verde', 'l.verde@universita.it', 'parziale', NULL, 1, 2),
+('Lauree di Giugno', '2024-06-20 09:00:00', '2024-06-20 18:00:00', 'Cerimonia di laurea per gli studenti del dipartimento di economia', 'Prof. Giovanni Bianchi', 'g.bianchi@universita.it', 'lauree', NULL, 2, NULL),
+('Workshop di Fotografia', '2024-06-21 10:00:00', '2024-06-21 13:00:00', 'Workshop pratico di fotografia', 'Dott. Andrea Neri', 'a.neri@universita.it', 'altro', NULL, 3, NULL);
+
+
+
+-- Inserimento EVENTI RICORRENTI
 INSERT INTO `auleweb`.`Ricorrenza` (`id`,`tipo`,`data_termine`) VALUES ('1', 'settimanale', '2024-06-30 23:59:00');
-INSERT INTO `auleweb`.`evento` (`id`, `nome`, `orario_inizio`, `orario_fine`, `descrizione`, `nome_organizzatore`, `email_responsabile`, `tipologia`, `id_aula`, `id_corso`, `id_master`) VALUES ('12', 'Prossimo 2', '2024/05/14 22:00', '2024/05/15 23:00', 'AAA', 'AAA', 'AAA', 'lezione', '1', null, '1');
-INSERT INTO `auleweb`.`evento` (`id`, `nome`, `orario_inizio`, `orario_fine`, `descrizione`, `nome_organizzatore`, `email_responsabile`, `tipologia`, `id_aula`, `id_corso`, `id_master`) VALUES ('13', 'Prossimo 2', '2024/05/14 22:00', '2024/05/15 23:00', 'AAA', 'AAA', 'AAA', 'lezione', '1', null, '1');
+INSERT INTO `auleweb`.`evento` (`id`, `nome`, `orario_inizio`, `orario_fine`, `descrizione`, `nome_organizzatore`, `email_responsabile`, `tipologia`, `id_aula`, `id_corso`, `id_master`) VALUES ('12', 'Lezione Ricorrente1', '2024/05/14 22:00', '2024/05/15 23:00', 'BBB', 'BBB', 'BBB', 'lezione', '1', null, '1');
+INSERT INTO `auleweb`.`evento` (`id`, `nome`, `orario_inizio`, `orario_fine`, `descrizione`, `nome_organizzatore`, `email_responsabile`, `tipologia`, `id_aula`, `id_corso`, `id_master`) VALUES ('13', 'Lezione Ricorrente2', '2024/05/14 22:00', '2024/05/15 23:00', 'BBB', 'BBB', 'BBB', 'lezione', '1', null, '1');
 
-INSERT INTO `auleweb`.`gruppo` (`id`, `nome`, `descrizione`) VALUES ('1', 'nomeGruppo', 'descrizioneeee');
-INSERT INTO `auleweb`.`gruppo` (`id`, `nome`, `descrizione`) VALUES ('2', 'altro gruppo', 'altra descrizione');
+-- Inserimento GRUPPI
+INSERT INTO `auleweb`.`gruppo` (`id`, `nome`, `descrizione`) VALUES ('1', 'Gruppo1', 'Gruppo fantastico');
+INSERT INTO `auleweb`.`gruppo` (`id`, `nome`, `descrizione`) VALUES ('2', 'Gruppo2', 'Gruppo numeroso');
+INSERT INTO `auleweb`.`gruppo` (`id`, `nome`, `descrizione`) VALUES ('3', 'Gruppo3', 'Descrizione casuale');
 
+-- Associazione AULE-GRUPPI
 INSERT INTO `auleweb`.`aula_gruppo` (`id`,`id_aula`,`id_gruppo`) VALUES ('1','1','1');
-INSERT INTO `auleweb`.`aula_gruppo` (`id`,`id_aula`,`id_gruppo`) VALUES ('2','1','2');
-INSERT INTO `auleweb`.`aula_gruppo` (`id`,`id_aula`,`id_gruppo`) VALUES ('3','2','1');
+INSERT INTO `auleweb`.`aula_gruppo` (`id`,`id_aula`,`id_gruppo`) VALUES ('2','2','2');
+INSERT INTO `auleweb`.`aula_gruppo` (`id`,`id_aula`,`id_gruppo`) VALUES ('3','3','3');
+INSERT INTO `auleweb`.`aula_gruppo` (`id`,`id_aula`,`id_gruppo`) VALUES ('4','4','3');
 
+-- Inserimento ATTREZZATURE
 INSERT INTO `auleweb`.`attrezzatura` (`id`,`tipo`) VALUES ('1','proiettore#1');
 INSERT INTO `auleweb`.`attrezzatura` (`id`,`tipo`) VALUES ('2','computer fisso#1');
 INSERT INTO `auleweb`.`attrezzatura` (`id`,`tipo`) VALUES ('3','condizionatore');
+INSERT INTO `auleweb`.`attrezzatura` (`id`,`tipo`) VALUES ('4','multipresa');
 
+-- Associazione AULE-ATTREZZATURE
 INSERT INTO `auleweb`.`aula_attrezzatura` (`id`,`id_aula`,`id_attrezzatura`) VALUES ('1','1','1');
 INSERT INTO `auleweb`.`aula_attrezzatura` (`id`,`id_aula`,`id_attrezzatura`) VALUES ('2','1','2');
 INSERT INTO `auleweb`.`aula_attrezzatura` (`id`,`id_aula`,`id_attrezzatura`) VALUES ('3','2','3');
 
 INSERT INTO `auleweb`.`admin` (`id`,`username`,`password`,`token`) VALUES ('1','username1','pass', null);
-
+-- fine 
