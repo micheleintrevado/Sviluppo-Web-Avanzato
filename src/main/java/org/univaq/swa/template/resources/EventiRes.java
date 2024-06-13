@@ -67,6 +67,7 @@ public class EventiRes {
     private static final String QUERY_SELECT_EVENTI_RANGE = "SELECT * FROM auleweb.evento where orario_inizio > ? and orario_fine < ?;";
     private static final String QUERY_SELECT_EVENTI_ID_MASTER = "SELECT * FROM auleweb.evento where id_master = ?;";
     private static final String QUERY_SELECT_ID_CORSI = "SELECT id FROM corso;";
+    private static final String QUERY_SELECT_ID_EVENTI = "SELECT id FROM evento;";
 
     private static Connection getPooledConnection() throws NamingException, SQLException {
         InitialContext context = new InitialContext();
@@ -91,6 +92,24 @@ public class EventiRes {
 
         return e;
 
+    }
+    
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getidEventi() throws RESTWebApplicationException {
+        try {
+            ArrayList<Integer> idEventi = new ArrayList<Integer>();
+            try ( Connection con = getPooledConnection();  PreparedStatement ps = con.prepareStatement(QUERY_SELECT_ID_EVENTI)) {
+                try ( ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        idEventi.add(rs.getInt("id"));
+                    }
+                }
+            }
+            return Response.ok(idEventi).build();
+        } catch (SQLException | NamingException ex) {
+            throw new RESTWebApplicationException(ex);
+        }
     }
 
     // 12
