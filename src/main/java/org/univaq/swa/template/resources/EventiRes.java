@@ -281,7 +281,11 @@ public class EventiRes {
                         ps.setString(6, (String) evento.get("email_responsabile"));
                         ps.setString(7, (String) evento.get("tipologia"));
                         ps.setInt(8, (int) evento.get("id_aula"));
-                        ps.setInt(9, (int) evento.get("id_corso"));
+                        if (evento.get("id_corso") != null) {
+                            ps.setInt(9, (int) evento.get("id_corso"));
+                        } else {
+                            ps.setObject(9, null);
+                        }
                         ps.setInt(10, id_master);
 
                         ps.executeUpdate();
@@ -318,8 +322,9 @@ public class EventiRes {
                 ps.setInt(8, (int) evento.get("id_aula"));
                 if (evento.get("id_corso") != null) {
                     ps.setInt(9, (int) evento.get("id_corso"));
+                } else {
+                    ps.setObject(9, null);
                 }
-                else ps.setObject(9, null);
                 ps.executeUpdate();
 
                 try ( ResultSet keys = ps.getGeneratedKeys()) {

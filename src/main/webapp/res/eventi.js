@@ -3,8 +3,15 @@ $(document).ready(function () {
         let selectedValue = $('#tipologia_evento').val();
         if (selectedValue === 'lezione' || selectedValue === 'esame' || selectedValue === 'parziale') {
             $('#corso_container').show();
+            $('#id_corso_evento').empty();
+            getCorsiUtility();
         } else {
             $('#corso_container').hide();
+            $('#id_corso_evento').empty();
+            getCorsiUtility();
+            // $('#id_corso_evento').prepend('<option>Scegli un corso</option>');
+            // $('#id_corso_evento').html('<option value="">Scegli un corso</option>');
+            $('#id_corso_evento').val(null);
         }
     });
 
@@ -24,17 +31,30 @@ $(document).ready(function () {
 
     $('input[name="ricorrenza_evento"]').change(function () {
         let selectedValue = $('input[name="ricorrenza_evento"]:checked').val();
+
         if (selectedValue === 'giornaliera' || selectedValue === 'settimanale' || selectedValue === 'mensile') {
+            console.log(selectedValue);
+            $('#data_fine_ricorrenza').val($('#orario_fine').val());
             $('#ricorrenza_container').show();
         } else {
-            $('#ricorrenza_container').hide();
+            console.log("NIENTEEEEEE");
+            $('#ricorrenza_container').css("display", "none");
+            //$('#data_fine_ricorrenza').val();
         }
+
+        //if (selectedValue !== "null") {
+        //    $("#ricorrenza_container").prop("hidden", true);
+        //}
     });
 
     $('input[name="ricorrenza_evento"]:checked').trigger('change');
 });
 
 $('#reset_button').click(function () {
+    /*$('#data_fine_ricorrenza').val($('#orario_fine').val());
+     $('input[name="ricorrenza_evento"]:checked').val(null);
+     $('input[name="ricorrenza_evento"]:selected').trigger('change');*/
+
     $('#tipologia_evento').val('altro');
     $('#tipologia_evento').trigger('change');
 });
@@ -44,6 +64,7 @@ function addEvento() {
     if (tipo !== "null") {
         $("#data_fine_ricorrenza").prop("hidden", true);
     }
+    console.log($('#data_fine_ricorrenza').val())
     $.ajax({
         url: "rest/eventi",
         method: "POST",
@@ -62,6 +83,7 @@ function addEvento() {
             data_termine: new Date($('#data_fine_ricorrenza').val()).toISOString()
         }),
         success: function (request, status, error) {
+
             // header.substring("Bearer".length).trim();
             alert("addEvento ok");
             console.log("addEvento ok");
@@ -161,9 +183,9 @@ $(document).ready(function () {
     });
 
     // 
-    $('#id_corso_evento').change(function () {
-        let idCorso = $(this).val();
-        
+    $('#tipologia').change(function () {
+        console.log("ho cambiato");
+        $('#id_corso_evento').val(null);
     }
     );
 });
