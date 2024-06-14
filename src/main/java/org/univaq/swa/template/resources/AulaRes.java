@@ -200,7 +200,7 @@ public class AulaRes {
             a.setEdificio(rs.getString("edificio"));
             a.setPiano(rs.getString("piano"));
             a.setCapienza(rs.getInt("capienza"));
-            a.setEmailResponabile(rs.getString("email_responsabile"));
+            a.setEmailResponsabile(rs.getString("email_responsabile"));
             a.setPreseElettriche(rs.getInt("prese_elettriche"));
             a.setPreseRete(rs.getInt("prese_rete"));
             a.setNote(rs.getString("note"));

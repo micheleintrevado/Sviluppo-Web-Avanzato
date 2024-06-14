@@ -130,7 +130,6 @@ public class AuleRes {
     @Logged
     public Response assignGruppo(@Context UriInfo uriinfo, @Context HttpServletRequest req, @Context SecurityContext sec, @PathParam("id") int idAula, HashMap<String, Object> gruppo) throws RESTWebApplicationException {
         // System.out.println("AULE RES ---------------------------" + req.getProperty("token"));
-        System.out.println("HTTP REQUEST ASSIGN: " + req.getAttribute("token"));
 
         Aula aula = new Aula();
         aula.setId(idAula);
@@ -325,7 +324,7 @@ public class AuleRes {
             a.setEdificio(rs.getString("edificio"));
             a.setPiano(rs.getString("piano"));
             a.setCapienza(rs.getInt("capienza"));
-            a.setEmailResponabile(rs.getString("email_responsabile"));
+            a.setEmailResponsabile(rs.getString("email_responsabile"));
             a.setPreseElettriche(rs.getInt("prese_elettriche"));
             a.setPreseRete(rs.getInt("prese_rete"));
             a.setNote(rs.getString("note"));
@@ -345,7 +344,7 @@ public class AuleRes {
             a.setEdificio(rs.getString("edificio"));
             a.setPiano(rs.getString("piano"));
             a.setCapienza(rs.getInt("capienza"));
-            a.setEmailResponabile(rs.getString("email_responsabile"));
+            a.setEmailResponsabile(rs.getString("email_responsabile"));
             a.setPreseElettriche(rs.getInt("prese_elettriche"));
             a.setPreseRete(rs.getInt("prese_rete"));
             a.setNote(rs.getString("note"));

@@ -59,6 +59,36 @@ $('#reset_button').click(function () {
     $('#tipologia_evento').trigger('change');
 });
 
+function getEventiForRange(rangeStart, rangeEnd) {
+        if (!rangeStart || !rangeEnd) {
+            alert("Per favore, inserisci entrambi i valori di data e ora.");
+            return;
+        }
+    
+        if (new Date(rangeStart) >= new Date(rangeEnd)) {
+            alert("La data di inizio deve essere precedente alla data di fine.");
+            return;
+        }
+    $.ajax({
+        url: "rest/eventi?rangeStart=" + rangeStart + "&rangeEnd=" + rangeEnd,
+        method: "GET",
+        success: function(data) {
+            let blob = new Blob([data], { type: 'text/calendar' });
+            let link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = 'calendar.ics';
+            link.click();
+        },
+        error: function (data) {
+            console.log("get Eventi for range error: " + request.status);
+        },
+        cache: false,
+        xhrFields: {
+            responseType: 'blob' // This is important for binary data
+        }
+    })
+}
+
 function addEvento() {
     let tipo = $('input[name="ricorrenza_evento"]:checked').val();
     if (tipo !== "null") {
@@ -138,23 +168,6 @@ function modificaEvento() {
     });
 }
 
-function getEventiUtility() {
-    $.ajax({
-        url: "rest/eventi/ids",
-        method: "GET",
-        success: function (data) {
-            $.each(data, function (key) {
-                $("[name='lista_id_eventi']").append(
-                        "<option value=" + data[key] + ">" + data[key] + "</option>");
-            });
-        },
-        error: function (request, status, error) {
-            alert("ID EVENTI NON TROVATI");
-            console.log("ID EVENTI NON TROVATI");
-        },
-        cache: false
-    });
-}
 
 $(document).ready(function () {
     // I campi della form vengono modificati in base al valore dell'id evento selezionato
@@ -190,10 +203,7 @@ $(document).ready(function () {
     );
 });
 
-function formatDateTimeUtility(dateArray) {
-    const [year, month, day, hour, minute] = dateArray;
-    return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}T${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
-}
+
 getEventiUtility();
 const addEventoBtn = $('#addEvento_button');
 addEventoBtn.click(addEvento);

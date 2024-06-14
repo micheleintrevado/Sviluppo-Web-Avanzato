@@ -15,7 +15,7 @@ public class Aula {
     private String edificio;
     private String piano;
     private int capienza;
-    private String emailResponabile;
+    private String emailResponsabile;
     private int preseElettriche;
     private int preseRete;
     private String note;
@@ -25,14 +25,14 @@ public class Aula {
     public Aula() {
     }
 
-    public Aula(int id, String nome, String luogo, String edificio, String piano, int capienza, String emailResponabile, int preseElettriche, int preseRete, String note, List<Attrezzatura> attrezzatureAssociate, List<Gruppo> gruppiAssociati) {
+    public Aula(int id, String nome, String luogo, String edificio, String piano, int capienza, String emailResponsabile, int preseElettriche, int preseRete, String note, List<Attrezzatura> attrezzatureAssociate, List<Gruppo> gruppiAssociati) {
         this.id = id;
         this.nome = nome;
         this.luogo = luogo;
         this.edificio = edificio;
         this.piano = piano;
         this.capienza = capienza;
-        this.emailResponabile = emailResponabile;
+        this.emailResponsabile = emailResponsabile;
         this.preseElettriche = preseElettriche;
         this.preseRete = preseRete;
         this.note = note;
@@ -88,12 +88,12 @@ public class Aula {
         this.capienza = capienza;
     }
 
-    public String getEmailResponabile() {
-        return emailResponabile;
+    public String getEmailResponsabile() {
+        return emailResponsabile;
     }
 
-    public void setEmailResponabile(String emailResponabile) {
-        this.emailResponabile = emailResponabile;
+    public void setEmailResponsabile(String emailResponsabile) {
+        this.emailResponsabile = emailResponsabile;
     }
 
     public int getPreseElettriche() {
