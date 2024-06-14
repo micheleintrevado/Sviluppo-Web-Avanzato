@@ -114,13 +114,12 @@ paths:
             text/csv:
               schema:
                 type: string
-                example:
-                 data: |
+                example: |
                   ID,NOME AULA,LUOGO,EDIFICIO,PIANO,CAPIENZA,EMAIL RESPONSABILE,PRESE ELETTRICHE,PRESE RETE,NOTE,NOME GRUPPO
                   1,C1.10,Coppito,Renato Ricamo,0,50,sandro@gmail.com,9,5,Nota1,Gruppo1
                   2,A1.1,Coppito,Blocco 0,1,65,mario@gmail.com,20,11,Nota2,Gruppo2
                   3,A1.6,Coppito,Blocco 0,1,55,giovanna@gmail.com,15,14,Nota3,Gruppo3
-                  4,C1.16,Coppito,Renato Ricamo,0,35,gilda@gmail.com,10,7,Nota4,Gruppo3        
+                  4,C1.16,Coppito,Renato Ricamo,0,35,gilda@gmail.com,10,7,Nota4,Gruppo3
         '500':
           $ref: '#/components/responses/GeneralError'
         '404':
@@ -143,6 +142,11 @@ paths:
                 file:
                   type: string
                   format: binary
+                  example: |
+                    NOME AULA,LUOGO,EDIFICIO,PIANO,CAPIENZA,EMAIL RESPONSABILE,PRESE ELETTRICHE,PRESE RETE,NOTE,NOME GRUPPO
+                    'C1.10', 'Coppito', 'Renato Ricamo', '0', '50', 'sandro@gmail.com', '9', '5', 'Nota1', 'NomeNuovoGruppo'
+                    'A1.1', 'Coppito', 'Blocco 0', '1', '65', 'mario@gmail.com', '20', '11', 'Nota2', 'Gruppo1'
+                    'A1.6', 'Coppito', 'Blocco 0', '1', '55', 'giovanna@gmail.com', '15', '14',,
       responses:
         '201':
           description: created
@@ -151,12 +155,7 @@ paths:
               schema:
                 type: string
                 format: uri
-          content:
-            application/json:
-              schema:
-                type: string
-                description: "URI a cui fare GET delle risorse appena aggiunte come http://localhost:8080/AuleWeb/rest/aule/csv" # NON VA BENE VEDERE COME METTERLO. SE LO METTO COME EXAMPLE NON VIENE VISTO COME HEADER
-                format: uri
+                example: "http://localhost:8080/AuleWeb/rest/aule/csv"
         '500':
           $ref: '#/components/responses/GeneralError'
   
@@ -183,11 +182,13 @@ paths:
       description: Inserimento di una nuova aula.
       tags:
         - Aule
+      security:
+      - bearerAuth: []
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Aula'
+              $ref: '#/components/schemas/AulaPost'
       responses:
         '201':
           description: created
@@ -196,21 +197,18 @@ paths:
               schema:
                 type: string
                 format: uri
-          content:
-            application/json:
-              schema:
-                type: string
-                format: uri
         
         '500':
           $ref: '#/components/responses/GeneralError'
   
-  '/rest/aule/{id}/assignGruppo':
+  '/rest/aule/{idAula}/assignGruppo':
     post:
       operationId: assignGruppo #4
       description: Assegnazione di un'aula a un gruppo.
       tags:
         - Aule
+      security:
+      - bearerAuth: []      
       parameters: 
         - $ref: '#/components/parameters/idAula'
       requestBody:
@@ -219,8 +217,9 @@ paths:
             schema:
               type: object
               properties:
-                id: 
+                id_gruppo: 
                   type: integer
+                  example: 1
       responses:
         '201':
           description: created
@@ -229,15 +228,10 @@ paths:
               schema:
                 type: string
                 format: uri
-          content:
-            application/json:
-              schema:
-                type: string
-                format: uri
         '500':
           $ref: '#/components/responses/GeneralError'
   
-  '/rest/aule/{id}':        
+  '/rest/aule/{idAula}':
     get:
       operationId: getInfoAula #5
       description: Lettura delle informazioni di base relative a un'aula.
@@ -251,13 +245,13 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Aula'
+                $ref: '#/components/schemas/AulaGet'
         '404':
           $ref: '#/components/responses/NotFound'
         '500':
           $ref: '#/components/responses/GeneralError'
   
-  '/rest/aule/{id}/attrezzature':  
+  '/rest/aule/{idAula}/attrezzature':  
     get:
       operationId: getAttrezzatureAula #6
       description: Lista delle attrezzature presenti in un'aula.
@@ -271,7 +265,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Attrezzature'
+                $ref: '#/components/schemas/ListaAttrezzature'
         
         '404':
           $ref: '#/components/responses/NotFound'
@@ -282,13 +276,15 @@ paths:
     post:
       tags: 
         - Eventi
+      security:
+      - bearerAuth: []
       operationId: addEvento #7
       description: Inserimento di un nuovo evento.
       requestBody: 
         content: 
           application/json:
             schema:
-              $ref: '#/components/schemas/Evento'
+              $ref: '#/components/schemas/EventoPost'
       responses:
         '201':
           description: created
@@ -321,6 +317,12 @@ paths:
             text/calendar:
               schema:
                 type: string
+                example: |
+                  BEGIN:VCALENDAR
+                  PRODID:AuleWebServices
+                  VERSION:2.0
+                  CALSCALE:GREGORIAN
+                  END:VCALENDAR
         '404':
           $ref: '#/components/responses/NotFound'
 
@@ -386,15 +388,16 @@ paths:
       description: Modifica di un evento.
       tags:
         - Eventi
+      security:
+      - bearerAuth: []
       parameters:
         - $ref: '#/components/parameters/idEvento'
       requestBody:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Evento'
+              $ref: '#/components/schemas/EventoPatch'
       responses:
-        # capire se bisogna mettere pure 201 come possibile risposta!!!
         '204':
           description: no content
         '500':
@@ -415,7 +418,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Evento'
+                $ref: '#/components/schemas/EventoGet'
         '500':
           $ref: '#/components/responses/GeneralError'
         '404':
@@ -483,7 +486,39 @@ paths:
 
 
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: internalToken
+  
   schemas:
+    Credenziali:
+      type: object
+      properties:
+        username:
+          type: string
+          example: username1
+        password:
+          type: string
+          example: pass
+
+    ListaGruppi:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: integer
+            format: int32
+            example: 1
+          nome:
+            type: string
+            example: "gruppo 1"
+          descrizione:
+            type: string
+            example: "descrizione del gruppo di aule 1"
+
 
     Token:
       type: string
@@ -494,29 +529,41 @@ components:
       items:
         type: integer
         format: int32
-        example: [1,2,4,6,15]
+        example: 1,2,4,6,15
 
     Eventi:
       type: array
       items:
-        $ref: '#/components/schemas/Evento'
+        $ref: '#/components/schemas/EventoGet'
         
-    Evento:
+    EventoGet:
       type: object
       properties:
+        id:
+          type: integer
+          format: int32
+          example: 1
+        nome:
+          type: string
+          example: "nome evento 1"
         orario_inizio:
           type: string
           format: date-time
+          example: "[2024, 6, 15, 9, 0, 15]"
         orario_fine:
           type: string
           format: date-time
+          example: "[2024, 6, 15, 11, 0, 15]"
         descrizione:
           type: string
+          example: "lezione sul calcolo differenziale"
         nome_organizzatore:
           type: string
+          example: "Prof. Mario Rossi"
         email_responsabile:
           type: string
           format: email
+          example: "m.rossi@universita.it"
         tipologia:
           type: string
           enum:
@@ -527,70 +574,224 @@ components:
             - riunione
             - lauree
             - altro
+          example: "lezione"
+        id_aula:
+          type: integer
+          format: int32
+          example: 1
+        id_corso:
+          type: integer
+          format: int32
+          example: 1
+
+    EventoPost:
+      type: object
+      properties:
+        nome:
+          type: string
+          example: "nome evento 1"
+        orario_inizio:
+          type: string
+          format: date-time
+          example: "2024-06-20 11:00:00"
+        orario_fine:
+          type: string
+          format: date-time
+          example: "2024-06-01 13:00:00"
+        descrizione:
+          type: string
+          example: "lezione sul calcolo differenziale"
+        nome_organizzatore:
+          type: string
+          example: "Prof. Mario Rossi"
+        email_responsabile:
+          type: string
+          format: email
+          example: "m.rossi@universita.it"
+        tipologia:
+          type: string
+          enum:
+            - lezione
+            - esame
+            - seminario
+            - parziale
+            - riunione
+            - lauree
+            - altro
+          example: "lezione"
+        id_aula:
+          type: integer
+          format: int32
+          example: 1
+        id_corso:
+          type: integer
+          format: int32
+          example: 1          
+        tipo: 
+          type: string
+          enum:
+            - settimanale
+            - giornaliera
+            - mensile
+          example: "giornaliera"
+        data_termine:
+          type: string
+          format: date-time
+          example: "2024-06-20 13:00:00"
+      required:
+        - nome
+        - orario_inizio
+        - orario_fine
+        - descrizione
+        - nome_organizzatore
+        - email_responsabile
+        - tipologia
+        - id_aula
+
+    EventoPatch:
+      type: object
+      properties:
+        nome:
+          type: string
+          example: "nome evento 1"
+        orario_inizio:
+          type: string
+          format: date-time
+          example: "2024-06-20 13:00:00"
+        orario_fine:
+          type: string
+          format: date-time
+          example: "2024-06-20 13:00:00"
+        descrizione:
+          type: string
+          example: "lezione sul calcolo differenziale"
+        nome_organizzatore:
+          type: string
+          example: "Prof. Mario Rossi"
+        email_responsabile:
+          type: string
+          format: email
+          example: "m.rossi@universita.it"
+        tipologia:
+          type: string
+          enum:
+            - lezione
+            - esame
+            - seminario
+            - parziale
+            - riunione
+            - lauree
+            - altro
+          example: "lezione"
+        id_aula:
+          type: integer
+          format: int32
+          example: 1
+        id_corso:
+          type: integer
+          format: int32
+          example: 1          
         id_master:
           type: integer
           format: int32
-        id_aula:
-          $ref: '#/components/schemas/Aula' # mettere url da richiamare in GET o il JSON object
-        id_corso:
-          $ref: '#/components/schemas/Corso'
-        
+          example: 1          
+
     Corso:
       type: object
       properties:
         nome:
           type: string
+          example: "Web Engineering"
     
-    Attrezzature:
+    ListaAttrezzature:
       type: array
       items:
         type: object
         properties:
+          id:
+            type: integer
+            format: int32
+            example: 1
           tipo:
             type: string
-  
-    Credenziali:
-      type: object
-      properties:
-        username:
-          type: string
-        password:
-          type: string
-          format: password
+            example: "proiettore"
     
-    Aula:
+    AulaPost:
       type: object
       properties:
         nome:
           type: string
+          example: "C1.10"
         luogo:
           type: string
+          example: "Coppito"
         edificio:
           type: string
+          example: "Renato Ricamo"
         piano:
           type: string
+          example: "0"
         capienza:
           type: integer
           format: int32
-          default: 0
+          example: 50
         emailResponsabile:
           type: string
+          example: "sandro@gmail.com"
         preseElettriche:
           type: integer
           format: int32
-          default: 0
+          example: 9
         preseRete:
           type: integer
           format: int32
-          default: 0
+          example: 5
         note:
           type: string
-  
-  securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: internalToken
+          example: "nota 1"
+        
+    AulaGet:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int32
+          example: 1
+        nome:
+          type: string
+          example: "C1.10"
+        luogo:
+          type: string
+          example: "Coppito"
+        edificio:
+          type: string
+          example: "Renato Ricamo"
+        piano:
+          type: string
+          example: "0"
+        capienza:
+          type: integer
+          format: int32
+          example: 50
+        emailResponsabile:
+          type: string
+          example: "sandro@gmail.com"
+        preseElettriche:
+          type: integer
+          format: int32
+          example: 9
+        preseRete:
+          type: integer
+          format: int32
+          example: 5
+        note:
+          type: string
+          example: "nota 1"
+        attrezzatureAssociate:
+          $ref: '#/components/schemas/ListaAttrezzature'
+        gruppiAssociati:
+          $ref: '#/components/schemas/ListaGruppi'
+        
       
   parameters:
     idMaster:
@@ -599,13 +800,17 @@ components:
       required: true
       schema:
         type: integer
+        format: int32
+        example: 1
     
     idAula:
-      name: id
+      name: idAula
       in: path
       required: true
       schema:
         type: integer
+        format: int32
+        example: 1
         
     idEvento:
       name: evento
@@ -613,6 +818,8 @@ components:
       required: true
       schema:
         type: integer
+        format: int32
+        example: 1
     
     rangeStart:
       in: query
@@ -621,6 +828,7 @@ components:
       schema:
         type: string
         format: date-time
+        example: "2024-06-20T13:00:00"
     
     rangeEnd:
       in: query
@@ -629,14 +837,15 @@ components:
       schema:
         type: string
         format: date-time
+        example: "2024-06-20T13:00:00"
 
-    oreProssime :
+    oreProssime:
       in: query
       name: oreProssime
       required: false
       schema:
         type: integer
-        default: 3
+        example: 3
   
   responses:
     GeneralError:
@@ -645,10 +854,15 @@ components:
         text/plain:
           schema:
             type: string
-            example: "Messaggio di errore"
+            example: "Errore da parte del server"
     
     UnauthorizedError:
-      description: bearer token mancante o non valido
+      description: Operazione non autorizzata
+      content:
+        text/plain:
+          schema:
+            type: string
+            example: "Operazione non autorizzata. Effettua il login"
     
     NotFound:
       description: elemento non trovato
