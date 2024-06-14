@@ -14,6 +14,7 @@ servers:
 tags:
   - name: Autenticazione
   - name: Aule
+  - name: Eventi
 
 paths:
   '/rest/auth/login':
@@ -35,9 +36,7 @@ paths:
           content:
             text/plain:
               schema:
-                type: string
-                pattern: 'Bearer [a-z0-9A-Z-]+'
-           
+                $ref: '#/components/schemas/Token'
         '401':
           $ref: '#/components/responses/UnauthorizedError'
         
@@ -54,14 +53,53 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        '200':
-          description: successfull logout
+        '204':
+          description: successfull logout. No content
         
         '401':
           $ref: '#/components/responses/UnauthorizedError'
         
         '500':
           $ref: '#/components/responses/GeneralError'
+
+  '/rest/auth/refresh':
+    get:
+      summary: Refresh Token
+      operationId: refresh
+      description: creazione di un nuovo token per l'autenticazione
+      tags:
+        - Autenticazione
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain::
+              schema:
+                $ref: '#/components/schemas/Token'
+        '500':
+          $ref: '#/components/responses/GeneralError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  '/rest/aule/gruppi/':
+    get:
+      operationId: getidGruppi
+      description: Elenco degli id dei gruppi delle aule
+      tags:
+        - Aule
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListaId'
+        '500':
+          $ref: '#/components/responses/GeneralError'
+        '404':
+          $ref: '#/components/responses/NotFound'
   
   '/rest/aule/csv':
     get:
@@ -76,7 +114,13 @@ paths:
             text/csv:
               schema:
                 type: string
-                format: binary
+                example:
+                 data: |
+                  ID,NOME AULA,LUOGO,EDIFICIO,PIANO,CAPIENZA,EMAIL RESPONSABILE,PRESE ELETTRICHE,PRESE RETE,NOTE,NOME GRUPPO
+                  1,C1.10,Coppito,Renato Ricamo,0,50,sandro@gmail.com,9,5,Nota1,Gruppo1
+                  2,A1.1,Coppito,Blocco 0,1,65,mario@gmail.com,20,11,Nota2,Gruppo2
+                  3,A1.6,Coppito,Blocco 0,1,55,giovanna@gmail.com,15,14,Nota3,Gruppo3
+                  4,C1.16,Coppito,Renato Ricamo,0,35,gilda@gmail.com,10,7,Nota4,Gruppo3        
         '500':
           $ref: '#/components/responses/GeneralError'
         '404':
@@ -87,8 +131,10 @@ paths:
       description: Importazione CSV configurazione aule.
       tags: 
         - Aule
+      security:
+      - bearerAuth: []
       requestBody:
-        required: true # vedere se bisogna mettere required anche agli altri requestbody delle altre post!!!
+        required: true
         content:
           multipart/form-data:
             schema:
@@ -97,7 +143,6 @@ paths:
                 file:
                   type: string
                   format: binary
-      
       responses:
         '201':
           description: created
@@ -107,15 +152,32 @@ paths:
                 type: string
                 format: uri
           content:
-            application/json: # vedere se effettivamente è un json!!!
+            application/json:
               schema:
                 type: string
+                description: "URI a cui fare GET delle risorse appena aggiunte come http://localhost:8080/AuleWeb/rest/aule/csv" # NON VA BENE VEDERE COME METTERLO. SE LO METTO COME EXAMPLE NON VIENE VISTO COME HEADER
                 format: uri
         '500':
           $ref: '#/components/responses/GeneralError'
   
   
   '/rest/aule':
+    get:
+      operationId: getidAule
+      description: Elenco degli id delle aule
+      tags:
+        - Aule
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListaId'
+        '500':
+          $ref: '#/components/responses/GeneralError'
+        '404':
+          $ref: '#/components/responses/NotFound'
     post:
       operationId: addAula #3
       description: Inserimento di una nuova aula.
@@ -261,8 +323,63 @@ paths:
                 type: string
         '404':
           $ref: '#/components/responses/NotFound'
+
+  '/rest/eventi/ids':
+    get:
+      operationId: getidEventi
+      description: Elenco degli id degli eventi
+      tags:
+        - Eventi
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListaId'
+        '500':
+          $ref: '#/components/responses/GeneralError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  '/rest/eventi/corsi':
+    get:
+      operationId: getidCorsi
+      description: Elenco degli id dei corsi
+      tags:
+        - Eventi
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListaId'
+        '500':
+          $ref: '#/components/responses/GeneralError'
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+  '/rest/eventi/idMaster/{idMaster}':
+    get:
+      operationId: getEventiIdMaster
+      description: Elenco delle occorrenze dello stesso evento con stesso id_master (ricorrenza)
+      tags:
+        - Eventi
+      parameters:
+        - $ref: '#/components/parameters/idMaster'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Eventi'
+        '500':
+          $ref: '#/components/responses/GeneralError'
+        '404':
+          $ref: '#/components/responses/NotFound'
       
-          
   '/rest/eventi/{evento}':
     patch:
       operationId: updateEvento #8
@@ -368,6 +485,17 @@ paths:
 components:
   schemas:
 
+    Token:
+      type: string
+      example: "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1c2VybmFtZTEiLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjgwODAvQXVsZVdlYi9yZXN0L2F1dGgvbG9naW4iLCJpYXQiOjE3MTgzNTY1NzAsImV4cCI6MTcxODM1ODA3MH0.jd6mLBzMO2__FGCAyFzm8J2Pc8IYqsOBR77wIErKxFk"
+
+    ListaId:
+      type: array
+      items:
+        type: integer
+        format: int32
+        example: [1,2,4,6,15]
+
     Eventi:
       type: array
       items:
@@ -465,6 +593,13 @@ components:
       bearerFormat: internalToken
       
   parameters:
+    idMaster:
+      name: idMaster
+      in: path
+      required: true
+      schema:
+        type: integer
+    
     idAula:
       name: id
       in: path
