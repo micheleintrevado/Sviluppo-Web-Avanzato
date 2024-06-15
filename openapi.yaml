@@ -3,7 +3,6 @@ info:
   title: "AuleWeb Services"
   description: |-
     Questo sistema è volto alla gestione delle aule presenti in un qualsiasi Ateneo.
-    //DA ESTENDERE
   contact:
     email: sviluppoWebAvanzato@student.univaq.it
   version: 1.0.0
@@ -25,11 +24,11 @@ paths:
       tags:
         - Autenticazione
       requestBody:
+        required: true
         content:
           application/x-www-form-urlencoded: # vedere nel codice se usare json o form
             schema:
               $ref: '#/components/schemas/Credenziali'
-        required: true
       responses:
         '200':
           description: Successful authentication
@@ -46,7 +45,7 @@ paths:
   '/rest/auth/logout':
     delete:
       summary: Deautenticazione Amministratore
-      description: Consente il logout dell'amministratore.
+      description: Consente il logout dell'amministratore che si è precedentemente autenticato nel sistema.
       operationId: doLogout #1
       tags:
         - Autenticazione
@@ -54,7 +53,7 @@ paths:
         - bearerAuth: []
       responses:
         '204':
-          description: successfull logout. No content
+          $ref: '#/components/responses/NoContent'
         
         '401':
           $ref: '#/components/responses/UnauthorizedError'
@@ -66,7 +65,7 @@ paths:
     get:
       summary: Refresh Token
       operationId: refresh
-      description: creazione di un nuovo token per l'autenticazione
+      description: Aggiornamento di un nuovo token per l'autenticazione senza ritrasmettere le credenziali.
       tags:
         - Autenticazione
       security:
@@ -86,7 +85,8 @@ paths:
   '/rest/aule/gruppi/':
     get:
       operationId: getidGruppi
-      description: Elenco degli id dei gruppi delle aule
+      summary: Elenco id gruppi aule
+      description: Elenco degli id dei gruppi delle aule.
       tags:
         - Aule
       responses:
@@ -104,7 +104,8 @@ paths:
   '/rest/aule/csv':
     get:
       operationId: exportAuleCsv #2
-      description: Esportazione CSV configurazione aule.
+      summary: Esportazione CSV configurazione aule
+      description: Esportazione in formato CSV della configurazione delle aule.
       tags: 
         - Aule
       responses:
@@ -127,7 +128,8 @@ paths:
     
     post:
       operationId: importAuleCsv #2
-      description: Importazione CSV configurazione aule.
+      summary: Importazione CSV configurazione aule.
+      description: Importazione file formato CSV contenente la configurazione delle aule. Nel caso in cui venga specificato un nome di un gruppo non esistente verrà creato anche un nuovo gruppo, se invece il nome del gruppo è già esistente l'aula verrà semplicemente associata al gruppo
       tags: 
         - Aule
       security:
@@ -159,11 +161,11 @@ paths:
         '500':
           $ref: '#/components/responses/GeneralError'
   
-  
   '/rest/aule':
     get:
       operationId: getidAule
-      description: Elenco degli id delle aule
+      summary: Elenco id aule.
+      description: Elenco degli id delle aule.
       tags:
         - Aule
       responses:
@@ -179,12 +181,14 @@ paths:
           $ref: '#/components/responses/NotFound'
     post:
       operationId: addAula #3
-      description: Inserimento di una nuova aula.
+      summary: Inserimento nuova aula.
+      description: Inserimento di una nuova aula nel sistema.
       tags:
         - Aule
       security:
       - bearerAuth: []
       requestBody:
+        required: true
         content:
           application/json:
             schema:
@@ -197,13 +201,15 @@ paths:
               schema:
                 type: string
                 format: uri
+                example: "http://localhost:8080/AuleWeb/rest/aule/16"
         
         '500':
           $ref: '#/components/responses/GeneralError'
   
-  '/rest/aule/{idAula}/assignGruppo':
+  '/rest/aule/{idAula}/gruppi':
     post:
       operationId: assignGruppo #4
+      summary: Assegnazione gruppo aula.
       description: Assegnazione di un'aula a un gruppo.
       tags:
         - Aule
@@ -212,6 +218,7 @@ paths:
       parameters: 
         - $ref: '#/components/parameters/idAula'
       requestBody:
+        required: true
         content:
           application/json:
             schema:
@@ -228,12 +235,14 @@ paths:
               schema:
                 type: string
                 format: uri
+                example: "http://localhost:8080/AuleWeb/rest/aule/16"
         '500':
           $ref: '#/components/responses/GeneralError'
   
   '/rest/aule/{idAula}':
     get:
       operationId: getInfoAula #5
+      summary: Lettura informazioni aula.
       description: Lettura delle informazioni di base relative a un'aula.
       tags:
         - Aule
@@ -254,7 +263,8 @@ paths:
   '/rest/aule/{idAula}/attrezzature':  
     get:
       operationId: getAttrezzatureAula #6
-      description: Lista delle attrezzature presenti in un'aula.
+      summary: Lista attrezzature aula.
+      description: Lista delle attrezzature presenti in un'aula dato il suo id.
       tags: 
         - Aule
       parameters:
@@ -279,8 +289,10 @@ paths:
       security:
       - bearerAuth: []
       operationId: addEvento #7
-      description: Inserimento di un nuovo evento.
-      requestBody: 
+      summary: Inserimento nuovo evento.
+      description: Inserimento di un nuovo evento nel sistema. Se specificata anche la tipologia di ricorrenza, verrà effettuato l'inserimento di un evento di tipo ricorrente con occorrenze fino alla data di termine per la ricorrenza specificata.
+      requestBody:
+        required: true
         content: 
           application/json:
             schema:
@@ -293,18 +305,19 @@ paths:
               schema:
                 type: string
                 format: uri
+                example: "http://localhost:8080/AuleWeb/rest/eventi/idMaster/2"
           content:
             application/json:
               schema:
                 type: string
                 format: uri
-        
         '500':
           $ref: '#/components/responses/GeneralError'
     
     get:
       operationId: getEventiForRange #12
-      description: Esportazione di tutti gli eventi relativi a un certo intervallo di tempo in formato iCalendar.
+      summary: Esportazione eventi presenti in un intervallo.
+      description: Esportazione di tutti gli eventi relativi a un certo intervallo di tempo in formato iCalendar. L'intervallo sarà espresso come date e ore.
       tags:
         - Eventi
       parameters: 
@@ -329,7 +342,8 @@ paths:
   '/rest/eventi/ids':
     get:
       operationId: getidEventi
-      description: Elenco degli id degli eventi
+      summary: Elenco id eventi.
+      description: Elenco degli id degli eventi.
       tags:
         - Eventi
       responses:
@@ -347,7 +361,8 @@ paths:
   '/rest/eventi/corsi':
     get:
       operationId: getidCorsi
-      description: Elenco degli id dei corsi
+      summary: Elenco id corsi.
+      description: Elenco degli id dei corsi.
       tags:
         - Eventi
       responses:
@@ -365,7 +380,8 @@ paths:
   '/rest/eventi/idMaster/{idMaster}':
     get:
       operationId: getEventiIdMaster
-      description: Elenco delle occorrenze dello stesso evento con stesso id_master (ricorrenza)
+      summary: Elenco eventi per id_master.
+      description: Elenco delle occorrenze dello stesso evento ricorrente (con steso id_master).
       tags:
         - Eventi
       parameters:
@@ -385,7 +401,8 @@ paths:
   '/rest/eventi/{evento}':
     patch:
       operationId: updateEvento #8
-      description: Modifica di un evento.
+      summary: Modifica evento.
+      description: Modifica di un evento. Verranno modificati solo i campi specificati, i campi rimanenti rimarranno inalterati.
       tags:
         - Eventi
       security:
@@ -393,6 +410,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/idEvento'
       requestBody:
+        required: true
         content:
           application/json:
             schema:
@@ -407,6 +425,7 @@ paths:
     
     get:
       operationId: getInfoEvento #9
+      summary: Lettura info evento.
       description: Lettura delle informazioni su un evento.
       tags:
         - Eventi
@@ -427,7 +446,8 @@ paths:
   '/rest/aule/{idAula}/eventi/':
     get:
       operationId: getEventiAulaSettimana #10
-      description: Lista degli eventi associati a una specifica aula in una determinata settimana. In particolare data una settimana come queryParam vengono aggiunti 7 giorni in automatico
+      summary: Elenco eventi di un'aula in una settimana.
+      description: Lista degli eventi associati a una specifica aula in una determinata settimana. In particolare alla data inserita come queryParam vengono aggiunti 7 giorni in automatico.
       tags:
         - Eventi
         - Aule
@@ -449,6 +469,7 @@ paths:
   '/rest/eventi/attuali':
     get:
       operationId: getEventiAttuali #11
+      summary: Elenco eventi attuali.
       description: Lista degli eventi attuali (non ancora terminati).
       tags:
       - Eventi
@@ -467,11 +488,12 @@ paths:
   '/rest/eventi/prossimi':
     get:
       operationId: getEventiProssimi #11
-      description: Lista degli eventi delle n prossime ore (se non specificato, quelli delle prossime 3 ore).
+      summary: Elenco eventi prossimi.
+      description: Lista degli eventi delle prossime n ore specificate come queryParam (se non specificate, verranno restituiti gli eventi delle prossime 3 ore).
       tags:
         - Eventi
       parameters: 
-        - $ref: '#/components/parameters/oreProssime'
+        - $ref: '#/components/parameters/prossimeOre'
       responses:
         '200':
           description: OK
@@ -502,6 +524,10 @@ components:
         password:
           type: string
           example: pass
+      required:
+        - username
+        - password
+
 
     ListaGruppi:
       type: array
@@ -593,11 +619,11 @@ components:
         orario_inizio:
           type: string
           format: date-time
-          example: "2024-06-20 11:00:00"
+          example: "2024-06-20T11:00:00"
         orario_fine:
           type: string
           format: date-time
-          example: "2024-06-01 13:00:00"
+          example: "2024-06-01T13:00:00"
         descrizione:
           type: string
           example: "lezione sul calcolo differenziale"
@@ -637,7 +663,7 @@ components:
         data_termine:
           type: string
           format: date-time
-          example: "2024-06-20 13:00:00"
+          example: "2024-06-20T13:00:00"
       required:
         - nome
         - orario_inizio
@@ -657,11 +683,11 @@ components:
         orario_inizio:
           type: string
           format: date-time
-          example: "2024-06-20 13:00:00"
+          example: "2024-06-20T13:00:00"
         orario_fine:
           type: string
           format: date-time
-          example: "2024-06-20 13:00:00"
+          example: "2024-06-20T13:00:00"
         descrizione:
           type: string
           example: "lezione sul calcolo differenziale"
@@ -749,6 +775,16 @@ components:
         note:
           type: string
           example: "nota 1"
+      required:
+        - nome
+        - luogo
+        - edificio
+        - piano
+        - capienza
+        - emailResponsabile
+        - preseElettriche
+        - preseRete
+        - note
         
     AulaGet:
       type: object
@@ -839,15 +875,24 @@ components:
         format: date-time
         example: "2024-06-20T13:00:00"
 
-    oreProssime:
+    prossimeOre:
       in: query
-      name: oreProssime
+      name: prossimeOre
       required: false
       schema:
         type: integer
+        default: 3
         example: 3
   
   responses:
+    NoContent:
+      description: OK. No Content
+      content:
+        text/plain:
+          schema:
+            type: string
+            example: "ok. No Content"
+
     GeneralError:
       description: errore generale
       content:
