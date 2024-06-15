@@ -370,7 +370,6 @@ public class EventiRes {
     public Response getEventiProssimi(@QueryParam("prossimeOre") @DefaultValue("3") int prossimeOre) {
         try {
             ArrayList<Evento> eventiAttuali = new ArrayList<Evento>();
-
             try ( Connection con = getPooledConnection();  PreparedStatement ps = con.prepareStatement(QUERY_SELECT_EVENTI_PROSSIME_ORE)) {
                 ps.setInt(1, prossimeOre);
                 try ( ResultSet rs = ps.executeQuery()) {

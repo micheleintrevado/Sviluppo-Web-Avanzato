@@ -3,3 +3,29 @@
     padding: 10px;
     margin: 1% 0;
 }
+
+[type="button"], .dropdown {
+    cursor: pointer;
+}
+
+.dropdown-content {
+    display: grid;
+    grid-template-columns: auto auto;
+    gap: 10px;
+    grid-auto-rows: auto;
+    grid-auto-flow: dense;
+}
+.arrow {
+    display: inline-block;
+    transition: transform 0.3s ease;
+}
+.arrow.down {
+    transform: rotate(90deg);
+}
+.dropdown-content > div {
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 4px;
+    background-color: #f9f9f9;
+    box-sizing: border-box;
+}

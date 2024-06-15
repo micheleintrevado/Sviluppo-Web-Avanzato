@@ -3,7 +3,7 @@ function getAula(index) {
         url: "rest/aule/" + index,
         method: "GET",
         success: function (data) {
-            showAulaData(data);
+            showAulaData($('#get-aule-div'), data);
         },
         error: function (request, status, error) {
             console.log("getAula error: " + request.status);
@@ -17,7 +17,7 @@ function getAttrezzatura(index) {
         url: "rest/aule/" + index + "/attrezzature",
         method: "GET",
         success: function (data) {
-            showAttrezzatureData(data);
+            showAulaData($('#get-attrezzature-div'), data);
         },
         error: function (request, status, error) {
             console.log("getAula error: " + request.status);
@@ -26,12 +26,15 @@ function getAttrezzatura(index) {
     });
 }
 
-function getEvento(index) {
+function getEventiAulaSettimana(idAula, rangeStart) {
     $.ajax({
-        url: "rest/eventi/" + index,
+        url: "rest/aule/" + idAula + "/eventi",
         method: "GET",
+        data: {
+            rangeStart: rangeStart
+        },
         success: function (data) {
-            showEventoData(data);
+            showEventoData($("#get-eventiInAula-div"), data);
         },
         error: function (request, status, error) {
             console.log("getAula error: " + request.status);
@@ -40,66 +43,62 @@ function getEvento(index) {
     });
 }
 
-function showEventoData(data) {
-    $('#get-evento-div #data_container').empty();
-    let nomeElement = $('<p>').text('Eventi: ' + data.nome);
-    let descrizioneElement = $('<p>').text('Descrizione: ' + data.descrizione);
-    let orarioInizioElement = $('<p>').text('Orario Inizio: ' + formatDateUtility(data.orarioInizio));
-    let orarioFineElement = $('<p>').text('Orario Fine: ' + formatDateUtility(data.orarioFine));
-    let organizzatoreElement = $('<p>').text('Organizzatore: ' + data.nomeOrganizzatore);
-    let responsabileElement = $('<p>').text('Responsabile: ' + data.emailResponsabile);
-    let tipologiaElement = $('<p>').text('Tipologia: ' + data.tipologia);
-    // let aulaElement = $('<p>').text('Aula: ' + getNomeAula(data.idAula));
-    // let corsoElement = $('<p>').text('Corso: ' + data.idCorso);
-
-    $('#get-evento-div #data_container').append(nomeElement).append(descrizioneElement)
-        .append(orarioInizioElement).append(orarioFineElement).append(organizzatoreElement)
-        .append(responsabileElement).append(tipologiaElement);
+function showEventoData(mainContainer, data) {
+    const events = Array.isArray(data) ? data : [data];
+    const container = mainContainer.children('#data_container').empty();
+    if (events.length === 0 || (events.length === 1 && !events[0].id)) {
+        container.append('<p>Non ci sono eventi.</p>');
+        return;
+    }
+    events.forEach(event => {
+        const eventElement =
+            `<div class="info-evento">
+            <h2>${event.nome}</h2>
+            <p>Inizio: ${formatDateUtility(event.orarioInizio)}</p>
+            <p>Fine: ${formatDateUtility(event.orarioFine)}</p>
+            <p>${event.descrizione}</p>
+            <p>Organizzatore: ${event.nomeOrganizzatore}</p>
+            <p>Email: ${event.emailResponsabile}</p>
+            <p>Tipologia: ${event.tipologia}</p>
+        </div>`;
+        container.append(eventElement);
+    });
 }
 
-function showAttrezzatureData(data) {
-    $('#get-attrezzature-div #data_container').empty();
-    let attrezzatureTypes = data.map(attrezzatura => attrezzatura.tipo).join(', ');
-    if (attrezzatureTypes.length == 0) {
-        attrezzatureTypes = 'Nessuna attrezzatura associata';
+function showAulaData(mainContainer, data) {
+    mainContainer.children('#data_container').empty();
+    const container = mainContainer.children('#data_container');
+    let aulaElement = `<div class="info-aula">`;
+    let attrezzatureElement, attrezzatureTypes;;
+    if (data.nome) {
+        aulaElement +=
+        `<h2>${data.nome}</h2>
+            <p>Piano: ${data.piano}</p>
+            <p>Edificio: ${data.edificio}</p>
+            <p>Capienza: ${data.capienza}</p>
+            <p>Email Responsabile: ${data.emailResponsabile}</p>
+            <p>Prese Elettriche: ${data.preseElettriche}</p>
+            <p>Prese Rete: ${data.preseRete}</p>
+            <p>Note: ${data.note}</p>`;
+        attrezzatureTypes = data.attrezzatureAssociate.map(attrezzatura => attrezzatura.tipo).join(', ');
+        if (attrezzatureTypes.length == 0) {
+            attrezzatureTypes = 'Nessuna attrezzatura associata';
+        }
+        attrezzatureElement = `<p>Attrezzature: ${attrezzatureTypes} </p>`;
+        let gruppiText = data.gruppiAssociati.map(gruppo => gruppo.nome + " - " + gruppo.descrizione).join(', ');
+        let gruppiElement = `<p>Gruppi: ${gruppiText} </p>`;
+        aulaElement = aulaElement + attrezzatureElement + gruppiElement + `</div>`;
     } else {
-        attrezzatureTypes = 'Attrezzature associate: ' + attrezzatureTypes;
+        let attrezzatureTypes = data.map(attrezzatura => attrezzatura.tipo).join(', ');
+        if (attrezzatureTypes.length == 0) {
+            attrezzatureTypes = 'Nessuna attrezzatura associata';
+        } else {
+            attrezzatureTypes = 'Attrezzature associate: ' + attrezzatureTypes;
+        }
+        attrezzatureElement = `<p>Attrezzature: ${attrezzatureTypes} </p>`;
+        aulaElement = attrezzatureElement + `</div>`;
     }
-    let attrezzatureElement = $('<p>').text(attrezzatureTypes);
-
-    $('#get-attrezzature-div #data_container').append(attrezzatureElement);
-}
-function showAulaData(data) {
-    $('#get-aule-div #data_container').empty();
-    let nomeElement = $('<p>').text('Nome: ' + data.nome);
-    let luogoElement = $('<p>').text('Luogo: ' + data.luogo);
-    let edificioElement = $('<p>').text('Edificio: ' + data.edificio);
-    let pianoElement = $('<p>').text('Piano: ' + data.piano);
-    let capienzaElement = $('<p>').text('Capienza: ' + data.capienza);
-    let emailResponsabileElement = $('<p>').text('Email Responsabile: ' + data.emailResponsabile);
-    let preseElettricheElement = $('<p>').text('Prese Elettriche: ' + data.preseElettriche);
-    let preseReteElement = $('<p>').text('Prese Rete: ' + data.preseRete);
-    let noteElement = $('<p>').text('Note: ' + data.note);
-    let attrezzatureTypes = data.attrezzatureAssociate.map(attrezzatura => attrezzatura.tipo).join(', ');
-    if (attrezzatureTypes.length == 0) {
-        attrezzatureTypes = 'Nessuna attrezzatura associata';
-    }
-    let attrezzatureElement = $('<p>').text('Attrezzature: ' + attrezzatureTypes);
-    let gruppiElement = $('<p>').text('Gruppi: ' + data.gruppiAssociati.map(gruppo => gruppo.nome + " - " + gruppo.descrizione).join(', '));
-
-    // let attrezzatureElement = $('<p>').text('Attrezzature: ' + data.attrezzatureAssociate[0].tipo + ' ' + data.attrezzatureAssociate[1].tipo);
-
-    $('#data_container').append(nomeElement);
-    $('#data_container').append(luogoElement);
-    $('#data_container').append(edificioElement);
-    $('#data_container').append(pianoElement);
-    $('#data_container').append(capienzaElement);
-    $('#data_container').append(emailResponsabileElement);
-    $('#data_container').append(preseElettricheElement);
-    $('#data_container').append(preseReteElement);
-    $('#data_container').append(noteElement);
-    $('#data_container').append(attrezzatureElement);
-    $('#data_container').append(gruppiElement);
+    container.append(aulaElement);
 }
 
 function addAula() {
@@ -138,8 +137,7 @@ function addAula() {
         // },
         cache: false
     });
-}
-;
+};
 
 function assignGruppoAula(idAula) {
     $.ajax({
@@ -161,15 +159,9 @@ function assignGruppoAula(idAula) {
 };
 
 
-
 function importAuleFromCSV() {
-    //console.log("$('#fileCSV')[0].files[0]");
-    //console.log($('#fileCSV')[0].files[0]);
     let formData = new FormData();
     formData.append('file', $('#fileCSV')[0].files[0]);
-    //console.log("formData: ");
-    //console.log(formData.get('file'));
-
     $.ajax({
         url: "rest/aule/csv",
         method: "POST",
@@ -187,13 +179,27 @@ function importAuleFromCSV() {
     });
 }
 
-$('.scroll-link').on('click', function (event) {
-    event.preventDefault();
-    var target = $(this).attr('href');
-    $('html, body').animate({
-        scrollTop: $(target).offset().top
-    }, 1000); // 1000 millisecondi = 1 secondo
+$('#id_evento').on('input', function() {
+    getEvento($(this).val());
 });
+$('#id_aula').on('input', function() {
+    getAula($(this).val());
+});
+$('#id_aula_attrezzature').on('input', function() {
+    getAttrezzatura($(this).val());
+});
+$('#range_start_settimana').on('input', function() {
+    let startRange = new Date($(this).val());
+    if (isNaN(startRange)) return; 
+    
+    let endRange = new Date(startRange);
+    endRange.setDate(startRange.getDate() + 7);
+    
+    $('#range_end_settimana').val(endRange.toISOString().slice(0, 16));
+
+    $('#range_end_settimana_container').show();
+});
+
 getAuleUtility();
 getGruppiUtility();
 getCorsiUtility();

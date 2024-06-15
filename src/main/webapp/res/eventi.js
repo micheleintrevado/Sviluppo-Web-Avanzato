@@ -17,7 +17,6 @@ $(document).ready(function () {
 
     $('#tipologia_evento').trigger('change');
 
-
     $('#tipologia_evento_modifica').change(function () {
         let selectedValue = $('#tipologia_evento_modifica').val();
         if (selectedValue === 'lezione' || selectedValue === 'esame' || selectedValue === 'parziale') {
@@ -59,20 +58,95 @@ $('#reset_button').click(function () {
     $('#tipologia_evento').trigger('change');
 });
 
+function getEvento(index) {
+    $.ajax({
+        url: "rest/eventi/" + index,
+        method: "GET",
+        success: function (data) {
+            showEventoData($("#get-evento-div"), data);
+        },
+        error: function (request, status, error) {
+            console.log("getAula error: " + request.status);
+        },
+        cache: false
+    });
+}
+
+function getEventiAttuali(arrow, content) {
+    $.ajax({
+        url: 'rest/eventi/attuali',
+        method: 'GET',
+        success: function (data) {
+            let info = '';
+            if (data.length === 0) {
+                info = '<p>Nessun evento attuale.</p>';
+            }
+            else {
+                console.log(data);
+                data.forEach(item => {
+                    info += `<div><h3>${item.nome} - (${item.tipologia})</h3>`;
+                    info += `<p>${item.descrizione}</p>`;
+                    info += `<p>${formatDateUtility(item.orarioInizio)}  -  ${formatDateUtility(item.orarioFine)}</p>`;
+                    info += `<p>${item.nomeOrganizzatore}, Contatti: ${item.emailResponsabile}</p></div>`;
+                });
+            }
+            content.html(info);
+            content.slideDown();
+            arrow.addClass('down');
+        },
+        error: function (error) {
+            content.html('<p>Errore nel recupero delle informazioni.</p>');
+            content.slideDown();
+            arrow.addClass('down');
+        }
+    });
+}
+
+function getEventiProssimi(arrow, content) {
+    let prossimeOre= $('#prossime_ore').val();
+    console.log(prossimeOre);
+    $.ajax({
+        url: 'rest/eventi/prossimi',
+        method: 'GET',
+        data: {
+            prossimeOre: prossimeOre
+        },
+        success: function (data) {
+            console.log(data);
+            let info = '';
+            if (data.length === 0) {
+                info = '<p>Nessun evento prossimo.</p>';
+            }
+            else {
+                console.log(data);
+                data.forEach(item => {
+                    info += `<div><h3>${item.nome} - (${item.tipologia})</h3>`;
+                    info += `<p>${item.descrizione}</p>`;
+                    info += `<p>${formatDateUtility(item.orarioInizio)}  -  ${formatDateUtility(item.orarioFine)}</p>`;
+                    info += `<p>${item.nomeOrganizzatore}, Contatti: ${item.emailResponsabile}</p></div>`;
+                });
+            }
+            content.html(info);
+            content.slideDown();
+            arrow.addClass('down');
+        }
+    });
+}
+
 function getEventiForRange(rangeStart, rangeEnd) {
-        if (!rangeStart || !rangeEnd) {
-            alert("Per favore, inserisci entrambi i valori di data e ora.");
-            return;
-        }
-    
-        if (new Date(rangeStart) >= new Date(rangeEnd)) {
-            alert("La data di inizio deve essere precedente alla data di fine.");
-            return;
-        }
+    if (!rangeStart || !rangeEnd) {
+        alert("Per favore, inserisci entrambi i valori di data e ora.");
+        return;
+    }
+
+    if (new Date(rangeStart) >= new Date(rangeEnd)) {
+        alert("La data di inizio deve essere precedente alla data di fine.");
+        return;
+    }
     $.ajax({
         url: "rest/eventi?rangeStart=" + rangeStart + "&rangeEnd=" + rangeEnd,
         method: "GET",
-        success: function(data) {
+        success: function (data) {
             let blob = new Blob([data], { type: 'text/calendar' });
             let link = document.createElement('a');
             link.href = window.URL.createObjectURL(blob);
@@ -84,17 +158,18 @@ function getEventiForRange(rangeStart, rangeEnd) {
         },
         cache: false,
         xhrFields: {
-            responseType: 'blob' // This is important for binary data
+            responseType: 'blob'
         }
     })
 }
 
 function addEvento() {
     let tipo = $('input[name="ricorrenza_evento"]:checked').val();
+    console.log(tipo);
     if (tipo !== "null") {
-        $("#data_fine_ricorrenza").prop("hidden", true);
+        $("#data_fine_ricorrenza").prop("hidden", false);
     }
-    console.log($('#data_fine_ricorrenza').val())
+    console.log($('#data_fine_ricorrenza').val());
     $.ajax({
         url: "rest/eventi",
         method: "POST",

@@ -76,7 +76,7 @@ function getEventiUtility() {
         success: function (data) {
             $.each(data, function (key) {
                 $("[name='lista_id_eventi']").append(
-                        "<option value=" + data[key] + ">" + data[key] + "</option>");
+                    "<option value=" + data[key] + ">" + data[key] + "</option>");
             });
         },
         error: function (request, status, error) {
@@ -91,3 +91,30 @@ function formatDateTimeUtility(dateArray) {
     const [year, month, day, hour, minute] = dateArray;
     return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}T${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
 }
+
+
+$('.scroll-link').on('click', function (event) {
+    event.preventDefault();
+    var target = $(this).attr('href');
+    $('html, body').animate({
+        scrollTop: $(target).offset().top
+    }, 1000); // 1000 millisecondi = 1 secondo
+});
+
+$('.dropdown').on('click', function () {
+    const arrow = $(this).find('.arrow');
+    const content = $(this).find('.dropdown-content');
+    const url = $(this).data('url');
+
+    if (content.is(':visible') || $(this).find('#prossime_ore').is(':focus')) {
+        console.log($(this).find('#prossime_ore').is(':focus'));
+        content.slideUp();
+        arrow.removeClass('down');
+    } else {
+        if (url.includes("attuali")) {
+            getEventiAttuali(arrow, content);
+        } else if (url.includes("prossimi")) {
+            getEventiProssimi(arrow, content);
+        }
+    }
+});

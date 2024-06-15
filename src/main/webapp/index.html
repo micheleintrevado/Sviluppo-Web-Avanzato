@@ -41,7 +41,7 @@
                 <td>Esportazione della lista delle aule in formato CSV</td>
                 <td><a data-rest-test data-rest-test-target href="rest/aule/csv"><small>GET rest/aule/csv</small></a>
                 </td>
-                <td><button onclick="location.href='rest/aule/csv';" value="Download">Download</button>
+                <td><button onclick="location.href = 'rest/aule/csv';" value="Download">Download</button>
                 </td>
             </tr>
             <tr>
@@ -84,11 +84,11 @@
                 <td rowspan="1">/rest/aule/{idAula}/eventi</td>
                 <td>GET</td>
                 <td>idAula: [1-9][0-9]*, rangeStart: dateTime</td>
-                <td>!!Lista degli eventi nell'Aula con id specificato a partire dal range temporale specificato!!</td>
+                <td>Lista degli eventi associati ad una specifica aula in una determinata settimana (a partire dalla data specificata)</td>
                 <td><a data-rest-test data-rest-test-target
                         href="rest/aule/1/eventi?rangeStart=2024-06-13T00:00:00"><small>GET
                             /rest/aule/1/eventi?rangeStart=2024-06-13T00:00:00</small></a></td>
-                <td class="output"></td>
+                <td><a href="#get-eventiInAula-div" class="scroll-link">Clicca qui</td>
             </tr>
             <tr>
                 <td rowspan="1">/rest/eventi/attuali</td>
@@ -97,16 +97,16 @@
                 <td>Lista degli eventi attuali</td>
                 <td><a data-rest-test data-rest-test-target href="rest/eventi/attuali"><small>GET
                             /rest/eventi/attuali</small></a></td>
-                <td class="output"></td>
+                <td><a href="#get-eventiAttuali-div" class="scroll-link">Clicca qui</td>
             </tr>
             <tr>
                 <td rowspan="1">/rest/eventi/prossimi</td>
                 <td>GET</td>
-                <td>oreProssime: int</td>
-                <td>Lista degli eventi prossimi a partire dal tempo specificato (dafault 3 ore)</td>
-                <td><a data-rest-test data-rest-test-target href="rest/eventi/prossimi?oreProssime=48"><small>GET
-                            /rest/eventi/prossimi?oreProssime=48</small></a></td>
-                <td class="output"></td>
+                <td>prossimeOre: int</td>
+                <td>Lista degli eventi nelle prossime ore</td>
+                <td><a data-rest-test data-rest-test-target href="rest/eventi/prossimi?prossimeOre=48"><small>GET
+                            /rest/eventi/prossimi?prossimeOre=48</small></a></td>
+                <td><a href="#get-eventiProssimi-div" class="scroll-link">Clicca qui</td>
             </tr>
         </tbody>
     </table>
@@ -120,12 +120,12 @@
         <div id="data_container"></div>
     </div>
     <div class="get-info" id="get-attrezzature-div">
-        <label for="id_aula"> id aula: </label>
-        <select style="width:30%" id="id_aula" name="lista_id_aule">
+        <label for="id_aula_attrezzature"> id aula: </label>
+        <select style="width:30%" id="id_aula_attrezzature" name="lista_id_aule">
             <option selected>Scegli un'aula</option>
         </select>
         <input type="button" value="Elenca attrezzature"
-            onclick="getAttrezzatura($('#get-attrezzature-div #id_aula').val())" />
+            onclick="getAttrezzatura($('#get-attrezzature-div #id_aula_attrezzature').val())" />
         <div id="data_container"></div>
     </div>
     <div class="get-info" id="get-eventoForRange-div">
@@ -140,14 +140,47 @@
         <div id="data_container"></div>
     </div>
     <div class="get-info" id="get-evento-div">
-        <label for="id_aula"> id evento: </label>
+        <label for="id_evento"> id evento: </label>
         <select style="width:30%" id="id_evento" name="lista_id_eventi">
             <option selected>Scegli un evento</option>
         </select>
         <input type="button" value="Informazioni Evento" onclick="getEvento($('#get-evento-div #id_evento').val())" />
         <div id="data_container"></div>
     </div>
-
+    <div class="get-info" id="get-eventiInAula-div">
+        <label for="id_eventi_aula"> id aula: </label>
+        <select style="width:30%" id="id_eventi_aula" name="lista_id_aule">
+            <option selected>Scegli un'aula</option>
+        </select>
+        <br>
+        <label for="range_start_settimana">Dal:</label>
+        <input type="datetime-local" style="width:30%" id="range_start_settimana">
+        <div id="range_end_settimana_container" hidden>
+            <label for="range_end_settimana">Al:</label>
+            <input type="datetime-local" style="width:30%" id="range_end_settimana" readonly>
+        </div>
+        <input type="button" value="Informazioni Eventi"
+            onclick="getEventiAulaSettimana($('#get-eventiInAula-div #id_eventi_aula').val(), $('#get-eventiInAula-div #range_start_settimana').val())" />
+        <div id="data_container"></div>
+    </div>
+    <div class="dropdown get-info " data-url="rest/eventi/attuali" id="get-eventiAttuali-div">
+        <span class="arrow">▶</span> Eventi attuali
+        <div class="dropdown-content" style="display: none;"></div>
+    </div>
+    <!-- <div class="dropdown get-info" data-url="rest/eventi/prossimi" id="get-eventiProssimi-div">
+        <span class="arrow">▶</span> Eventi Prossimi 
+        <input type="number" min="1" id="prossime_ore" value="1"/>
+        <div class="dropdown-content"></div>
+    </div> -->
+    <div class="dropdown get-info" data-url="rest/eventi/prossimi" id="get-eventiProssimi-div">
+        <span class="arrow">▶</span> Eventi Prossimi
+        <div class="input-container">
+            <label for="prossime_ore">Per le prossime ore:</label>
+            <input type="number" min="1" id="prossime_ore" value="1" step="1"/>
+            <button>Visualizza</button>
+        </div>
+        <div class="dropdown-content" style="display: none;"></div>
+    </div>
 
     <h2> Post methods </h2>
     <p> Metodi POST usati per inserire informazioni e creare nuove risorse.</p>
@@ -343,7 +376,7 @@
                     </form>
                 </td>
                 <!-- <span data-rest-test-token data-rest-test-url="rest/aule" data-rest-test-method="post"
-                                    data-rest-test-status="200" data-rest-test-content-type="application/json">rest/aule</span></td> -->
+                                        data-rest-test-status="200" data-rest-test-content-type="application/json">rest/aule</span></td> -->
                 <!--<td><a data-rest-test data-rest-test-target href="rest/aule"><small>POST rest/aule</small></a></td>-->
             </tr>
 
@@ -424,7 +457,7 @@
                     </form>
                 </td>
                 <!-- <span data-rest-test-token data-rest-test-url="rest/aule" data-rest-test-method="post"
-                                    data-rest-test-status="200" data-rest-test-content-type="application/json">rest/aule</span></td> -->
+                                        data-rest-test-status="200" data-rest-test-content-type="application/json">rest/aule</span></td> -->
                 <!--<td><a data-rest-test data-rest-test-target href="rest/aule"><small>POST rest/aule</small></a></td>-->
             </tr>
 
@@ -518,9 +551,9 @@
     <script src="res/aule.js">/* */</script>
     <script src="res/eventi.js">/* */</script>
     <!-- <script src="res/restest.js">/* */</script> 
-            <script>
-                let tester = new Restest();
-            </script>-->
+                <script>
+                    let tester = new Restest();
+                </script>-->
 </body>
 
 </html>
