@@ -18,8 +18,37 @@
     <p>This is a template web application based on <strong>JakartaEE 10</strong> that runs on Apache <strong>Tomcat
             10.1</strong> with <strong>Java 14</strong> or above.</p>
 
-    <p>The RESTful resources, grouped under the /rest prefix, are the following:</p>
+    <h2>Authentication</h2>
+    <p>To test the login/logout resource <em>(AuthenticationRes)</em>, use the login form below. <strong>Links marked
+            with &#x1f512; on this page call
+            restful endpoints requiring a bearer token and can be clicked only after a successful login.</strong></p>
 
+    <table class="restest" width="100%">
+        <thead>
+            <td>Autenticazione</td>
+        </thead>
+        <tfoot>
+            <tr>
+                <td colspan="5">
+                    <form method="post" action="rest/auth/login" id="login-form" enctype="application/x-www-form-urlencoded">
+                        <p>Username: <input style="width:30%" type="text" value="username1" id="username-field"
+                                name="username-field" required/>
+                            Password: <input style="width:30%" type="password" value="pass" id="password-field"
+                                name="password-field" required />
+                            <input type="submit" value="login" name="login-button" id="login-button" />
+                            <input type="submit" value="logout" name="logout-button" id="logout-button" />
+                        </p>
+                    </form>
+                    <form method="post" action="rest/auth/login" enctype="application/x-www-form-urlencoded">
+                        <p>Token: <input style="width:80%" type="text" id="token-field" name="token-field" /> <input
+                                type="button" value="refresh" name="refresh-button" id="refresh-button" /></p>
+                    </form>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <p>The RESTful resources, grouped under the /rest prefix, are the following:</p>
     <h2> Get methods </h2>
     <p> Lista di metodi GET usati per recuperare informazioni. </p>
     <table class="restest" width="100%">
@@ -57,7 +86,7 @@
                 <td>GET</td>
                 <td>id: [1-9][0-9]*</td>
                 <td>Lista delle attrezzature presenti nell'Aula con id specificato</td>
-                <td><a data-rest-test data-rest-test-target href="rest/aule/1/attrezzature"><small>GET
+                <td><a href="rest/aule/1/attrezzature"><small>GET
                             rest/aule/1/attrezzature</small></a></td>
                 <td> <a href="#get-attrezzature-div" class="scroll-link">Clicca qui</td>
             </tr>
@@ -66,8 +95,7 @@
                 <td>GET</td>
                 <td>rangeStart: datetime, rangeEnd: datetime</td>
                 <td>Lista degli eventi nel periodo specificato (compreso tra rangeStart e rangeEnd)</td>
-                <td><a data-rest-test data-rest-test-target
-                        href="rest/eventi?rangeStart=2024-01-06T00:00:00&amp;rangeEnd=2024-01-20T23:59:00"><small>GET
+                <td><a href="rest/eventi?rangeStart=2024-01-06T00:00:00&amp;rangeEnd=2024-01-20T23:59:00"><small>GET
                             rest/eventi?rangeStart=2024-01-06T00:00:00&amp;rangeEnd=2024-01-20T23:59:00</small></a></td>
                 <td><a href="#get-eventoForRange-div" class="scroll-link">Clicca qui </td>
             </tr>
@@ -76,7 +104,7 @@
                 <td>GET</td>
                 <td>id: [1-9][0-9]*</td>
                 <td>Informazioni relative all'Evento con id specificato</td>
-                <td><a data-rest-test data-rest-test-target href="rest/eventi/1"><small>GET rest/eventi/1</small></a>
+                <td><a href="rest/eventi/1"><small>GET rest/eventi/1</small></a>
                 </td>
                 <td><a href="#get-evento-div" class="scroll-link">Clicca qui</td>
             </tr>
@@ -84,9 +112,9 @@
                 <td rowspan="1">/rest/aule/{idAula}/eventi</td>
                 <td>GET</td>
                 <td>idAula: [1-9][0-9]*, rangeStart: dateTime</td>
-                <td>Lista degli eventi associati ad una specifica aula in una determinata settimana (a partire dalla data specificata)</td>
-                <td><a data-rest-test data-rest-test-target
-                        href="rest/aule/1/eventi?rangeStart=2024-06-13T00:00:00"><small>GET
+                <td>Lista degli eventi associati ad una specifica aula in una determinata settimana (a partire dalla
+                    data specificata)</td>
+                <td><a href="rest/aule/1/eventi?rangeStart=2024-06-13T00:00:00"><small>GET
                             /rest/aule/1/eventi?rangeStart=2024-06-13T00:00:00</small></a></td>
                 <td><a href="#get-eventiInAula-div" class="scroll-link">Clicca qui</td>
             </tr>
@@ -95,7 +123,7 @@
                 <td>GET</td>
                 <td></td>
                 <td>Lista degli eventi attuali</td>
-                <td><a data-rest-test data-rest-test-target href="rest/eventi/attuali"><small>GET
+                <td><a href="rest/eventi/attuali"><small>GET
                             /rest/eventi/attuali</small></a></td>
                 <td><a href="#get-eventiAttuali-div" class="scroll-link">Clicca qui</td>
             </tr>
@@ -104,7 +132,7 @@
                 <td>GET</td>
                 <td>prossimeOre: int</td>
                 <td>Lista degli eventi nelle prossime ore</td>
-                <td><a data-rest-test data-rest-test-target href="rest/eventi/prossimi?prossimeOre=48"><small>GET
+                <td><a href="rest/eventi/prossimi?prossimeOre=48"><small>GET
                             /rest/eventi/prossimi?prossimeOre=48</small></a></td>
                 <td><a href="#get-eventiProssimi-div" class="scroll-link">Clicca qui</td>
             </tr>
@@ -114,15 +142,13 @@
     <div class="get-info" id="get-aule-div">
         <label for="id_aula"> id aula: </label>
         <select style="width:30%" id="id_aula" name="lista_id_aule">
-            <option selected>Scegli un'aula</option>
         </select>
         <input type="button" value="Informazioni Aula" onclick="getAula($('#get-aule-div #id_aula').val())" />
         <div id="data_container"></div>
     </div>
     <div class="get-info" id="get-attrezzature-div">
-        <label for="id_aula_attrezzature"> id aula: </label>
+        <label for="id_aula_attrezzature"> Id aula: </label>
         <select style="width:30%" id="id_aula_attrezzature" name="lista_id_aule">
-            <option selected>Scegli un'aula</option>
         </select>
         <input type="button" value="Elenca attrezzature"
             onclick="getAttrezzatura($('#get-attrezzature-div #id_aula_attrezzature').val())" />
@@ -142,15 +168,13 @@
     <div class="get-info" id="get-evento-div">
         <label for="id_evento"> id evento: </label>
         <select style="width:30%" id="id_evento" name="lista_id_eventi">
-            <option selected>Scegli un evento</option>
         </select>
         <input type="button" value="Informazioni Evento" onclick="getEvento($('#get-evento-div #id_evento').val())" />
         <div id="data_container"></div>
     </div>
     <div class="get-info" id="get-eventiInAula-div">
-        <label for="id_eventi_aula"> id aula: </label>
+        <label for="id_eventi_aula"> Id aula: </label>
         <select style="width:30%" id="id_eventi_aula" name="lista_id_aule">
-            <option selected>Scegli un'aula</option>
         </select>
         <br>
         <label for="range_start_settimana">Dal:</label>
@@ -176,7 +200,7 @@
         <span class="arrow">▶</span> Eventi Prossimi
         <div class="input-container">
             <label for="prossime_ore">Per le prossime ore:</label>
-            <input type="number" min="1" id="prossime_ore" value="1" step="1"/>
+            <input type="number" min="1" id="prossime_ore" value="1" step="1" />
             <button>Visualizza</button>
         </div>
         <div class="dropdown-content" style="display: none;"></div>
@@ -199,28 +223,28 @@
                 <td>
                     <fieldset>
                         <legend>Crea nuova Aula</legend>
-                        <form method="post" action="rest/aule" enctype="multipart/form-data">
+                        <form method="post" action="rest/aule" enctype="multipart/form-data" id="crea_aula_form">
                             <div>
                                 <label for="nome_aula"> nome: </label> <input style="width:30%" type="text"
-                                    value="C1.10" id="nome_aula" name="nome_aula" required /> <br>
+                                    placeholder="C1.10" id="nome_aula" name="nome_aula" required/> <br>
                                 <label for="luogo_aula"> luogo:</label>
-                                <input style="width:30%" type="text" value="Coppito" id="luogo_aula" name="luogo_aula"
+                                <input style="width:30%" type="text" placeholder="Coppito" id="luogo_aula" name="luogo_aula"
                                     required />
                                 <br>
                                 <label for="edificio_aula">edificio:</label>
-                                <input style="width:30%" type="text" value="Coppito" id="edificio_aula"
+                                <input style="width:30%" type="text" placeholder="Coppito" id="edificio_aula"
                                     name="edificio_aula" required />
                                 <br>
                                 <label for="piano_aula"> piano:</label>
-                                <input style="width:30%" type="text" value="1" id="piano_aula" name="piano_aula"
+                                <input style="width:30%" type="text" placeholder="1" id="piano_aula" name="piano_aula"
                                     required />
                                 <br>
                                 <label for="capienza_aula"> capienza</label>
-                                <input style="width:30%" type="number" value="50" id="capienza_aula"
+                                <input style="width:30%" type="number" placeholder="50" id="capienza_aula"
                                     name="capienza_aula" required />
                                 <br>
                                 <label for="email_responsabile_aula">email</label>
-                                <input style="width:30%" type="text" value="u@u.u" id="email_responsabile_aula"
+                                <input style="width:30%" type="text" placeholder="u@u.u" id="email_responsabile_aula"
                                     name="email_responsabile_aula" required /> <br>
                                 <label for="prese_elettriche_aula">prese elettriche: </label><input style="width:30%"
                                     type="number" value="1" id="prese_elettriche_aula" name="prese_elettriche-aula"
@@ -228,8 +252,7 @@
                                 <label for="prese_rete_aula">prese rete:</label> <input style="width:30%" type="number"
                                     value="1" id="prese_rete_aula" name="prese_rete_aula" required /> <br>
                                 <label for="note_aula">note:</label>
-                                <input style="width:30%" type="text" value="C1.10" id="note_aula" name="note_aula"
-                                    required /> <br>
+                                <textarea style="width:30%" placeholder="Note addizionali" id="note_aula" name="note_aula"></textarea> <br>
                                 <input type="button" value="addAula" onclick="addAula()" name="addAula_button"
                                     id="addAula_button" />
                             </div>
@@ -298,12 +321,12 @@
                 <td rowspan="1">/rest/evento</td>
                 <td>POST</td>
                 <td>
-                    <form method="post" action="rest/eventi">
+                    <form method="post" action="rest/eventi" id="crea_evento_form">
                         <fieldset>
                             <legend>Crea nuovo evento</legend>
                             <div>
-                                <label for="nome_evento"> nome: </label> <input style="width:30%" type="text"
-                                    value="Evento XYZ" id="nome_evento" name="nome_evento" /> <br>
+                                <label for="nome_evento"> Nome: </label> <input style="width:30%" type="text"
+                                    placeholder="Evento XYZ" id="nome_evento" name="nome_evento" required/> <br>
                                 <label for="orario_inizio"> Data e orario di inizio:</label>
                                 <input style="width:30%" type="datetime-local" value="2025-01-01T09:00"
                                     id="orario_inizio" name="orario_inizio">
@@ -312,19 +335,19 @@
                                 <input style="width:30%" type="datetime-local" value="2025-01-01T11:00" id="orario_fine"
                                     name="orario_fine">
                                 <br>
-                                <label for="descrizione_evento"> descrizione:</label>
+                                <label for="descrizione_evento"> Descrizione:</label>
                                 <input style="width:30%" type="text" value="Descrizione Evento XYZ"
                                     id="descrizione_evento" name="descrizione_evento">
                                 <br>
-                                <label for="nome_organizzatore_evento"> nome organizzatore:</label>
+                                <label for="nome_organizzatore_evento"> Nome organizzatore:</label>
                                 <input style="width:30%" type="text" value="Nome Organizzatore XYZ"
                                     id="nome_organizzatore_evento" name="nome_organizzatore_evento">
                                 <br>
-                                <label for="email_responsabile_evento"> email responsabile:</label>
+                                <label for="email_responsabile_evento"> Email responsabile:</label>
                                 <input style="width:30%" type="text" value="u@u.u" id="email_responsabile_evento"
                                     name="email_responsabile_evento">
                                 <br>
-                                <label for="tipologia_evento"> tipologia:</label>
+                                <label for="tipologia_evento"> Tipologia:</label>
                                 <select style="width:40%" id="tipologia_evento" name="tipologia_evento">
                                     <option value="lezione">lezione</option>
                                     <option value="esame">esame</option>
@@ -335,12 +358,12 @@
                                     <option value="altro" selected>altro</option>
                                 </select>
                                 <br>
-                                <label for="id_aula_evento"> id aula:</label>
+                                <label for="id_aula_evento"> Id aula:</label>
                                 <select style="width:30%" id="id_aula_evento" name="lista_id_aule">
                                 </select>
                                 <br>
                                 <div id="corso_container">
-                                    <label for="id_corso_evento"> id corso:</label>
+                                    <label for="id_corso_evento"> Id corso:</label>
                                     <select style="width:30%" id="id_corso_evento" name="lista_id_corso">
                                     </select>
                                 </div>
@@ -388,13 +411,13 @@
                         <fieldset>
                             <legend>Modifica un Evento</legend>
                             <div>
-                                <label for="id_evento_modifica"> id evento: </label>
+                                <label for="id_evento_modifica"> Id evento: </label>
                                 <select style="width:30%" id="id_evento_modifica" name="lista_id_eventi" required>
                                     <option> --- </option>
                                 </select>
                                 <br>
 
-                                <label for="nome_evento_modifica"> nome: </label>
+                                <label for="nome_evento_modifica"> Nome: </label>
                                 <input style="width:30%" type="text" id="nome_evento_modifica"
                                     name="nome_evento_modifica" />
                                 <br>
@@ -409,22 +432,22 @@
                                     name="orario_fine_modifica">
                                 <br>
 
-                                <label for="descrizione_evento_modifica"> descrizione:</label>
+                                <label for="descrizione_evento_modifica"> Descrizione:</label>
                                 <input style="width:30%" type="text" id="descrizione_evento_modifica"
                                     name="descrizione_evento_modifica">
                                 <br>
 
-                                <label for="nome_organizzatore_evento_modifica"> nome organizzatore:</label>
+                                <label for="nome_organizzatore_evento_modifica"> Nome organizzatore:</label>
                                 <input style="width:30%" type="text" id="nome_organizzatore_evento_modifica"
                                     name="nome_organizzatore_evento_modifica">
                                 <br>
 
-                                <label for="email_responsabile_evento_modifica"> email responsabile:</label>
+                                <label for="email_responsabile_evento_modifica"> Email responsabile:</label>
                                 <input style="width:30%" type="text" id="email_responsabile_evento_modifica"
                                     name="email_responsabile_evento_modifica">
                                 <br>
 
-                                <label for="tipologia_evento_modifica"> tipologia:</label>
+                                <label for="tipologia_evento_modifica"> Tipologia:</label>
                                 <select style="width:40%" id="tipologia_evento_modifica"
                                     name="tipologia_evento_modifica">
                                     <option value="altro" selected>altro</option>
@@ -437,13 +460,13 @@
                                 </select>
                                 <br>
 
-                                <label for="id_aula_evento_modifica"> id aula:</label>
+                                <label for="id_aula_evento_modifica"> Id aula:</label>
                                 <select style="width:30%" id="id_aula_evento_modifica" name="lista_id_aule">
                                 </select>
                                 <br>
 
                                 <div id="corso_container_modifica">
-                                    <label for="id_corso_evento_modifica"> id corso:</label>
+                                    <label for="id_corso_evento_modifica"> Id corso:</label>
                                     <select style="width:30%" id="id_corso_evento_modifica" name="lista_id_corso">
                                     </select>
                                 </div>
@@ -453,7 +476,6 @@
                                 <input type="reset" value="ResetModifica" id="reset_button_modifica" />
                             </div>
                         </fieldset>
-
                     </form>
                 </td>
                 <!-- <span data-rest-test-token data-rest-test-url="rest/aule" data-rest-test-method="post"
@@ -462,68 +484,6 @@
             </tr>
 
         </tbody>
-    </table>
-    <h2>Authentication</h2>
-    <p>To test the login/logout resource <em>(AuthenticationRes)</em>, use the login form below. <strong>Links marked
-            with &#x1f512; on this page call
-            restful endpoints requiring a bearer token and can be clicked only after a successful login.</strong></p>
-
-    <table class="restest" width="100%">
-        <thead>
-            <tr>
-                <th>Path</th>
-                <th>Method</th>
-                <th>Parameters</th>
-                <th>Payload</th>
-                <th>Authentication</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td><span data-rest-test-token data-rest-test-url="rest/auth/login" data-rest-test-method="post"
-                        data-rest-test-status="200" data-rest-test-content-type="application/x-www-form-urlencoded"
-                        data-rest-test-payload="username=u&password=p">/auth/login</span></td>
-                <td>POST</td>
-                <td></td>
-                <td>form-encoded username and password</td>
-                <td></td>
-            </tr>
-            <tr>
-                <td><span data-rest-test-auth="1000" data-rest-test-url="rest/auth/logout"
-                        data-rest-test-method="delete" data-rest-test-status="204">/auth/logout</span></td>
-                <td>DELETE</td>
-                <td></td>
-                <td></td>
-                <td>Bearer token</td>
-            </tr>
-            <tr>
-                <td><span data-rest-test-auth data-rest-test-url="rest/auth/refresh" data-rest-test-method="get"
-                        data-rest-test-status="200">/auth/refresh</span></td>
-                <td>GET</td>
-                <td></td>
-                <td></td>
-                <td>Bearer token</td>
-            </tr>
-        </tbody>
-        <tfoot>
-            <tr>
-                <td colspan="5">
-                    <form method="post" action="rest/auth/login" enctype="application/x-www-form-urlencoded">
-                        <p>Username: <input style="width:30%" type="text" value="username1" id="username-field"
-                                name="username-field" />
-                            Password: <input style="width:30%" type="password" value="pass" id="password-field"
-                                name="password-field" />
-                            <input type="submit" value="login" name="login-button" id="login-button" />
-                            <input type="submit" value="logout" name="logout-button" id="logout-button" />
-                        </p>
-                    </form>
-                    <form method="post" action="rest/auth/login" enctype="application/x-www-form-urlencoded">
-                        <p>Token: <input style="width:80%" type="text" id="token-field" name="token-field" /> <input
-                                type="button" value="refresh" name="refresh-button" id="refresh-button" /></p>
-                    </form>
-                </td>
-            </tr>
-        </tfoot>
     </table>
 
     <div style="border: 1px solid gray; margin: 1em auto; padding: 1em">

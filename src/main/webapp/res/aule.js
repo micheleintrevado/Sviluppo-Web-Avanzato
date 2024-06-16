@@ -6,6 +6,7 @@ function getAula(index) {
             showAulaData($('#get-aule-div'), data);
         },
         error: function (request, status, error) {
+            handleError(request, status, error);
             console.log("getAula error: " + request.status);
         },
         cache: false
@@ -20,6 +21,7 @@ function getAttrezzatura(index) {
             showAulaData($('#get-attrezzature-div'), data);
         },
         error: function (request, status, error) {
+            handleError(request, status, error);
             console.log("getAula error: " + request.status);
         },
         cache: false
@@ -37,6 +39,7 @@ function getEventiAulaSettimana(idAula, rangeStart) {
             showEventoData($("#get-eventiInAula-div"), data);
         },
         error: function (request, status, error) {
+            handleError(request, status, error);
             console.log("getAula error: " + request.status);
         },
         cache: false
@@ -72,7 +75,7 @@ function showAulaData(mainContainer, data) {
     let attrezzatureElement, attrezzatureTypes;;
     if (data.nome) {
         aulaElement +=
-        `<h2>${data.nome}</h2>
+            `<h2>${data.nome}</h2>
             <p>Piano: ${data.piano}</p>
             <p>Edificio: ${data.edificio}</p>
             <p>Capienza: ${data.capienza}</p>
@@ -102,6 +105,13 @@ function showAulaData(mainContainer, data) {
 }
 
 function addAula() {
+    let form = $('#crea_aula_form');
+
+    // Check if the form is valid
+    if (!checkRequired(form)) {
+        console.log('Riempi tutti i campi');
+        return;
+    }
     //let token = document.getElementById("token-field").value;
     //message("", "");
     $.ajax({
@@ -120,8 +130,9 @@ function addAula() {
             note: $('#note_aula').val()
         }),
         success: function (request, status, error) {
-            // header.substring("Bearer".length).trim();
             alert("addAula ok");
+            getAuleUtility();
+            $('#crea_aula_form').get(0).reset();
             console.log("addAula ok");
         },
         // success: function () {
@@ -130,6 +141,7 @@ function addAula() {
         //     message("Collezione aggiornata con il nuovo disco.", "success");
         // },
         error: function (request, status, error) {
+            handleError(request, status, error);
             console.log("addAula error: " + error);
         },
         // function (request, status, error) {
@@ -152,6 +164,7 @@ function assignGruppoAula(idAula) {
             console.log("assignGruppoAula ok");
         },
         error: function (request, status, error) {
+            handleError(request, status, error);
             console.log("assignGruppoAula error: " + error);
         },
         cache: false
@@ -170,31 +183,33 @@ function importAuleFromCSV() {
         contentType: false,
         success: function (request, status, error) {
             alert("importAuleCSV ok");
+            getAuleUtility();
             console.log("importAuleCSV ok");
         },
         error: function (request, status, error) {
+            handleError(request, status, error);
             console.log("importAuleCSV error: " + error);
         },
         cache: false
     });
 }
 
-$('#id_evento').on('input', function() {
+$('#id_evento').on('input', function () {
     getEvento($(this).val());
 });
-$('#id_aula').on('input', function() {
+$('#id_aula').on('input', function () {
     getAula($(this).val());
 });
-$('#id_aula_attrezzature').on('input', function() {
+$('#id_aula_attrezzature').on('input', function () {
     getAttrezzatura($(this).val());
 });
-$('#range_start_settimana').on('input', function() {
+$('#range_start_settimana').on('input', function () {
     let startRange = new Date($(this).val());
-    if (isNaN(startRange)) return; 
-    
+    if (isNaN(startRange)) return;
+
     let endRange = new Date(startRange);
     endRange.setDate(startRange.getDate() + 7);
-    
+
     $('#range_end_settimana').val(endRange.toISOString().slice(0, 16));
 
     $('#range_end_settimana_container').show();

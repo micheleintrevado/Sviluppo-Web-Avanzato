@@ -8,6 +8,12 @@ $(document).ready(function () {
     // Send login request
     login_btn.click(function (event) {
         event.preventDefault();
+        // const form = $('#login-form');
+
+        // if (form[0].checkValidity() === false) {
+        //     alert("Riempi tutti i campi");
+        //     return;
+        // }
 
         const username = $('#username-field').val();
         const password = $('#password-field').val();
@@ -19,7 +25,7 @@ $(document).ready(function () {
                 password: password
             },
             success: function (data) {
-                token = data; 
+                token = data;
                 $.ajaxSetup({
                     headers: {
                         'Authorization': 'Bearer ' + token
@@ -32,7 +38,7 @@ $(document).ready(function () {
                 alert("Login effettuato con successo.");
             },
             error: function (request, status, error) {
-                alert("Errore");
+                handleError(request, status, error);
             },
             cache: false,
         });
@@ -52,26 +58,27 @@ $(document).ready(function () {
                         'Authorization': 'Bearer ' + token
                     }
                 });
+                token_field.val(token);
                 login_btn.css('color', 'green');
                 $('#token-field').css('background-color', 'orange');
                 logout_btn.css('color', 'red');
                 alert("Logout effettuato con successo.");
             },
             error: function (request, status, error) {
-                alert("Errore logout");
+                handleError(request, status, error);
             },
             cache: false,
         });
     });
-    
-    refresh_btn.click(function(event){
+
+    refresh_btn.click(function (event) {
         event.preventDefault();
-        
+
         $.ajax({
             url: 'rest/auth/refresh',
             type: 'GET',
             success: function (data) {
-                token = data; 
+                token = data;
                 $.ajaxSetup({
                     headers: {
                         'Authorization': 'Bearer ' + token
@@ -83,10 +90,10 @@ $(document).ready(function () {
                 alert("Refresh effettuato con successo.");
             },
             error: function (request, status, error) {
-                alert("Errore Refresh");
+                handleError(request, status, error);
             },
             cache: false
         });
-                
+
     });
 });

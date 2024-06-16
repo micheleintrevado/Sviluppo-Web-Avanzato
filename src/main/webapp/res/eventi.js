@@ -66,6 +66,7 @@ function getEvento(index) {
             showEventoData($("#get-evento-div"), data);
         },
         error: function (request, status, error) {
+            handleError(request, status, error);
             console.log("getAula error: " + request.status);
         },
         cache: false
@@ -129,6 +130,9 @@ function getEventiProssimi(arrow, content) {
             content.html(info);
             content.slideDown();
             arrow.addClass('down');
+        },
+        error: function (request, status, error) {
+            handleError(request, status, error);
         }
     });
 }
@@ -153,7 +157,8 @@ function getEventiForRange(rangeStart, rangeEnd) {
             link.download = 'calendar.ics';
             link.click();
         },
-        error: function (data) {
+        error: function (request, status, error) {
+            handleError(request, status, error);
             console.log("get Eventi for range error: " + request.status);
         },
         cache: false,
@@ -188,9 +193,9 @@ function addEvento() {
             data_termine: new Date($('#data_fine_ricorrenza').val()).toISOString()
         }),
         success: function (request, status, error) {
-
-            // header.substring("Bearer".length).trim();
-            alert("addEvento ok");
+            alert("Evento aggiunto correttamente");
+            getEventiUtility();
+            $('#crea_evento_form').get(0).reset();
             console.log("addEvento ok");
         },
         // success: function () {
@@ -199,8 +204,7 @@ function addEvento() {
         //     message("Collezione aggiornata con il nuovo disco.", "success");
         // },
         error: function (request, status, error) {
-            if (request.status == 401)
-                alert("LOGIN ERROR");
+            handleError(request, status, error);
             console.log("addEvento error: " + request.status);
         },
         // function (request, status, error) {
@@ -227,18 +231,15 @@ function modificaEvento() {
             id_corso: $('#id_corso_evento_modifica').val()
         }),
         success: function (request, status, error) {
-            // header.substring("Bearer".length).trim();
             alert("modificaEvento ok");
+            getEventiUtility();
+            $('#modifica_evento_form').get(0).reset();
             console.log("modificaEvento ok");
         },
         error: function (request, status, error) {
-            if (request.status == 401)
-                alert("LOGIN ERROR");
+            handleError(request, status, error);
             console.log("modificaEvento error: " + request.status);
         },
-        // function (request, status, error) {
-        //     handleError(request, status, error, "#collezione", "Errore nel caricamento della collezione.");
-        // },
         cache: false
     });
 }
@@ -253,7 +254,6 @@ $(document).ready(function () {
             url: 'rest/eventi/' + idEvento,
             type: 'GET',
             success: function (data) {
-                console.log(data);
                 $('#nome_evento_modifica').val(data.nome);
                 $('#orario_inizio_modifica').val(formatDateTimeUtility(data.orarioInizio));
                 $('#orario_fine_modifica').val(formatDateTimeUtility(data.orarioFine));
@@ -264,7 +264,8 @@ $(document).ready(function () {
                 $('#id_aula_evento_modifica').val(data.idAula);
                 $('#id_corso_evento_modifica').val(data.idCorso);
             },
-            error: function (xhr, status, error) {
+            error: function (request, status, error) {
+                handleError(request, status, error);
                 $('#modifica_evento_form').trigger('reset');
             }
         });
