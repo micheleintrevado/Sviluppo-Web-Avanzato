@@ -22,37 +22,28 @@ import java.security.Principal;
 @Priority(Priorities.AUTHENTICATION)
 public class AuthLoggedFilter implements ContainerRequestFilter {
 
-    //@Context
-    //UriInfo uriInfo;
     
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
         String token = null;
         final String path = requestContext.getUriInfo().getAbsolutePath().toString();
-        System.out.println(path);
 
         //come esempio, proviamo a cercare il token in vari punti, in ordine di priorità
         //in un'applicazione reale, potremmo scegliere una sola modalità
         String authorizationHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
-        System.out.println("AUTH HEADER----------------------------" + authorizationHeader);
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
-            System.out.println("111111111111111111111111111111111111111111111111111");
             token = authorizationHeader.substring("Bearer".length()).trim();
         } else if (requestContext.getCookies().containsKey("token")) {
-            System.out.println("22222222222222222222222222222222222222222222222222222");
             token = requestContext.getCookies().get("token").getValue();
         } else if (requestContext.getUriInfo().getQueryParameters().containsKey("token")) {
-            System.out.println("3333333333333333333333333333333333333333333333333333333333");
             token = requestContext.getUriInfo().getQueryParameters().getFirst("token");
         } 
-        System.out.println("TOKEN--------------------------" + token);
+
         if ((token != null) && !(token.isEmpty())) {
             try {
-                System.out.println("NEL TRY");
                 //validiamo il token
                 final String username = AuthHelpers.getInstance().validateToken(token); // NO JWT
                 // final String username = JWTHelpers.getInstance().validateToken(token); // Con JWT
-                System.out.println("--------------------------------------------" + username);
                 if (username != null) {
                     //inseriamo nel contesto i risultati dell'autenticazione
                     //per farli usare dai nostri metodi restful

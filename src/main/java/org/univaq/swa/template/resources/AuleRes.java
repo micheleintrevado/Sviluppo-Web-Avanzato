@@ -129,8 +129,6 @@ public class AuleRes {
     @Path("{id: [1-9][0-9]*}/gruppi")
     @Logged
     public Response assignGruppo(@Context UriInfo uriinfo, @Context HttpServletRequest req, @Context SecurityContext sec, @PathParam("id") int idAula, HashMap<String, Object> gruppo) throws RESTWebApplicationException {
-        // System.out.println("AULE RES ---------------------------" + req.getProperty("token"));
-
         Aula aula = new Aula();
         aula.setId(idAula);
         AulaRes aulaRes = new AulaRes(aula);
@@ -144,10 +142,7 @@ public class AuleRes {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response addAula(@Context UriInfo uriinfo,@Context ContainerRequestContext req, HashMap<String, Object> aula) {
-        System.out.println("AULA NOME: " + aula.get("nome"));
-        System.out.println("AULA CAPIENZA: " + aula.get("capienza"));
-        System.out.println("AULA CAPIENZA CLASS: " + aula.get("capienza").getClass());
-
+        
         String addAulaQuery = "INSERT INTO `aula` (`nome`, `luogo`, `edificio`, `piano`, `capienza`, `email_responsabile`, `prese_elettriche`, `prese_rete`, `note`) VALUES (?,?, ?, ?, ?, ?, ?, ?, ?)";
         try ( Connection con = getPooledConnection();  PreparedStatement ps = con.prepareStatement(addAulaQuery, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, (String) aula.get("nome"));
@@ -169,7 +164,6 @@ public class AuleRes {
                         .path(AuleRes.class)
                         .path(AuleRes.class, "getAula")
                         .build(id);
-                System.out.println("URI: " + uri);
                 return Response.created(uri).build();
             }
         } catch (SQLException | NamingException ex) {
@@ -230,8 +224,6 @@ public class AuleRes {
         ArrayList<HashMap<String, Object>> csvData = CsvUtility.csvAuleRead(csvFile);
         Connection con = getPooledConnection();
         final String addAulaQuery = "INSERT INTO `aula` (`nome`, `luogo`, `edificio`, `piano`, `capienza`, `email_responsabile`, `prese_elettriche`, `prese_rete`, `note`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);";
-        //final String addAulaGruppoQuery = "";
-        //final String addGruppoQuery = "";
         for (HashMap<String, Object> aula : csvData) {
             try ( PreparedStatement addAulaStatement = con.prepareStatement(addAulaQuery, Statement.RETURN_GENERATED_KEYS)) {
                 addAulaStatement.setString(1, (String) aula.get("nomeAula"));

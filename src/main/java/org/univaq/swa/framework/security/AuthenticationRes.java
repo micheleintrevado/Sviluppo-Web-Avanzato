@@ -37,7 +37,6 @@ public class AuthenticationRes {
             if (id != null) {
                 //String authToken = AuthHelpers.getInstance().issueToken(uriinfo, id); //NO JWT
                 String authToken = AuthHelpers.getInstance().issueTokenJWT(uriinfo, username); // Con JWT
-                System.out.println(authToken);
                 //Restituiamolo in tutte le modalità, giusto per fare un esempio...
                 return Response.ok(authToken)
                         .cookie(new NewCookie.Builder("token").value(authToken).build())
@@ -55,7 +54,6 @@ public class AuthenticationRes {
     public Response logout(@Context ContainerRequestContext req, @Context HttpServletRequest request) throws SQLException, ClassNotFoundException {
         //proprietà estratta dall'authorization header 
         //e iniettata nella request dal filtro di autenticazione
-        System.out.println("HTTP REQUEST: " + request.getAttribute("token"));
         String token = (String) req.getProperty("token");
         AuthHelpers.getInstance().revokeToken(token);
         return Response.noContent()

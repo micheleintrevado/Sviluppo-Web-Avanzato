@@ -36,7 +36,6 @@ public class AuthHelpers {
         jwtInstance = JWTHelpers.getInstance();
     }
 
-    // aggiungere hash
     public Integer authenticateUser(String username, String password) {
         String authenticate_query = "SELECT id FROM admin where username = ? and password = ?;";
         try ( Connection con = getPooledConnection();  PreparedStatement ps = con.prepareStatement(authenticate_query, Statement.RETURN_GENERATED_KEYS)) {
@@ -54,19 +53,6 @@ public class AuthHelpers {
         return null;
     }
 
-    /*public String issueToken(UriInfo context, Integer id) {
-        String add_token = "UPDATE admin SET token=? WHERE id = ?";
-        String token = UUID.randomUUID().toString();
-        try ( Connection con = getPooledConnection();  PreparedStatement ps = con.prepareStatement(add_token, Statement.RETURN_GENERATED_KEYS)) {
-            ps.setInt(2, id);
-            ps.setString(1, token);
-            ps.executeUpdate();
-            return token;
-        } catch (SQLException | NamingException ex) {
-            throw new RESTWebApplicationException(ex);
-        }
-    }*/
-
     public String issueTokenJWT(UriInfo context, String username) {
         String add_token = "UPDATE admin SET token=? WHERE username = ?";
         String token = jwtInstance.issueToken(context, username);
@@ -74,28 +60,12 @@ public class AuthHelpers {
             ps.setString(2, username);
             ps.setString(1, token);
             ps.executeUpdate();
-            System.out.println("DOPO CREAZIONE TOKEN: " + token);
             return token;
 
         } catch (SQLException | NamingException ex) {
             throw new RESTWebApplicationException(ex);
         }
     }
-
-    /*public String issueToken(UriInfo context, String username, String oldtoken) {
-        String add_token = "UPDATE admin SET token=? WHERE username = ? and token = ?";
-        String token = UUID.randomUUID().toString();
-        try ( Connection con = getPooledConnection();  PreparedStatement ps = con.prepareStatement(add_token, Statement.RETURN_GENERATED_KEYS)) {
-            ps.setString(2, username);
-            ps.setString(3, oldtoken);
-            ps.setString(1, token);
-            ps.executeUpdate();
-            return token;
-        } catch (SQLException | NamingException ex) {
-            throw new RESTWebApplicationException(ex);
-
-        }
-    }*/
 
     /* invalida il token */
     public void revokeToken(String token) {
@@ -115,11 +85,9 @@ public class AuthHelpers {
 
     // CHECK del tipo: select username from admin where token = ?;
     public String validateToken(String token) {
-        System.out.println("NEL VALIDATE TOKEN: " + token);
         String validate_token = "SELECT username from admin where token = ?";
         try ( Connection con = getPooledConnection();  PreparedStatement ps = con.prepareStatement(validate_token)) {
             ps.setString(1, token);
-            System.out.println("PREPARED STATEMENT: " + ps.toString());
             try ( ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     return rs.getString("username");
@@ -128,7 +96,7 @@ public class AuthHelpers {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null; //lo username andrebbe derivato dal token!
+        return null;
     }
 
     public static AuthHelpers getInstance() throws SQLException, ClassNotFoundException {

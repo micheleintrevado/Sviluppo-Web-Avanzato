@@ -53,7 +53,7 @@ public class CsvUtility {
     }
     
     public static ArrayList<HashMap<String, Object>> csvAuleRead(InputStream fileCsv){
-        System.out.println("---------------> MI TROVO IN CSV AULE READ");
+
         ArrayList<HashMap<String, Object>> configurazioneAule = new ArrayList<HashMap<String,Object>>();
         
         try (BufferedReader fileReader = new BufferedReader(new InputStreamReader(fileCsv))){
@@ -72,7 +72,6 @@ public class CsvUtility {
                 if (!records.iterator().hasNext()){
                     break;
                 }
-            System.out.println("----------->: " + csvRecord);    
             //creo una nuova aula sotto forma di hash map            
             HashMap<String, Object> aula = new HashMap<String, Object>();
 

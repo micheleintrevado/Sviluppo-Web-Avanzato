@@ -45,15 +45,8 @@ public class JWTHelpers {
         return instance;
     }
 
-    /*public String validateToken(String token) {
-        Jws<Claims> jwsc = Jwts.parserBuilder().setSigningKey(getJwtKey()).build().parseClaimsJws(token);
-        System.out.println("USERNAME: " + jwsc.getBody().getSubject());
-        return jwsc.getBody().getSubject();
-    }*/
-
     public String issueToken(UriInfo context, String username) {
         Key key = getJwtKey();
-        System.out.println("CHIAVE: " + key);
         String token = Jwts.builder()
                 .setSubject(username)
                 .setIssuer(context.getAbsolutePath().toString())

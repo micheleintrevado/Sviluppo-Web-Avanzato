@@ -69,7 +69,6 @@ public class AulaRes {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Logged
-    //@Path("gruppi")
     public Response assignGruppoAula(@Context UriInfo uriinfo, /* @Context ContainerRequestContext req,*/ @Context SecurityContext sec, @PathParam("id") int idAula, HashMap<String, Object> gruppo) {
         String addAulaQuery = "INSERT INTO `aula_gruppo` (`id_aula`,`id_gruppo`) VALUES (?,?)";
         try ( Connection con = getPooledConnection();  PreparedStatement ps = con.prepareStatement(addAulaQuery, Statement.RETURN_GENERATED_KEYS)) {
@@ -83,7 +82,6 @@ public class AulaRes {
                     .path(AuleRes.class)
                     .path(AuleRes.class, "getAula")
                     .build(idAula);
-            System.out.println(uri);
 
             return Response.created(uri).build();
         } catch (SQLException | NamingException ex) {
@@ -135,7 +133,6 @@ public class AulaRes {
 
     //10
     @GET
-    //@Path("aule/{id: [1-9][0-9]*}/{settimana: }")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getEventiAulaSettimana(@PathParam("idAula") int idAula, @QueryParam("rangeStart") String rangeStart) {
         LocalDateTime dataOraInizio = LocalDateTime.parse(rangeStart, DateTimeFormatter.ISO_DATE_TIME);
@@ -207,7 +204,6 @@ public class AulaRes {
 
             final String query_attrezzatura = "SELECT aula_attrezzatura.id as id_aula_attrezzatura, attrezzatura.id as id_attrezzatura, attrezzatura.tipo, aula_attrezzatura.id_aula FROM auleweb.attrezzatura join auleweb.aula_attrezzatura on attrezzatura.id = aula_attrezzatura.id where id_aula = ?;";
             final String query_gruppo = "SELECT aula_gruppo.id_aula as id_aula, aula_gruppo.id_gruppo as id_gruppo, gruppo.nome as nome_gruppo, gruppo.descrizione as descrizione_gruppo FROM auleweb.gruppo join aula_gruppo on gruppo.id = aula_gruppo.id_gruppo where aula_gruppo.id_aula = ?;";
-            // final String query_aule_associate = "SELECT aula.nome FROM auleweb.aula_gruppo join gruppo on gruppo.id = id_gruppo join aula on aula.id = id_aula where id_gruppo = ?;";
 
             ArrayList<Gruppo> gruppi = new ArrayList<Gruppo>();
             ArrayList<Attrezzatura> attrezzature = new ArrayList<Attrezzatura>();

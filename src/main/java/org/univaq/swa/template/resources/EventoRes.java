@@ -46,17 +46,12 @@ public class EventoRes {
         return ds.getConnection();
     }
 
-    // 8 TODO
+    // 8 
     @PATCH
     @Consumes(MediaType.APPLICATION_JSON)
     @Logged
     public Response updateEvento(@PathParam("id") int idEvento, Map<String, Object> fieldsToUpdate) {
-        System.out.println("SONO IN UPDATE EVENTO " + idEvento + " <----------------------------------------------------");
-        System.out.println("MAPPA RICEVUTA:");
-        for (var key : fieldsToUpdate.keySet()) {
-            System.out.println("key: " + key + ". value: " + fieldsToUpdate.get(key));
-        }
-
+        
         StringBuilder queryBuilder = new StringBuilder("UPDATE evento SET ");
         for (String key : fieldsToUpdate.keySet()) {
             queryBuilder.append(key + " = ?, ");
@@ -64,9 +59,6 @@ public class EventoRes {
         // Remove the last ", " characters
         queryBuilder.delete(queryBuilder.length() - 2, queryBuilder.length());
         queryBuilder.append(" WHERE id = ?");
-
-        System.out.println("QUERY CREATA:");
-        System.out.println(queryBuilder.toString());
 
         try ( Connection con = getPooledConnection();  PreparedStatement ps = con.prepareStatement(queryBuilder.toString())) {
             int i = 1;
@@ -87,7 +79,7 @@ public class EventoRes {
         }
     }
 
-    // 9 TODO: vedere perché stampa male il json dell'evento
+    // 9
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getInfoEvento(@PathParam("id") int idEvento) throws RESTWebApplicationException {
