@@ -67,6 +67,10 @@ $('#reset_button').click(function () {
 });
 
 function getEvento(index) {
+    if (index <= 0) {
+        $('#get-evento-div').children('#data_container').empty();
+        return;
+    }
     $.ajax({
         url: "rest/eventi/" + index,
         method: "GET",
@@ -91,7 +95,6 @@ function getEventiAttuali(arrow, content) {
                 info = '<p>Nessun evento attuale.</p>';
             }
             else {
-                console.log(data);
                 data.forEach(item => {
                     info += `<div><h3>${item.nome} - (${item.tipologia})</h3>`;
                     info += `<p>${item.descrizione}</p>`;
@@ -211,18 +214,10 @@ function addEvento() {
             $('#crea_evento_form').get(0).reset();
             console.log("addEvento ok");
         },
-        // success: function () {
-        //     collezione_result.children().remove();
-        //     clear();
-        //     message("Collezione aggiornata con il nuovo disco.", "success");
-        // },
         error: function (request, status, error) {
             handleError(request, status, error);
             console.log("addEvento error: " + request.status);
         },
-        // function (request, status, error) {
-        //     handleError(request, status, error, "#collezione", "Errore nel caricamento della collezione.");
-        // },
         cache: false
     });
 }
@@ -239,8 +234,8 @@ function modificaEvento() {
         contentType: "application/json",
         data: JSON.stringify({
             nome: $('#nome_evento_modifica').val(),
-            orario_inizio: new Date($('#orario_inizio_modifica').val()).toISOString(),
-            orario_fine: new Date($('#orario_fine_modifica').val()).toISOString(),
+            orario_inizio: $('#orario_inizio_modifica').val(),
+            orario_fine: $('#orario_fine_modifica').val(),
             descrizione: $('#descrizione_evento_modifica').val(),
             nome_organizzatore: $('#nome_organizzatore_evento_modifica').val(),
             email_responsabile: $('#email_responsabile_evento_modifica').val(),
@@ -267,7 +262,8 @@ $(document).ready(function () {
     // I campi della form vengono modificati in base al valore dell'id evento selezionato
     $('#id_evento_modifica').change(function () {
         let idEvento = $(this).val();
-
+        $('#id_corso_evento_modifica').empty();
+        getCorsiUtility();
         $.ajax({
             url: 'rest/eventi/' + idEvento,
             type: 'GET',

@@ -5,7 +5,6 @@
     <title>AuleWEB REST App</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- <link rel="stylesheet" href="res/restest.css" /> -->
     <link rel="stylesheet" href="res/style.css" />
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -15,30 +14,29 @@
 
 <body>
     <h1>AuleWEB REST App</h1>
-    <p>This is a template web application based on <strong>JakartaEE 10</strong> that runs on Apache <strong>Tomcat
-            10.1</strong> with <strong>Java 14</strong> or above.</p>
+    <p>
+        Questo sistema è volto alla gestione delle aule presenti in un qualsiasi Ateneo.
+        <br><strong>I Link marcati con un lucchetto &#x1f512; effettuano chiamate restful solo dopo essersi autenticati in quanto necessitano di bearer token.</strong>
+    </p>
 
-    <h2>Authentication</h2>
-    <p>To test the login/logout resource <em>(AuthenticationRes)</em>, use the login form below. <strong>Links marked
-            with &#x1f512; on this page call
-            restful endpoints requiring a bearer token and can be clicked only after a successful login.</strong></p>
+    <h2>Autenticazione</h2>
 
     <table class="restest" width="100%">
         <thead>
-            <td>Autenticazione</td>
+            <td>Inserire i seguenti dati: username1 e pass</td>
         </thead>
         <tfoot>
             <tr>
-                <td colspan="5">
+                <td colspan="2">
                     <form method="post" action="rest/auth/login" id="login-form"
                         enctype="application/x-www-form-urlencoded">
                         <div class="auth-div">
-                            <p>Username: <input style="width:30%" type="text" value="username1" id="username-field"
-                                    name="username-field" required />
-                                <span style="margin-left: 5px;">Password: </span> <input style="width:30%;" type="password" value="pass" id="password-field"
-                                    name="password-field" required />
-                                <input type="submit" value="login" name="login-button" id="login-button" />
-                                <input type="submit" value="logout" name="logout-button" id="logout-button" />
+                            <p>Username: <input type="text" placeholder="username1" id="username-field" name="username-field"
+                                    required />
+                                <span style="margin-left: 5px;">Password: </span> <input type="password" placeholder="pass"
+                                    id="password-field" name="password-field" required />
+                                <input type="submit" value="Login" name="login-button" id="login-button" />
+                                <input type="submit" value="Logout" name="logout-button" id="logout-button" />
                             </p>
                         </div>
                     </form>
@@ -53,7 +51,7 @@
         </tfoot>
     </table>
 
-    <p>The RESTful resources, grouped under the /rest prefix, are the following:</p>
+    <p>Le risorse RESTful, raggruppate con il prefisso <strong>/rest</strong>, sono descritte nella seguente tabella:</p>
     <h2> Get methods </h2>
     <p> Lista di metodi GET usati per recuperare informazioni. </p>
     <table class="restest" width="100%">
@@ -79,7 +77,7 @@
                 </td>
             </tr>
             <tr>
-                <td rowspan="1">/rest/aule/{id}</td>
+                <td rowspan="1">/rest/aule/{idAula}</td>
                 <td>GET</td>
                 <td>id: [1-9][0-9]*</td>
                 <td>Informazioni relative all'Aula con id specificato</td>
@@ -87,7 +85,7 @@
                 <td> <a href="#get-aule-div" class="scroll-link">Clicca qui </td>
             </tr>
             <tr>
-                <td rowspan="1">/rest/aule/{id}/attrezzature</td>
+                <td rowspan="1">/rest/aule/{idAula}/attrezzature</td>
                 <td>GET</td>
                 <td>id: [1-9][0-9]*</td>
                 <td>Lista delle attrezzature presenti nell'Aula con id specificato</td>
@@ -105,7 +103,7 @@
                 <td><a href="#get-eventoForRange-div" class="scroll-link">Clicca qui </td>
             </tr>
             <tr>
-                <td>/rest/eventi/{id}</td>
+                <td>/rest/eventi/{idEvento}</td>
                 <td>GET</td>
                 <td>id: [1-9][0-9]*</td>
                 <td>Informazioni relative all'Evento con id specificato</td>
@@ -145,7 +143,7 @@
     </table>
 
     <div class="get-info" id="get-aule-div">
-        <label for="id_aula"> id aula: </label>
+        <label for="id_aula"> Id aula: </label>
         <select style="width:30%" id="id_aula" name="lista_id_aule">
         </select>
         <input type="button" value="Informazioni Aula" onclick="getAula($('#get-aule-div #id_aula').val())" />
@@ -171,7 +169,7 @@
         <div id="data_container"></div>
     </div>
     <div class="get-info" id="get-evento-div">
-        <label for="id_evento"> id evento: </label>
+        <label for="id_evento"> Id evento: </label>
         <select style="width:30%" id="id_evento" name="lista_id_eventi">
         </select>
         <input type="button" value="Informazioni Evento" onclick="getEvento($('#get-evento-div #id_evento').val())" />
@@ -223,7 +221,7 @@
         </thead>
         <tbody>
             <tr>
-                <td rowspan="1">/rest/aule</td>
+                <td rowspan="1">/rest/aule &#x1f512;</td>
                 <td>POST</td>
                 <td>
                     <fieldset>
@@ -240,18 +238,17 @@
                                 <label for="piano_aula"> Piano:</label>
                                 <input type="text" placeholder="1" id="piano_aula" name="piano_aula" required />
                                 <label for="capienza_aula"> Capienza</label>
-                                <input type="number" placeholder="50" id="capienza_aula" name="capienza_aula"
+                                <input type="number" placeholder="50" min="1" id="capienza_aula" name="capienza_aula"
                                     required />
                                 <label for="email_responsabile_aula">Email</label>
                                 <input type="text" placeholder="u@u.u" id="email_responsabile_aula"
                                     name="email_responsabile_aula" required />
                                 <label for="prese_elettriche_aula">Prese elettriche: </label><input type="number"
-                                    value="1" id="prese_elettriche_aula" name="prese_elettriche-aula" required />
-                                <label for="prese_rete_aula">Prese rete:</label> <input type="number" value="1"
+                                    value="1" min="0" id="prese_elettriche_aula" name="prese_elettriche-aula" required />
+                                <label for="prese_rete_aula">Prese rete:</label> <input type="number" min="0" value="1"
                                     id="prese_rete_aula" name="prese_rete_aula" required />
                                 <label for="note_aula" style="align-self: auto;">Note:</label>
-                                <textarea placeholder="Note addizionali" id="note_aula"
-                                    name="note_aula"></textarea>
+                                <textarea placeholder="Note addizionali" id="note_aula" name="note_aula"></textarea>
                                 <input type="button" value="addAula" onclick="addAula()" name="addAula_button"
                                     id="addAula_button" />
                             </div>
@@ -260,12 +257,13 @@
                 </td>
             </tr>
             <tr>
-                <td rowspan="1">/rest/aule/<span id="assignGruppo-idAula">idAula</span>/gruppi</td>
+                <td rowspan="1">/rest/aule/{idAula}/gruppi &#x1f512;</td>
                 <td>POST</td>
                 <td>
                     <fieldset>
                         <legend> Assegna un gruppo ad un aula</legend>
-                        <form method="post" action="rest/aule/idAula/gruppi" id="assignGruppoAula_form" enctype="multipart/form-data">
+                        <form method="post" action="rest/aule/idAula/gruppi" id="assignGruppoAula_form"
+                            enctype="multipart/form-data">
                             <div>
                                 <label for="id_aula_gruppi"> id aula: </label>
                                 <select id="id_aula_gruppi" name="lista_id_aule" required>
@@ -285,12 +283,13 @@
             </tr>
 
             <tr>
-                <td rowspan="1">/rest/aule/csv</td>
+                <td rowspan="1">/rest/aule/csv &#x1f512;</td>
                 <td>POST</td>
                 <td>
                     <fieldset>
                         <legend>Importa CSV Aule</legend>
-                        <form method="post" action="rest/aule/csv" id="importFileCSV_form" enctype="multipart/form-data">
+                        <form method="post" action="rest/aule/csv" id="importFileCSV_form"
+                            enctype="multipart/form-data">
 
                             <div>
                                 <label for="fileCSV"> Seleziona file CSV per importare aule:</label>
@@ -306,7 +305,7 @@
 
 
             <tr>
-                <td rowspan="1">/rest/evento</td>
+                <td rowspan="1">/rest/eventi &#x1f512;</td>
                 <td>POST</td>
                 <td>
                     <fieldset>
@@ -324,15 +323,15 @@
                                     name="orario_fine" required>
 
                                 <label for="descrizione_evento"> Descrizione:</label>
-                                <input type="text" value="Descrizione Evento XYZ" id="descrizione_evento"
+                                <input type="text" placeholder="Descrizione Evento XYZ" id="descrizione_evento"
                                     name="descrizione_evento" required>
 
                                 <label for="nome_organizzatore_evento"> Nome organizzatore:</label>
-                                <input type="text" value="Nome Organizzatore XYZ" id="nome_organizzatore_evento"
+                                <input type="text" placeholder="Nome Organizzatore XYZ" id="nome_organizzatore_evento"
                                     name="nome_organizzatore_evento" required>
 
                                 <label for="email_responsabile_evento"> Email responsabile:</label>
-                                <input type="text" value="u@u.u" id="email_responsabile_evento"
+                                <input type="text" placeholder="u@u.u" id="email_responsabile_evento"
                                     name="email_responsabile_evento" required>
 
                                 <label for="tipologia_evento"> Tipologia:</label>
@@ -390,7 +389,7 @@
             </tr>
 
             <tr>
-                <td rowspan="1">/rest/aule/<span id="modificaEvento-idEvento">idEvento</span></td>
+                <td rowspan="1">/rest/eventi/{idEvento}  &#x1f512;</td>
                 <td>PATCH</td>
                 <td>
                     <fieldset>
@@ -401,7 +400,6 @@
                                 <select id="id_evento_modifica" name="lista_id_eventi" required>
                                     <option> --- </option>
                                 </select>
-
 
                                 <label for="nome_evento_modifica"> Nome: </label>
                                 <input type="text" id="nome_evento_modifica" name="nome_evento_modifica" />
@@ -446,34 +444,10 @@
         </tbody>
     </table>
 
-    <div style="border: 1px solid gray; margin: 1em auto; padding: 1em">
-        <p>
-            <em>Note that this project includes a Javascript library that automatically checks the above endpoints when
-                this webpage is opened. This library
-                is not part of the JAX-RS framework and it is not required to implement RESTful resources, and has been
-                developed only as an aid for the
-                sample resources included in this project.</em>
-        </p>
-        <p>
-            <span class="rest-test-message-error" style="color: red">
-                Some tested endpoints did not return the expected result
-
-            </span>
-            <span class="rest-test-message-ok" style="color: green">
-                All tested endpoints returned the correct result
-            </span>
-        </p>
-    </div>
-
-
     <script src="res/utility.js">/* */</script>
     <script src="res/authentication.js">/* */</script>
     <script src="res/aule.js">/* */</script>
     <script src="res/eventi.js">/* */</script>
-    <!-- <script src="res/restest.js">/* */</script> 
-                <script>
-                    let tester = new Restest();
-                </script>-->
 </body>
 
 </html>

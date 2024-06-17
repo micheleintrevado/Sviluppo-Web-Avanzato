@@ -12,12 +12,11 @@ function formatDateUtility(data) {
 }
 
 function getCorsiUtility() {
-    $("[name='lista_id_corso']").html("<option value='-1' selected> Scegli un corso </option>");
+    $("[name='lista_id_corso']").html("<option value='null' selected> Scegli un corso </option>");
     $.ajax({
         url: "rest/eventi/corsi/",
         method: "GET",
         success: function (data) {
-            //$("[name='lista_id_corso']").append("<option value='-1' selected> Scegli un corso </option>");
             $.each(data, function (key) {
                 $("[name='lista_id_corso']").append(
                     "<option value=" + data[key] + ">" + data[key] + "</option>");
@@ -115,45 +114,8 @@ function handleError(request, status, error) {
         alert("Errore di connessione");
     }
 }
-// $(document).ready(function () {
-//     $('form').on('click', function (event) {
-//         $(this).find('input[required]').each(function () {
-//             if (!$(this).val()) {
-//                 formValid = false;
-//                 $(this).addClass('input-error');
-//             } else {
-//                 $(this).removeClass('input-error');
-//             }
-//         });
-//     });
-// });
 
 $(document).ready(function () {
-    // $('div').on('click', function (event) {
-    //     $('input[required]').removeClass('input-error');
-    //     formValid = true;
-    //     $(this).find('input[required]').each(function () {
-    //         console.log($(this).val());
-    //         if (!$(this).val() || $(this).val().length === 0) {
-    //             formValid = false;
-    //             $(this).addClass('input-error'); 
-    //         } else {
-    //             $(this).siblings('.error-message').remove();
-    //             $(this).removeClass('input-error'); 
-    //         }
-    //     });
-    // });
-
-    // $('input[type="button"]').on('click', function (event) {
-    //     if (!formValid) {
-    //         $(this).siblings('.error-message').remove();
-    //         $(this).parent().append('<span class="error-message">Riempi tutti i campi</span>');
-    //         return false;
-    //     } else {
-    //         $(this).siblings('.error-message').remove();
-    //     }
-    // });
-
     $('input, select').on('click', function (event) {
         $('.error-message').remove();
     })
@@ -164,7 +126,7 @@ $(document).ready(function () {
         formValid = true;
         $(this).parent().find('input[required], select[required], textarea[required]').each(function () {
             console.log($(this).val());
-            if (!($(this).val()) | $(this).val() < 0) {
+            if (!($(this).val()) || $(this).val() < 0 || $(this).val() === 'null') {
                 formValid = false;
                 $(this).addClass('input-error'); 
             } else {
@@ -188,7 +150,7 @@ function checkRequired(form) {
     form.find('.input-error').removeClass('input-error');
     form.find('input[required], select[required], textarea[required]').each(function () {
         console.log("CHECK REQUIRED " + $(this).val());
-        if (!$(this).val() | $(this).val() < 0) {
+        if (!$(this).val() || $(this).val() < 0 || $(this).val() === 'null') {
             formValid = false;
             $(this).addClass('input-error');
             if ($(this).siblings('.error-message').length === 0) {

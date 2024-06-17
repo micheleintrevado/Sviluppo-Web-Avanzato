@@ -161,6 +161,19 @@ textarea {
     min-height: 100px;
 }
 
+.auth-div input[type="text"],
+.auth-div input[type="password"] {
+    width: 32%;
+}
+
+.auth-div input[type="submit"] {
+    background-color: green;
+}
+
+.auth-div input[type="submit"]:hover {
+    background-color: rgb(11, 52, 11);
+}
+
 input[type="submit"],
 input[type="button"],
 input[type="reset"],
@@ -280,4 +293,18 @@ input[readonly] {
     font-size: 0.9em;
     margin-top: 5px;
     display: block;
+}
+
+input[type="submit"]:disabled {
+    pointer-events: none;
+    cursor: not-allowed;
+    opacity: 0.6;
+    /* Opzionale, per rendere visivamente evidente che il bottone è disabilitato */
+}
+
+input[type="submit"]:disabled:hover {
+    background-color: inherit;
+    /* O il colore che preferisci per i bottoni disabilitati */
+    color: inherit;
+    /* O il colore che preferisci per il testo dei bottoni disabilitati */
 }

@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS `Aula_Attrezzatura` (
 CREATE TABLE IF NOT EXISTS `Gruppo` (
     `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
     `nome` VARCHAR(60) NOT NULL,
-    `descrizione` TINYTEXT NOT NULL,
+    `descrizione` TINYTEXT,
     PRIMARY KEY (id)
 );
 

@@ -5,7 +5,7 @@ $(document).ready(function () {
     const token_field = $('#token-field');
     let token = '';
 
-    // Send login request
+    // login
     login_btn.click(function (event) {
         event.preventDefault();
         // const form = $('#login-form');
@@ -31,10 +31,10 @@ $(document).ready(function () {
                         'Authorization': 'Bearer ' + token
                     }
                 });
+                login_btn.prop('disabled', true);
+                logout_btn.prop('disabled', false);
                 token_field.val(token);
-                login_btn.css('color', 'red');
-                $('#token-field').css('background-color', 'yellow');
-                logout_btn.css('color', 'green');
+                token_field.css('color', 'blue');
                 alert("Login effettuato con successo.");
             },
             error: function (request, status, error) {
@@ -58,10 +58,9 @@ $(document).ready(function () {
                         'Authorization': 'Bearer ' + token
                     }
                 });
+                login_btn.prop('disabled', false);
+                logout_btn.prop('disabled', true);
                 token_field.val(token);
-                login_btn.css('color', 'green');
-                $('#token-field').css('background-color', 'orange');
-                logout_btn.css('color', 'red');
                 alert("Logout effettuato con successo.");
             },
             error: function (request, status, error) {
@@ -85,8 +84,6 @@ $(document).ready(function () {
                     }
                 });
                 token_field.val(token);
-                refresh_btn.css('color', 'blue');
-                $('#token-field').css('background-color', 'green');
                 alert("Refresh effettuato con successo.");
             },
             error: function (request, status, error) {

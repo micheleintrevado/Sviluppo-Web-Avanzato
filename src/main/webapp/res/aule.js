@@ -1,4 +1,8 @@
 function getAula(index) {
+    if (index <= 0) {
+        $('#get-aule-div').children('#data_container').empty();
+        return;
+    }
     $.ajax({
         url: "rest/aule/" + index,
         method: "GET",
@@ -14,6 +18,10 @@ function getAula(index) {
 }
 
 function getAttrezzatura(index) {
+    if (index <= 0) {
+        $('#get-attrezzature-div').children('#data_container').empty();
+        return;
+    }
     $.ajax({
         url: "rest/aule/" + index + "/attrezzature",
         method: "GET",
@@ -29,6 +37,10 @@ function getAttrezzatura(index) {
 }
 
 function getEventiAulaSettimana(idAula, rangeStart) {
+    if (idAula <= 0) {
+        $('#get-eventiInAula-div').children('#data_container').empty();
+        return;
+    }
     $.ajax({
         url: "rest/aule/" + idAula + "/eventi",
         method: "GET",
@@ -96,7 +108,7 @@ function showAulaData(mainContainer, data) {
         if (attrezzatureTypes.length == 0) {
             attrezzatureTypes = 'Nessuna attrezzatura associata';
         } else {
-            attrezzatureTypes = 'Attrezzature associate: ' + attrezzatureTypes;
+            attrezzatureTypes = ' ' + attrezzatureTypes;
         }
         attrezzatureElement = `<p>Attrezzature: ${attrezzatureTypes} </p>`;
         aulaElement = attrezzatureElement + `</div>`;
@@ -197,6 +209,7 @@ $('#id_evento').on('input', function () {
 });
 $('#id_aula').on('input', function () {
     getAula($(this).val());
+
 });
 $('#id_aula_attrezzature').on('input', function () {
     getAttrezzatura($(this).val());
