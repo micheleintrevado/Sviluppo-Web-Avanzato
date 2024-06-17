@@ -3,10 +3,12 @@ $(document).ready(function () {
         let selectedValue = $('#tipologia_evento').val();
         if (selectedValue === 'lezione' || selectedValue === 'esame' || selectedValue === 'parziale') {
             $('#corso_container').show();
+            $('#id_corso_evento').attr('required', true);
             $('#id_corso_evento').empty();
             getCorsiUtility();
         } else {
             $('#corso_container').hide();
+            $('#id_corso_evento').removeAttr('required');
             $('#id_corso_evento').empty();
             getCorsiUtility();
             // $('#id_corso_evento').prepend('<option>Scegli un corso</option>');
@@ -20,9 +22,17 @@ $(document).ready(function () {
     $('#tipologia_evento_modifica').change(function () {
         let selectedValue = $('#tipologia_evento_modifica').val();
         if (selectedValue === 'lezione' || selectedValue === 'esame' || selectedValue === 'parziale') {
+            //let corsoValue = $('#id_corso_evento_modifica').val();
             $('#corso_container_modifica').show();
+            $('#id_corso_evento_modifica').attr('required', true);
+            //$('#id_corso_evento_modifica').empty();
+            //getCorsiUtility();
+            //$('#id_corso_evento_modifica').val(corsoValue);
         } else {
             $('#corso_container_modifica').hide();
+            $('#id_corso_evento_modifica').removeAttr('required');
+            $('#id_corso_evento_modifica').empty();
+            getCorsiUtility();
         }
     });
 
@@ -32,11 +42,9 @@ $(document).ready(function () {
         let selectedValue = $('input[name="ricorrenza_evento"]:checked').val();
 
         if (selectedValue === 'giornaliera' || selectedValue === 'settimanale' || selectedValue === 'mensile') {
-            console.log(selectedValue);
             $('#data_fine_ricorrenza').val($('#orario_fine').val());
             $('#ricorrenza_container').show();
         } else {
-            console.log("NIENTEEEEEE");
             $('#ricorrenza_container').css("display", "none");
             //$('#data_fine_ricorrenza').val();
         }
@@ -104,7 +112,7 @@ function getEventiAttuali(arrow, content) {
 }
 
 function getEventiProssimi(arrow, content) {
-    let prossimeOre= $('#prossime_ore').val();
+    let prossimeOre = $('#prossime_ore').val();
     console.log(prossimeOre);
     $.ajax({
         url: 'rest/eventi/prossimi',
@@ -169,6 +177,11 @@ function getEventiForRange(rangeStart, rangeEnd) {
 }
 
 function addEvento() {
+    let form = $('#crea_evento_form');
+    if (!checkRequired(form)) {
+        console.log('Riempi tutti i campi');
+        return;
+    }
     let tipo = $('input[name="ricorrenza_evento"]:checked').val();
     console.log(tipo);
     if (tipo !== "null") {
@@ -215,6 +228,11 @@ function addEvento() {
 }
 
 function modificaEvento() {
+    let form = $('#modifica_evento_form');
+    if (!checkRequired(form)) {
+        console.log('Riempi tutti i campi');
+        return;
+    }
     $.ajax({
         url: "rest/eventi/" + $('#id_evento_modifica').val(),
         method: "PATCH",
@@ -227,8 +245,8 @@ function modificaEvento() {
             nome_organizzatore: $('#nome_organizzatore_evento_modifica').val(),
             email_responsabile: $('#email_responsabile_evento_modifica').val(),
             tipologia: $('#tipologia_evento_modifica').val(),
-            id_aula: $('#id_aula_evento_modifica').val(),
-            id_corso: $('#id_corso_evento_modifica').val()
+            id_aula: parseInt($('#id_aula_evento_modifica').val()),
+            id_corso: parseInt($('#id_corso_evento_modifica').val())
         }),
         success: function (request, status, error) {
             alert("modificaEvento ok");
@@ -260,9 +278,9 @@ $(document).ready(function () {
                 $('#descrizione_evento_modifica').val(data.descrizione);
                 $('#nome_organizzatore_evento_modifica').val(data.nomeOrganizzatore);
                 $('#email_responsabile_evento_modifica').val(data.emailResponsabile);
-                $('#tipologia_evento_modifica').val(data.tipologia);
-                $('#id_aula_evento_modifica').val(data.idAula);
-                $('#id_corso_evento_modifica').val(data.idCorso);
+                $('#tipologia_evento_modifica').val(data.tipologia).trigger('change');
+                $('#id_aula_evento_modifica').val(data.idAula).trigger('change');
+                $('#id_corso_evento_modifica').val(data.idCorso).trigger('change');
             },
             error: function (request, status, error) {
                 handleError(request, status, error);
@@ -270,6 +288,7 @@ $(document).ready(function () {
             }
         });
     });
+    //$('#tipologia_evento_modifica').trigger('change');
 
     // 
     $('#tipologia').change(function () {

@@ -106,14 +106,10 @@ function showAulaData(mainContainer, data) {
 
 function addAula() {
     let form = $('#crea_aula_form');
-
-    // Check if the form is valid
     if (!checkRequired(form)) {
         console.log('Riempi tutti i campi');
         return;
     }
-    //let token = document.getElementById("token-field").value;
-    //message("", "");
     $.ajax({
         url: "rest/aule",
         method: "POST",
@@ -135,23 +131,20 @@ function addAula() {
             $('#crea_aula_form').get(0).reset();
             console.log("addAula ok");
         },
-        // success: function () {
-        //     collezione_result.children().remove();
-        //     clear();
-        //     message("Collezione aggiornata con il nuovo disco.", "success");
-        // },
         error: function (request, status, error) {
             handleError(request, status, error);
             console.log("addAula error: " + error);
         },
-        // function (request, status, error) {
-        //     handleError(request, status, error, "#collezione", "Errore nel caricamento della collezione.");
-        // },
         cache: false
     });
 };
 
 function assignGruppoAula(idAula) {
+    let form = $('#assignGruppoAula_form');
+    if (!checkRequired(form)) {
+        console.log('Riempi tutti i campi');
+        return;
+    }
     $.ajax({
         url: "rest/aule/" + idAula + "/gruppi",
         method: "POST",
@@ -165,7 +158,7 @@ function assignGruppoAula(idAula) {
         },
         error: function (request, status, error) {
             handleError(request, status, error);
-            console.log("assignGruppoAula error: " + error);
+            console.log("assignGruppoAula error: " + request.status);
         },
         cache: false
     });
@@ -173,6 +166,11 @@ function assignGruppoAula(idAula) {
 
 
 function importAuleFromCSV() {
+    let form = $('#importFileCSV_form');
+    if (!checkRequired(form)) {
+        console.log('Riempi tutti i campi');
+        return;
+    }
     let formData = new FormData();
     formData.append('file', $('#fileCSV')[0].files[0]);
     $.ajax({

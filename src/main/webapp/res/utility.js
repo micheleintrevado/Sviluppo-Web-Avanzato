@@ -12,12 +12,12 @@ function formatDateUtility(data) {
 }
 
 function getCorsiUtility() {
-    $("[name='lista_id_corso']").html("<option selected> Scegli un corso </option>");
+    $("[name='lista_id_corso']").html("<option value='-1' selected> Scegli un corso </option>");
     $.ajax({
         url: "rest/eventi/corsi/",
         method: "GET",
         success: function (data) {
-            $("[name='lista_id_corso']").append("<option selected> Scegli un corso </option>");
+            //$("[name='lista_id_corso']").append("<option value='-1' selected> Scegli un corso </option>");
             $.each(data, function (key) {
                 $("[name='lista_id_corso']").append(
                     "<option value=" + data[key] + ">" + data[key] + "</option>");
@@ -33,7 +33,7 @@ function getCorsiUtility() {
 
 
 function getAuleUtility() {
-    $("[name='lista_id_aule']").html("<option selected> Scegli un aula </option>");
+    $("[name='lista_id_aule']").html("<option value='-1' selected> Scegli un aula </option>");
     $.ajax({
         url: "rest/aule/",
         method: "GET",
@@ -51,7 +51,7 @@ function getAuleUtility() {
     });
 }
 function getGruppiUtility() {
-    $("#id_gruppo_assign").html("<option selected> Scegli un gruppo </option>");
+    $("#id_gruppo_assign").html("<option value='-1' selected> Scegli un gruppo </option>");
     $.ajax({
         url: "rest/aule/gruppi/",
         method: "GET",
@@ -72,7 +72,7 @@ function getGruppiUtility() {
 
 
 function getEventiUtility() {
-    $("[name='lista_id_eventi']").html("<option selected> Scegli un evento </option>");
+    $("[name='lista_id_eventi']").html("<option value='-1' selected> Scegli un evento </option>");
     $.ajax({
         url: "rest/eventi/ids",
         method: "GET",
@@ -114,7 +114,6 @@ function handleError(request, status, error) {
     if (request.status === 0) {
         alert("Errore di connessione");
     }
-    console.log("Error: " + error);
 }
 // $(document).ready(function () {
 //     $('form').on('click', function (event) {
@@ -130,31 +129,54 @@ function handleError(request, status, error) {
 // });
 
 $(document).ready(function () {
-    $('div').on('click', function (event) {
-        $('input[required]').removeClass('input-error');
-        formValid = true;
-        // Find all required inputs within the form
-        $(this).find('input[required]').each(function () {
-            if (!$(this).val()) {
-                formValid = false;
-                $(this).addClass('input-error'); // Add a class to highlight the error
-            } else {
-                // Remove the error message if it exists
-                $(this).siblings('.error-message').remove();
-                $(this).removeClass('input-error'); // Remove the error class if the field is filled
-            }
-        });
-    });
+    // $('div').on('click', function (event) {
+    //     $('input[required]').removeClass('input-error');
+    //     formValid = true;
+    //     $(this).find('input[required]').each(function () {
+    //         console.log($(this).val());
+    //         if (!$(this).val() || $(this).val().length === 0) {
+    //             formValid = false;
+    //             $(this).addClass('input-error'); 
+    //         } else {
+    //             $(this).siblings('.error-message').remove();
+    //             $(this).removeClass('input-error'); 
+    //         }
+    //     });
+    // });
+
+    // $('input[type="button"]').on('click', function (event) {
+    //     if (!formValid) {
+    //         $(this).siblings('.error-message').remove();
+    //         $(this).parent().append('<span class="error-message">Riempi tutti i campi</span>');
+    //         return false;
+    //     } else {
+    //         $(this).siblings('.error-message').remove();
+    //     }
+    // });
+
+    $('input, select').on('click', function (event) {
+        $('.error-message').remove();
+    })
 
     $('input[type="button"]').on('click', function (event) {
+        $('input[required]').removeClass('input-error');
+        $('select[required]').removeClass('input-error');
+        formValid = true;
+        $(this).parent().find('input[required], select[required], textarea[required]').each(function () {
+            console.log($(this).val());
+            if (!($(this).val()) | $(this).val() < 0) {
+                formValid = false;
+                $(this).addClass('input-error'); 
+            } else {
+                $(this).siblings('.error-message').remove();
+                $(this).removeClass('input-error'); 
+            }
+        });
         if (!formValid) {
-            // Remove any existing error messages
             $(this).siblings('.error-message').remove();
-            // Add the error message
             $(this).parent().append('<span class="error-message">Riempi tutti i campi</span>');
             return false;
         } else {
-            // Remove the error message if form is valid
             $(this).siblings('.error-message').remove();
         }
     });
@@ -162,23 +184,18 @@ $(document).ready(function () {
 
 function checkRequired(form) {
     let formValid = true;
-
-    // Remove any existing error messages and input-error classes
     form.find('.error-message').remove();
     form.find('.input-error').removeClass('input-error');
-
-    // Check each required input field
-    form.find('input[required], textarea[required]').each(function () {
-        if (!$(this).val()) {
+    form.find('input[required], select[required], textarea[required]').each(function () {
+        console.log("CHECK REQUIRED " + $(this).val());
+        if (!$(this).val() | $(this).val() < 0) {
             formValid = false;
             $(this).addClass('input-error');
-            // Append error message if it doesn't already exist
             if ($(this).siblings('.error-message').length === 0) {
                 $(this).after('<span class="error-message">Riempi tutti i campi</span>');
             }
         }
     });
-
     return formValid;
 }
 

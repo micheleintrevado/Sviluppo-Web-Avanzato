@@ -35,9 +35,11 @@ body {
 
 table.restest {
     border: 2px solid black;
-    border-collapse: collapse;  
+    border-radius: 15px;
+    padding: 5px;
+    /*border-collapse: collapse;
+    padding:0;*/
     width: 100%;
-    padding:0;
 }
 
 table.restest td {

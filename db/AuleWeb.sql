@@ -8,11 +8,11 @@ CREATE TABLE IF NOT EXISTS `Aula` (
     `luogo` VARCHAR(60) NOT NULL,
     `edificio` VARCHAR(60) NOT NULL,
     `piano` VARCHAR(60) NOT NULL,
-    `capienza` INT DEFAULT 0,
+    `capienza` INT NOT NULL,
     `email_responsabile` VARCHAR(60) NOT NULL,
-    `prese_elettriche` INT UNSIGNED DEFAULT 0,
-    `prese_rete` INT UNSIGNED DEFAULT 0,
-    `note` TINYTEXT DEFAULT NULL,
+    `prese_elettriche` INT UNSIGNED NOT NULL,
+    `prese_rete` INT UNSIGNED NOT NULL,
+    `note` TINYTEXT NOT NULL,
     PRIMARY KEY (id)
 );
 
@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS `Aula_Attrezzatura` (
 CREATE TABLE IF NOT EXISTS `Gruppo` (
     `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
     `nome` VARCHAR(60) NOT NULL,
-    `descrizione` TINYTEXT DEFAULT NULL,
+    `descrizione` TINYTEXT NOT NULL,
     PRIMARY KEY (id)
 );
 
@@ -74,7 +74,7 @@ CREATE TABLE IF NOT EXISTS `Evento` (
     `nome_organizzatore` VARCHAR(60) NOT NULL,
     `email_responsabile` VARCHAR(60) NOT NULL,
     `tipologia` ENUM('lezione', 'esame', 'seminario', 'parziale', 'riunione', 'lauree', 'altro') NOT NULL,
-    `id_master` INT UNSIGNED,
+    `id_master` INT UNSIGNED DEFAULT NULL,
     `id_aula` INT UNSIGNED NOT NULL,
     `id_corso` INT UNSIGNED DEFAULT NULL,
     PRIMARY KEY (id),
