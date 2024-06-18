@@ -67,7 +67,7 @@ public class EventiRes {
     private static final String QUERY_SELECT_EVENTI_RANGE = "SELECT * FROM auleweb.evento where orario_inizio > ? and orario_fine < ?;";
     private static final String QUERY_SELECT_EVENTI_ID_MASTER = "SELECT * FROM auleweb.evento where id_master = ?;";
     private static final String QUERY_SELECT_ID_CORSI = "SELECT id FROM corso;";
-    private static final String QUERY_SELECT_ID_EVENTI = "SELECT id FROM evento;";
+    private static final String QUERY_SELECT_ID_EVENTI = "SELECT id FROM evento;", QUERY_SELECT_ID_RICORRENZE = "SELECT id FROM RICORRENZA";
 
     private static Connection getPooledConnection() throws NamingException, SQLException {
         InitialContext context = new InitialContext();
@@ -108,6 +108,25 @@ public class EventiRes {
                 }
             }
             return Response.ok(idEventi).build();
+        } catch (SQLException | NamingException ex) {
+            throw new RESTWebApplicationException(ex);
+        }
+    }
+    
+    @GET
+    @Path("ricorrenze")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getidRicorrenze() throws RESTWebApplicationException {
+        try {
+            ArrayList<Integer> idRicorrenze = new ArrayList<Integer>();
+            try ( Connection con = getPooledConnection();  PreparedStatement ps = con.prepareStatement(QUERY_SELECT_ID_RICORRENZE)) {
+                try ( ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        idRicorrenze.add(rs.getInt("id"));
+                    }
+                }
+            }
+            return Response.ok(idRicorrenze).build();
         } catch (SQLException | NamingException ex) {
             throw new RESTWebApplicationException(ex);
         }
@@ -416,6 +435,8 @@ public class EventiRes {
             e.setNomeOrganizzatore(rs.getString("nome_organizzatore"));
             e.setEmailResponsabile(rs.getString("email_responsabile"));
             e.setTipologia(Tipologia.valueOf(rs.getString("tipologia")));
+            e.setIdAula(rs.getInt("id_aula"));
+            e.setIdCorso(rs.getInt("id_corso"));
             return e;
         } catch (SQLException ex) {
             throw new RESTWebApplicationException(ex);

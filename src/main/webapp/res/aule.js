@@ -75,7 +75,9 @@ function showEventoData(mainContainer, data) {
             <p>Organizzatore: ${event.nomeOrganizzatore}</p>
             <p>Email: ${event.emailResponsabile}</p>
             <p>Tipologia: ${event.tipologia}</p>
-        </div>`;
+            <p>Id Aula: ${event.idAula}</p>` 
+            + (event.idCorso > 0 ? `<p>Id Corso: ${event.idCorso}</p>` : '') +
+            `</div>`;
         container.append(eventElement);
     });
 }
@@ -100,7 +102,10 @@ function showAulaData(mainContainer, data) {
             attrezzatureTypes = 'Nessuna attrezzatura associata';
         }
         attrezzatureElement = `<p>Attrezzature: ${attrezzatureTypes} </p>`;
-        let gruppiText = data.gruppiAssociati.map(gruppo => gruppo.nome + " - " + gruppo.descrizione).join(', ');
+        let gruppiText = data.gruppiAssociati.map(gruppo => gruppo.nome + (gruppo.descrizione != null ? " - " + gruppo.descrizione : '')).join(', ');
+        if (gruppiText.length == 0) {
+            gruppiText = 'Nessun gruppo associato';
+        }
         let gruppiElement = `<p>Gruppi: ${gruppiText} </p>`;
         aulaElement = aulaElement + attrezzatureElement + gruppiElement + `</div>`;
     } else {
@@ -207,10 +212,15 @@ function importAuleFromCSV() {
 $('#id_evento').on('input', function () {
     getEvento($(this).val());
 });
+
+$('#id_ricorrenza').on('input', function () {
+    getEventiRicorrenti($(this).val());
+})
+
 $('#id_aula').on('input', function () {
     getAula($(this).val());
-
 });
+
 $('#id_aula_attrezzature').on('input', function () {
     getAttrezzatura($(this).val());
 });

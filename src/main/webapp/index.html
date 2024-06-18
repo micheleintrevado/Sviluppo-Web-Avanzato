@@ -16,7 +16,8 @@
     <h1>AuleWEB REST App</h1>
     <p>
         Questo sistema è volto alla gestione delle aule presenti in un qualsiasi Ateneo.
-        <br><strong>I Link marcati con un lucchetto &#x1f512; effettuano chiamate restful solo dopo essersi autenticati in quanto necessitano di bearer token.</strong>
+        <br><strong>I Link marcati con un lucchetto &#x1f512; effettuano chiamate restful solo dopo essersi autenticati
+            in quanto necessitano di bearer token.</strong>
     </p>
 
     <h2>Autenticazione</h2>
@@ -31,10 +32,10 @@
                     <form method="post" action="rest/auth/login" id="login-form"
                         enctype="application/x-www-form-urlencoded">
                         <div class="auth-div">
-                            <p>Username: <input type="text" placeholder="username1" id="username-field" name="username-field"
-                                    required />
-                                <span style="margin-left: 5px;">Password: </span> <input type="password" placeholder="pass"
-                                    id="password-field" name="password-field" required />
+                            <p>Username: <input type="text" placeholder="username1" id="username-field"
+                                    name="username-field" required />
+                                <span style="margin-left: 5px;">Password: </span> <input type="password"
+                                    placeholder="pass" id="password-field" name="password-field" required />
                                 <input type="submit" value="Login" name="login-button" id="login-button" />
                                 <input type="submit" value="Logout" name="logout-button" id="logout-button" />
                             </p>
@@ -51,7 +52,8 @@
         </tfoot>
     </table>
 
-    <p>Le risorse RESTful, raggruppate con il prefisso <strong>/rest</strong>, sono descritte nella seguente tabella:</p>
+    <p>Le risorse RESTful, raggruppate con il prefisso <strong>/rest</strong>, sono descritte nella seguente tabella:
+    </p>
     <h2> Get methods </h2>
     <p> Lista di metodi GET usati per recuperare informazioni. </p>
     <table class="restest" width="100%">
@@ -122,6 +124,15 @@
                 <td><a href="#get-eventiInAula-div" class="scroll-link">Clicca qui</td>
             </tr>
             <tr>
+                <td>/rest/eventi/idMaster/{idMaster}</td>
+                <td>GET</td>
+                <td>id: [1-9][0-9]*</td>
+                <td>Informazioni relative agli eventi con ricorrenza specificata</td>
+                <td><a href="rest/eventi/idMaster/1"><small>GET rest/eventi/idMaster/1</small></a>
+                </td>
+                <td><a href="#get-eventiRicorrenti-div" class="scroll-link">Clicca qui</td>
+            </tr>
+            <tr>
                 <td rowspan="1">/rest/eventi/attuali</td>
                 <td>GET</td>
                 <td></td>
@@ -139,55 +150,83 @@
                             /rest/eventi/prossimi?prossimeOre=48</small></a></td>
                 <td><a href="#get-eventiProssimi-div" class="scroll-link">Clicca qui</td>
             </tr>
+
         </tbody>
     </table>
 
     <div class="get-info" id="get-aule-div">
-        <label for="id_aula"> Id aula: </label>
-        <select style="width:30%" id="id_aula" name="lista_id_aule">
-        </select>
-        <input type="button" value="Informazioni Aula" onclick="getAula($('#get-aule-div #id_aula').val())" />
+        <fieldset>
+            <legend>Ottieni informazioni aula</legend>
+            <label for="id_aula"> Id aula: </label>
+            <select style="width:30%" id="id_aula" name="lista_id_aule">
+            </select>
+            <input type="button" value="Informazioni Aula" onclick="getAula($('#get-aule-div #id_aula').val())" />
+        </fieldset>
         <div id="data_container"></div>
     </div>
     <div class="get-info" id="get-attrezzature-div">
-        <label for="id_aula_attrezzature"> Id aula: </label>
-        <select style="width:30%" id="id_aula_attrezzature" name="lista_id_aule">
-        </select>
-        <input type="button" value="Elenca attrezzature"
-            onclick="getAttrezzatura($('#get-attrezzature-div #id_aula_attrezzature').val())" />
+        <fieldset>
+            <legend>Ottieni attrezzature in un aula</legend>
+            <label for="id_aula_attrezzature"> Id aula: </label>
+            <select style="width:30%" id="id_aula_attrezzature" name="lista_id_aule">
+            </select>
+            <input type="button" value="Elenca attrezzature"
+                onclick="getAttrezzatura($('#get-attrezzature-div #id_aula_attrezzature').val())" />
+        </fieldset>
         <div id="data_container"></div>
     </div>
     <div class="get-info" id="get-eventoForRange-div">
-        <label for="range_start"> Dal: </label>
-        <input type="datetime-local" style="width:30%" id="range_start" required>
-        <br>
-        <label for="range_end"> Al: </label>
-        <input type="datetime-local" style="width:30%" id="range_end" required>
-        <br>
-        <input type="button" value="Download Eventi"
-            onclick="getEventiForRange($('#get-eventoForRange-div #range_start').val(), $('#get-eventoForRange-div #range_end').val())" />
+        <fieldset>
+            <legend>Ottieni eventi in un determinato periodo</legend>
+            <label for="range_start"> Dal: </label>
+            <input type="datetime-local" style="width:30%" id="range_start" required>
+            <br>
+            <label for="range_end"> Al: </label>
+            <input type="datetime-local" style="width:30%" id="range_end" required>
+            <br>
+            <input type="button" value="Download Eventi"
+                onclick="getEventiForRange($('#get-eventoForRange-div #range_start').val(), $('#get-eventoForRange-div #range_end').val())" />
+        </fieldset>
         <div id="data_container"></div>
     </div>
     <div class="get-info" id="get-evento-div">
-        <label for="id_evento"> Id evento: </label>
-        <select style="width:30%" id="id_evento" name="lista_id_eventi">
-        </select>
-        <input type="button" value="Informazioni Evento" onclick="getEvento($('#get-evento-div #id_evento').val())" />
+        <fieldset>
+            <legend>Ottieni informazioni evento</legend>
+            <label for="id_evento"> Id evento: </label>
+            <select style="width:30%" id="id_evento" name="lista_id_eventi">
+            </select>
+            <input type="button" value="Informazioni Evento"
+                onclick="getEvento($('#get-evento-div #id_evento').val())" />
+        </fieldset>
         <div id="data_container"></div>
     </div>
     <div class="get-info" id="get-eventiInAula-div">
-        <label for="id_eventi_aula"> Id aula: </label>
-        <select style="width:30%" id="id_eventi_aula" name="lista_id_aule">
-        </select>
-        <br>
-        <label for="range_start_settimana">Dal:</label>
-        <input type="datetime-local" style="width:30%" id="range_start_settimana">
-        <div id="range_end_settimana_container" hidden>
-            <label for="range_end_settimana">Al:</label>
-            <input type="datetime-local" style="width:30%" id="range_end_settimana" readonly>
-        </div>
-        <input type="button" value="Informazioni Eventi"
-            onclick="getEventiAulaSettimana($('#get-eventiInAula-div #id_eventi_aula').val(), $('#get-eventiInAula-div #range_start_settimana').val())" />
+        <fieldset>
+            <legend>Ottieni informazioni eventi in un aula nella settimana specificata</legend>
+            <label for="id_eventi_aula"> Id aula: </label>
+            <select style="width:30%" id="id_eventi_aula" name="lista_id_aule">
+            </select>
+            <br>
+            <label for="range_start_settimana">Dal:</label>
+            <input type="datetime-local" style="width:30%" id="range_start_settimana">
+            <div id="range_end_settimana_container" hidden>
+                <label for="range_end_settimana">Al:</label>
+                <input type="datetime-local" style="width:30%" id="range_end_settimana" readonly>
+            </div>
+            <input type="button" value="Informazioni Eventi"
+                onclick="getEventiAulaSettimana($('#get-eventiInAula-div #id_eventi_aula').val(), $('#get-eventiInAula-div #range_start_settimana').val())" />
+        </fieldset>
+        <div id="data_container"></div>
+    </div>
+    <div class="get-info" id="get-eventiRicorrenti-div">
+        <fieldset>
+            <legend>Ottieni informazioni eventi ricorrenti</legend>
+            <label for="id_ricorrenza"> Id ricorrenza: </label>
+            <select style="width:30%" id="id_ricorrenza" name="lista_id_ricorrenze">
+            </select>
+            <input type="button" value="Elenca Eventi Ricorrenti"
+                onclick="getEventiRicorrenti($('#get-eventiRicorrenti-div #id_ricorrenza').val())" />
+        </fieldset>
         <div id="data_container"></div>
     </div>
     <div class="dropdown get-info " data-url="rest/eventi/attuali" id="get-eventiAttuali-div">
@@ -208,6 +247,7 @@
         </div>
         <div class="dropdown-content" style="display: none;"></div>
     </div>
+
 
     <h2> Post methods </h2>
     <p> Metodi POST usati per inserire informazioni e creare nuove risorse.</p>
@@ -244,7 +284,8 @@
                                 <input type="text" placeholder="u@u.u" id="email_responsabile_aula"
                                     name="email_responsabile_aula" required />
                                 <label for="prese_elettriche_aula">Prese elettriche: </label><input type="number"
-                                    value="1" min="0" id="prese_elettriche_aula" name="prese_elettriche-aula" required />
+                                    value="1" min="0" id="prese_elettriche_aula" name="prese_elettriche-aula"
+                                    required />
                                 <label for="prese_rete_aula">Prese rete:</label> <input type="number" min="0" value="1"
                                     id="prese_rete_aula" name="prese_rete_aula" required />
                                 <label for="note_aula" style="align-self: auto;">Note:</label>
@@ -389,7 +430,7 @@
             </tr>
 
             <tr>
-                <td rowspan="1">/rest/eventi/{idEvento}  &#x1f512;</td>
+                <td rowspan="1">/rest/eventi/{idEvento} &#x1f512;</td>
                 <td>PATCH</td>
                 <td>
                     <fieldset>
@@ -433,8 +474,8 @@
                                     <select id="id_corso_evento_modifica" name="lista_id_corso">
                                     </select>
                                 </div>
-                                <input type="button" value="ModificaEvento" id="modificaEvento_button" />
-                                <input type="reset" value="ResetModifica" id="reset_button_modifica" />
+                                <input type="button" value="Modifica Evento" id="modificaEvento_button" />
+                                <input type="reset" value="Reset Modifica" id="reset_button_modifica" />
                             </div>
                         </form>
                     </fieldset>

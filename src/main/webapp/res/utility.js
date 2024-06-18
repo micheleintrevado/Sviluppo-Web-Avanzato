@@ -76,6 +76,10 @@ function getEventiUtility() {
         url: "rest/eventi/ids",
         method: "GET",
         success: function (data) {
+            data.sort(function(a, b) {
+                return a - b; 
+            });
+            
             $.each(data, function (key) {
                 $("[name='lista_id_eventi']").append(
                     "<option value=" + data[key] + ">" + data[key] + "</option>");
@@ -84,6 +88,30 @@ function getEventiUtility() {
         error: function (request, status, error) {
             alert("ID EVENTI NON TROVATI");
             console.log("ID EVENTI NON TROVATI");
+        },
+        cache: false
+    });
+}
+
+
+function getRicorrenzeUtility() {
+    $("[name='lista_id_ricorrenze']").html("<option value='-1' selected> Scegli una ricorrenza </option>");
+    $.ajax({
+        url: "rest/eventi/ricorrenze",
+        method: "GET",
+        success: function (data) {
+            data.sort(function(a, b) {
+                return a - b; 
+            });
+            
+            $.each(data, function (key) {
+                $("[name='lista_id_ricorrenze']").append(
+                    "<option value=" + data[key] + ">" + data[key] + "</option>");
+            });
+        },
+        error: function (request, status, error) {
+            alert("ID RICORRENZE NON TROVATI");
+            console.log("ID RICORRENZE NON TROVATI");
         },
         cache: false
     });
@@ -128,10 +156,10 @@ $(document).ready(function () {
             console.log($(this).val());
             if (!($(this).val()) || $(this).val() < 0 || $(this).val() === 'null') {
                 formValid = false;
-                $(this).addClass('input-error'); 
+                $(this).addClass('input-error');
             } else {
                 $(this).siblings('.error-message').remove();
-                $(this).removeClass('input-error'); 
+                $(this).removeClass('input-error');
             }
         });
         if (!formValid) {
@@ -141,6 +169,10 @@ $(document).ready(function () {
         } else {
             $(this).siblings('.error-message').remove();
         }
+    });
+
+    $('select').children('option').sort(function (a, b) {
+        return parseInt(a.value) - parseInt(b.value);
     });
 });
 

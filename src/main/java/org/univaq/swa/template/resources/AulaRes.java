@@ -168,6 +168,8 @@ public class AulaRes {
             e.setNomeOrganizzatore(rs.getString("nome_organizzatore"));
             e.setEmailResponsabile(rs.getString("email_responsabile"));
             e.setTipologia(Tipologia.valueOf(rs.getString("tipologia")));
+            e.setIdAula(rs.getInt("id_aula"));
+            e.setIdCorso(rs.getInt("id_corso"));
             return e;
         } catch (SQLException ex) {
             throw new RESTWebApplicationException(ex);
